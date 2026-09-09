@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>登录 · 跨境电商税务合规政策雷达</title>
+<style>
+:root{--bg:#070b18;--panel:rgba(19,29,57,.9);--line:rgba(148,163,184,.2);--text:#f6f8ff;--muted:#98a6c5;--accent:#43e6a3;--amber:#ffbd59;--red:#ff6b72}
+*{box-sizing:border-box;margin:0;padding:0}
+body{min-height:100vh;display:flex;align-items:center;justify-content:center;background:radial-gradient(1200px 600px at 20% -10%,rgba(67,230,163,.14),transparent 60%),radial-gradient(1000px 500px at 90% 110%,rgba(85,167,255,.14),transparent 60%),var(--bg);color:var(--text);font-family:"Microsoft YaHei UI","PingFang SC",system-ui,sans-serif}
+.card{width:min(92vw,400px);border:1px solid var(--line);border-radius:18px;background:linear-gradient(165deg,rgba(25,36,66,.9),rgba(12,19,40,.94));padding:36px 34px 30px;box-shadow:0 24px 60px rgba(0,0,0,.45)}
+.kicker{font-size:10.5px;letter-spacing:2.5px;color:var(--accent);font-weight:800;text-transform:uppercase}
+h1{font-size:21px;margin:10px 0 4px;font-weight:850}
+.sub{font-size:12px;color:var(--muted);margin-bottom:26px;line-height:1.6}
+label{display:block;font-size:12px;color:var(--muted);margin:14px 0 6px}
+input{width:100%;padding:11px 13px;border:1px solid var(--line);border-radius:10px;background:rgba(8,13,28,.7);color:var(--text);font-size:14px;outline:none}
+input:focus{border-color:var(--accent)}
+button{width:100%;margin-top:24px;padding:12px;border:0;border-radius:11px;background:linear-gradient(135deg,#1fbf7f,#43e6a3);color:#04231a;font-size:15px;font-weight:900;cursor:pointer}
+button:hover{filter:brightness(1.08)}
+.err{display:none;margin-top:14px;font-size:12.5px;color:var(--red);text-align:center}
+.tip{margin-top:22px;font-size:10.5px;color:#5f6b85;text-align:center;line-height:1.7}
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="kicker">Tax Policy Radar</div>
+  <h1>跨境电商税务合规政策雷达</h1>
+  <div class="sub">内部监测看板 · 登录后进入</div>
+  <form id="fm" autocomplete="off">
+    <label for="u">用户名</label>
+    <input id="u" type="text" placeholder="请输入用户名" autocomplete="off">
+    <label for="p">密码</label>
+    <input id="p" type="password" placeholder="请输入密码" autocomplete="off">
+    <button type="submit">登 录</button>
+    <div class="err" id="err">用户名或密码不正确，请重试</div>
+  </form>
+  <div class="tip">仅限内部人员使用 · 每日数据自动更新<br>请勿在公共场所保存登录信息</div>
+</div>
+<script>
+(function(){
+    var USER="\u8d22\u52a1\u90e8";
+  var PASS=atob("QXN0cm9BSTEyMw==");
+  var fm=document.getElementById("fm");
+  fm.addEventListener("submit",function(ev){
+    ev.preventDefault();
+    var u=document.getElementById("u").value.trim();
+    var p=document.getElementById("p").value;
+    if(u===USER && p===PASS){
+      try{sessionStorage.setItem("radarAuth","1");}catch(e){}
+      try{localStorage.setItem("radarAuth","1");localStorage.setItem("radarAuthTs",String(Date.now()));}catch(e){}
+      location.replace("board.html");
+    }else{
+      document.getElementById("err").style.display="block";
+    }
+  });
+})();
+</script>
+</body>
+</html>

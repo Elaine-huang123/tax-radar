@@ -1,0 +1,988 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>税务政策雷达看板 · 跨境电商税务合规</title>
+<script>
+/* 轻量访问门禁：有本地存储且未登录时跳转登录页；无存储环境（隐私模式/自动化）放行 */
+try{(function(){
+  var has=false;
+  try{if(window.sessionStorage||window.localStorage)has=true;}catch(e){}
+  if(!has)return;
+  var ok=false;
+  try{ok=sessionStorage.getItem("radarAuth")==="1";}catch(e){}
+  if(!ok){try{ok=localStorage.getItem("radarAuth")==="1"&&(Date.now()-(localStorage.getItem("radarAuthTs")||0))<86400000;}catch(e2){}}
+  if(!ok){location.replace("index.html");}
+})();}catch(e){}
+</script>
+<style>
+:root{--bg:#070b18;--text:#f6f8ff;--muted:#98a6c5;--line:rgba(148,163,184,.17);--panel:linear-gradient(155deg,rgba(19,29,57,.88),rgba(8,13,28,.89));--blue:#55a7ff;--cyan:#50e6ff;--purple:#a78bfa;--amber:#ffbd59;--green:#43e6a3;--red:#ff6b72}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--text);font-family:"Microsoft YaHei UI","PingFang SC",system-ui,sans-serif}
+body:before{content:"";position:fixed;inset:0;background:radial-gradient(circle at 12% 8%,rgba(114,77,255,.16),transparent 30%),radial-gradient(circle at 88% 12%,rgba(31,211,184,.10),transparent 26%),radial-gradient(circle at 50% 96%,rgba(255,107,114,.07),transparent 30%),linear-gradient(rgba(93,115,162,.045) 1px,transparent 1px),linear-gradient(90deg,rgba(93,115,162,.045) 1px,transparent 1px);background-size:auto,auto,auto,42px 42px,42px 42px;pointer-events:none}
+.wrap{position:relative;z-index:1;width:100%;padding:clamp(18px,2.4vh,32px) clamp(18px,2vw,40px) 26px;display:flex;flex-direction:column;gap:clamp(13px,1.8vh,22px);min-height:100vh}
+
+/* ── tab nav ── */
+.tab-nav{display:flex;gap:0;border-bottom:1px solid rgba(148,163,184,.18);margin-bottom:4px}
+.tab-btn{padding:10px 24px;border:none;background:transparent;color:var(--muted);font-size:clamp(12px,.9vw,15px);font-weight:800;cursor:pointer;font-family:inherit;letter-spacing:.02em;border-bottom:2px solid transparent;transition:.15s}
+.tab-btn:hover{color:#c8d3e9}
+.tab-btn.active{color:var(--cyan);border-bottom-color:var(--cyan)}
+.tab-page{display:none}
+.tab-page.active{display:block}
+
+/* ── header ── */
+.top{display:flex;align-items:flex-end;justify-content:space-between;gap:18px;flex-wrap:wrap}
+.kicker{display:flex;align-items:center;gap:10px;color:var(--cyan);font-size:clamp(10px,.8vw,13px);font-weight:800;letter-spacing:.18em}
+.kicker:before{content:"";width:28px;height:2px;background:var(--cyan);box-shadow:0 0 13px var(--cyan)}
+.headline{margin:8px 0 0;font-size:clamp(26px,2.6vw,44px);line-height:1.02;letter-spacing:-.04em;font-weight:950}
+.headline em{font-style:normal;color:transparent;background:linear-gradient(90deg,#c4b5fd,#54e8ff);-webkit-background-clip:text;background-clip:text}
+.badges{display:flex;gap:7px;margin-top:11px;flex-wrap:wrap}
+.badge{padding:6px 11px;border:1px solid rgba(80,230,255,.25);border-radius:999px;color:#c8f8ff;background:rgba(11,45,64,.42);font-size:clamp(9px,.7vw,12px);white-space:nowrap}
+.top-side{display:flex;align-items:center;gap:16px;padding-bottom:4px}
+.thesis{max-width:380px;color:#c8d3e9;font-size:clamp(12px,.92vw,16px);line-height:1.55;text-align:right}
+.thesis b{color:#fff}
+.stat-boxes{display:flex;gap:10px}
+.stat-box{display:grid;place-items:center;min-width:clamp(62px,5vw,84px);padding:9px 12px;border:1px solid rgba(80,230,255,.25);border-radius:18px;color:var(--cyan);background:rgba(11,42,62,.44);text-align:center}
+.stat-box b{display:block;font-size:clamp(18px,1.5vw,26px);font-weight:900;line-height:1.05}
+.stat-box.red{color:#ff9da1;border-color:rgba(255,107,114,.3);background:rgba(72,19,27,.4)}
+.stat-box span{display:block;margin-top:3px;font-size:clamp(9px,.65vw,11px);color:var(--muted)}
+
+/* ── cards ── */
+.card{border:1px solid var(--line);border-radius:clamp(16px,1.3vw,22px);background:var(--panel);box-shadow:inset 0 1px rgba(255,255,255,.035),0 24px 60px rgba(0,0,0,.2);padding:clamp(15px,1.5vw,24px)}
+.card h2{margin:0;font-size:clamp(15px,1.15vw,20px);letter-spacing:-.02em}
+.card .sub{margin:4px 0 0;color:var(--muted);font-size:clamp(10px,.75vw,12px)}
+
+/* ── A级预警区 ── */
+.alert-zone{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:clamp(8px,.85vw,13px)}
+.alert-card{position:relative;padding:clamp(11px,1vw,15px);border:1px solid rgba(255,107,114,.35);border-radius:16px;background:radial-gradient(circle at 100% 0%,rgba(255,107,114,.13),transparent 46%),linear-gradient(155deg,rgba(46,20,32,.85),rgba(10,13,28,.9));box-shadow:0 0 34px rgba(255,107,114,.09),inset 0 1px rgba(255,255,255,.04);overflow:hidden;display:flex;flex-direction:column}
+.alert-card:before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:linear-gradient(180deg,var(--red),rgba(255,189,89,.6))}
+.alert-head{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.lv{padding:3px 8px;border-radius:999px;font-size:clamp(8.5px,.62vw,10.5px);font-weight:900;letter-spacing:.04em;white-space:nowrap}
+.lv-A{color:#ffb8bc;background:rgba(140,26,36,.55);border:1px solid rgba(255,107,114,.55);text-shadow:0 0 8px rgba(255,107,114,.5)}
+.lv-B{color:#ffe3b5;background:rgba(96,62,13,.4);border:1px solid rgba(255,189,89,.45)}
+.lv-C{color:#c8f8ff;background:rgba(11,45,64,.5);border:1px solid rgba(80,230,255,.35)}
+.alert-card .t{display:block;margin-top:8px;font-size:clamp(11.5px,.82vw,14px);font-weight:850;line-height:1.42;color:#fff;text-decoration:none}
+.alert-card .t:hover{color:#ffc9cc}
+.alert-card .no{margin-top:4px;color:var(--muted);font-size:clamp(9px,.64vw,10.5px);line-height:1.5}
+.tagline{display:flex;gap:5px;flex-wrap:wrap;margin-top:8px}
+.mini-tag{padding:2px 7px;border:1px solid rgba(148,163,184,.22);border-radius:999px;color:#c3cfe4;background:rgba(255,255,255,.03);font-size:clamp(8.5px,.62vw,10.5px);white-space:nowrap}
+.alert-card .sum{margin-top:8px;color:#d5c2d6;font-size:clamp(9.5px,.68vw,11.5px);line-height:1.55;display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}
+.lnks{display:flex;gap:12px;margin-top:auto;padding-top:10px}
+.lnks a{color:var(--cyan);font-size:clamp(9px,.66vw,11px);font-weight:800;text-decoration:none;border-bottom:1px dashed rgba(80,230,255,.35);padding-bottom:1px;white-space:nowrap}
+.lnks a:hover{color:#aef3ff}
+.lnks a.nolink{color:#5f6b85;border-bottom:none;pointer-events:none}
+
+/* ── 主区 ── */
+.main-grid{display:grid;grid-template-columns:minmax(0,1.65fr) minmax(0,.9fr);gap:clamp(10px,1.1vw,16px);align-items:stretch}
+.stream-card{display:flex;flex-direction:column;min-height:0}
+.stream-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.actions{display:flex;gap:8px;flex-wrap:wrap}
+.btn{padding:8px 14px;border:1px solid rgba(80,230,255,.3);border-radius:999px;color:#c8f8ff;background:rgba(11,45,64,.42);font-size:clamp(10px,.76vw,12px);font-weight:800;cursor:pointer;font-family:inherit;transition:.15s}
+.btn:hover{background:rgba(21,77,102,.6);box-shadow:0 0 18px rgba(80,230,255,.18)}
+.btn.ai{border-color:rgba(167,139,250,.4);color:#e3dbff;background:rgba(48,33,89,.5)}
+.btn.ai:hover{box-shadow:0 0 18px rgba(167,139,250,.22)}
+.btn.green{border-color:rgba(67,230,163,.4);color:#b8fce4;background:rgba(11,55,40,.5)}
+.btn.green:hover{box-shadow:0 0 18px rgba(67,230,163,.2)}
+.btn.red-btn{border-color:rgba(255,107,114,.4);color:#ffb8bc;background:rgba(72,19,27,.5)}
+.btn.red-btn:hover{box-shadow:0 0 18px rgba(255,107,114,.2)}
+.chips{display:flex;gap:7px;flex-wrap:wrap;margin-top:12px}
+.chips .lbl{align-self:center;color:var(--muted);font-size:clamp(9px,.68vw,11px);font-weight:800;letter-spacing:.1em;margin-right:2px}
+.chip{padding:5px 11px;border:1px solid rgba(148,163,184,.24);border-radius:999px;color:#c3cfe4;background:rgba(255,255,255,.03);font-size:clamp(9.5px,.7vw,12px);cursor:pointer;user-select:none;transition:.13s}
+.chip:hover{border-color:rgba(80,230,255,.45)}
+.chip.on{color:#081b27;background:linear-gradient(135deg,#50e6ff,#55a7ff);border-color:transparent;font-weight:900}
+.chip.red.on{background:linear-gradient(135deg,#ff6b72,#ff9d5c);color:#200507}
+.chip:has(.cnt) .cnt{opacity:.65;margin-left:3px;font-size:.9em}
+
+.scroller{position:relative;flex:1;min-height:420px;max-height:560px;margin-top:13px;overflow:hidden;border:1px solid rgba(148,163,184,.14);border-radius:15px;background:rgba(5,10,24,.5);-webkit-mask-image:linear-gradient(to bottom,transparent,#000 14px,#000 calc(100% - 14px),transparent);mask-image:linear-gradient(to bottom,transparent,#000 14px,#000 calc(100% - 14px),transparent)}
+.news-list{padding:14px 14px 6px}
+.news-item{display:block;padding:13px 14px;margin-bottom:10px;border:1px solid rgba(148,163,184,.13);border-radius:14px;background:rgba(18,28,53,.62);transition:.15s}
+.news-item:hover{border-color:rgba(80,230,255,.35);background:rgba(24,40,72,.7)}
+.news-item.lvA{border-left:3px solid var(--red)}
+.news-item.lvB{border-left:3px solid var(--amber)}
+.news-item.lvC{border-left:3px solid rgba(80,230,255,.5)}
+.ni-tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.ni-tags .date{margin-left:auto;color:#6f7d99;font-size:clamp(9px,.66vw,11px)}
+.ni-title{display:block;margin-top:7px;color:#eef3ff;font-size:clamp(12px,.9vw,15px);font-weight:800;line-height:1.45;text-decoration:none}
+.ni-title:hover{color:#aee9ff}
+.ni-no{margin-top:4px;color:var(--muted);font-size:clamp(9.5px,.7vw,12px)}
+.ni-sum{margin-top:6px;color:#b9c5dd;font-size:clamp(10px,.74vw,12.5px);line-height:1.6;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.ni-lnk{margin-top:7px;font-size:clamp(9.5px,.7vw,12px)}
+.ni-lnk a{color:var(--cyan);text-decoration:none;font-weight:700;border-bottom:1px dashed rgba(80,230,255,.3)}
+.ni-lnk a.nolink{color:#5f6b85;border-bottom:none;pointer-events:none}
+@keyframes newsScrollUp{from{transform:translateY(0)}to{transform:translateY(-50%)}}
+.news-list.scrolling{animation:newsScrollUp linear infinite}
+.scroller:hover .news-list.scrolling{animation-play-state:paused}
+.empty{padding:40px 20px;text-align:center;color:var(--muted);font-size:13px}
+.meta{margin-top:10px;color:#7e8ca8;font-size:clamp(9.5px,.7vw,11.5px);letter-spacing:.03em}
+
+/* ── 侧栏 ── */
+.side{display:flex;flex-direction:column;gap:clamp(10px,1.1vw,16px);min-height:0}
+.side .card{flex:1}
+.bar-row{display:grid;grid-template-columns:64px 1fr 34px;align-items:center;gap:10px;margin-top:11px;font-size:clamp(10px,.76vw,13px)}
+.bar-row .nm{color:#c3cfe4;font-weight:800}
+.bar-row .cnt{text-align:right;color:var(--muted);font-weight:800}
+.bar{height:9px;border-radius:999px;background:rgba(255,255,255,.05);overflow:hidden}
+.bar i{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,var(--red),#ff9d5c)}
+.bar i.b{background:linear-gradient(90deg,var(--amber),#ffe08a)}
+.bar i.c{background:linear-gradient(90deg,#2f9dc9,var(--cyan))}
+.bar i.p{background:linear-gradient(90deg,#7c5fd6,var(--purple))}
+.bar i.g{background:linear-gradient(90deg,#1f9d77,var(--green))}
+.kv-list{margin-top:10px;display:flex;flex-direction:column;gap:8px}
+.kv{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:8px 11px;border:1px solid rgba(148,163,184,.12);border-radius:11px;background:rgba(255,255,255,.025);font-size:clamp(10px,.76vw,13px)}
+.kv b{color:#dbe4f5;font-weight:800}
+.kv span{color:var(--muted);white-space:nowrap}
+.kv .hl{color:var(--cyan);font-weight:900}
+
+/* ── footer ── */
+.foot{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:clamp(12px,1.3vh,18px) clamp(14px,1.25vw,24px);border:1px solid rgba(148,163,184,.16);border-radius:16px;background:rgba(12,19,38,.72)}
+.boundary{max-width:640px;padding-left:14px;border-left:2px solid rgba(255,189,89,.4);color:#aebbd2;font-size:clamp(10px,.72vw,12px);line-height:1.65}
+.boundary b{color:var(--amber)}
+.foot .pills{display:flex;gap:7px;flex-wrap:wrap}
+.pill{padding:6px 11px;border:1px solid rgba(80,230,255,.25);border-radius:999px;color:#c9faff;background:rgba(9,44,58,.38);font-size:clamp(9px,.66vw,11px);font-weight:800;white-space:nowrap}
+
+/* ── toast ── */
+.toast{position:fixed;left:50%;bottom:34px;transform:translate(-50%,20px);z-index:99;padding:11px 20px;border:1px solid rgba(67,230,163,.45);border-radius:999px;color:#bffce4;background:rgba(8,42,34,.92);box-shadow:0 12px 34px rgba(0,0,0,.4);font-size:13px;font-weight:800;opacity:0;pointer-events:none;transition:.25s}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+
+/* ── P2: Rules & Sources page ── */
+.p2-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(12px,1.2vw,18px);align-items:start}
+.rule-section{margin-bottom:0}
+.rule-section h3{margin:0 0 8px;font-size:clamp(14px,1.05vw,18px);color:var(--cyan);font-weight:900}
+.rule-section p,.rule-section li{color:#b9c5dd;font-size:clamp(11px,.8vw,14px);line-height:1.7}
+.rule-section ul{margin:6px 0;padding-left:20px}
+.rule-section li{margin-bottom:4px}
+.rule-table{width:100%;border-collapse:separate;border-spacing:0;margin-top:8px;font-size:clamp(10px,.76vw,13px)}
+.rule-table th{text-align:left;padding:8px 10px;color:var(--cyan);font-weight:800;border-bottom:1px solid rgba(80,230,255,.2);white-space:nowrap}
+.rule-table td{padding:8px 10px;color:#c3cfe4;border-bottom:1px solid rgba(148,163,184,.1)}
+.rule-table tr:hover td{background:rgba(80,230,255,.05)}
+
+/* ── Source list ── */
+.src-list{display:flex;flex-direction:column;gap:8px;margin-top:12px}
+.src-item{display:flex;align-items:center;gap:10px;padding:10px 14px;border:1px solid rgba(148,163,184,.14);border-radius:13px;background:rgba(18,28,53,.55);transition:.15s}
+.src-item:hover{border-color:rgba(80,230,255,.3)}
+.src-item.disabled{opacity:.45}
+.src-idx{flex:0 0 24px;color:var(--muted);font-size:11px;font-weight:900;text-align:center}
+.src-info{display:flex;align-items:baseline;gap:8px;flex:1 1 auto;min-width:0}
+.src-name{flex:0 0 auto;color:#eef3ff;font-size:clamp(11px,.82vw,14px);font-weight:800;white-space:nowrap}
+.src-url{flex:1 1 auto;min-width:0;color:#6f7d99;font-size:clamp(9px,.66vw,11px);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.src-url::before{content:"·";margin-right:8px;opacity:.5}
+.src-cat{flex:0 0 auto;padding:3px 9px;border-radius:999px;font-size:clamp(9px,.66vw,11px);font-weight:800;white-space:nowrap}
+.src-cat.policy{color:#ffb8bc;background:rgba(140,26,36,.4);border:1px solid rgba(255,107,114,.3)}
+.src-cat.platform{color:#ffe3b5;background:rgba(96,62,13,.4);border:1px solid rgba(255,189,89,.35)}
+.src-cat.industry{color:#b8fce4;background:rgba(11,55,40,.5);border:1px solid rgba(67,230,163,.3)}
+.src-cat.listed{color:#c4b5fd;background:rgba(48,33,89,.5);border:1px solid rgba(167,139,250,.35)}
+.src-cat.recalls{color:#c8f8ff;background:rgba(11,45,64,.5);border:1px solid rgba(80,230,255,.3)}
+
+/* toggle switch */
+.toggle{position:relative;width:38px;height:20px;cursor:pointer;flex:0 0 auto}
+.toggle input{display:none}
+.toggle .slider{position:absolute;inset:0;border-radius:999px;background:rgba(255,255,255,.1);border:1px solid rgba(148,163,184,.2);transition:.2s}
+.toggle .slider:before{content:"";position:absolute;left:3px;top:3px;width:12px;height:12px;border-radius:50%;background:#5f6b85;transition:.2s}
+.toggle input:checked+.slider{background:rgba(67,230,163,.3);border-color:rgba(67,230,163,.5)}
+.toggle input:checked+.slider:before{transform:translateX(18px);background:var(--green)}
+
+/* add source form */
+.add-form{display:none;margin-top:14px;padding:16px;border:1px dashed rgba(80,230,255,.3);border-radius:14px;background:rgba(11,45,64,.3)}
+.add-form.show{display:block}
+.form-row{display:flex;gap:10px;margin-bottom:10px;flex-wrap:wrap}
+.form-row label{color:var(--muted);font-size:clamp(10px,.76vw,12px);font-weight:800;min-width:60px;align-self:center}
+.form-input{flex:1;min-width:160px;padding:8px 12px;border:1px solid rgba(148,163,184,.2);border-radius:9px;background:rgba(255,255,255,.05);color:var(--text);font-size:clamp(11px,.82vw,14px);font-family:inherit;outline:none;transition:.15s}
+.form-input:focus{border-color:rgba(80,230,255,.5);background:rgba(255,255,255,.08)}
+.form-input::placeholder{color:#5f6b85}
+select.form-input{cursor:pointer}
+.form-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:4px}
+
+@media(max-width:1080px){.main-grid{grid-template-columns:1fr}.scroller{min-height:380px;max-height:480px}.thesis{text-align:left}.alert-zone{grid-template-columns:repeat(3,minmax(0,1fr))}.p2-grid{grid-template-columns:1fr}}
+@media(max-width:700px){.top-side{width:100%}.stat-boxes{margin-left:auto}.stat-box{min-width:58px}.alert-zone{grid-template-columns:repeat(2,minmax(0,1fr))}.alert-card .sum{-webkit-line-clamp:3}.src-item{gap:8px}.src-idx{flex-basis:20px}.src-name{max-width:34vw}}
+@media(prefers-reduced-motion:reduce){.news-list.scrolling{animation:none}}
+
+/* ── 卡片阅读优化：摘要≤100字、超长折叠展开（延续最初卡片基调，链接弱化样式） ── */
+.alert-card .sum,.news-item .ni-sum{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;margin-top:6px}
+details.more{margin-top:6px}
+details.more summary{cursor:pointer;display:inline-flex;align-items:center;gap:5px;color:#c9faff;background:rgba(11,45,64,.42);border:1px solid rgba(80,230,255,.3);border-radius:999px;padding:2px 10px;font-size:clamp(9px,.66vw,11px);font-weight:800;letter-spacing:.03em;user-select:none;list-style:none}
+details.more summary::-webkit-details-marker{display:none}
+details.more summary::before{content:"▸";transition:transform .18s ease;font-size:.9em;color:#8fd9ea}
+details.more[open] summary::before{transform:rotate(90deg)}
+details.more[open] summary{color:#ffe3b5;border-color:rgba(255,189,89,.45);background:rgba(96,62,13,.4)}
+details.more[open] summary::before{color:#ffcf8a}
+details.more .sum-full{margin-top:8px;padding-top:8px;border-top:1px dashed rgba(80,230,255,.22);color:#b9c5dd;font-size:clamp(10.5px,.78vw,13px);line-height:1.75;white-space:pre-wrap}
+
+
+/* ── P4 板块分类对照 / 源板块徽标 ── */
+.board-src{display:flex;flex-wrap:wrap;gap:5px;margin-top:6px}
+.src-chip{font-size:clamp(9.5px,.68vw,11px);padding:2px 8px;border-radius:20px;background:rgba(80,230,255,.08);border:1px solid rgba(80,230,255,.25);color:#8fd9ea;white-space:nowrap}
+.src-chip.off{background:rgba(148,163,184,.07);border-color:rgba(148,163,184,.18);color:#5f6b85}
+.src-chip .dot{color:var(--cyan)}
+.src-board{display:inline-block;font-size:clamp(9px,.62vw,10px);font-weight:900;padding:1px 6px;border-radius:4px;margin-right:2px;vertical-align:1px}
+.src-board.b-tax{background:rgba(80,230,255,.12);color:var(--cyan)}
+.src-board.b-cus{background:rgba(255,189,89,.12);color:var(--amber)}
+.src-board.b-pla{background:rgba(129,214,160,.14);color:#81d6a0}
+.src-board.b-none{background:rgba(148,163,184,.1);color:#5f6b85}
+
+.stat-box.green{border:1px solid rgba(67,230,163,.55);cursor:pointer;background:rgba(67,230,163,.07)}
+.stat-box.green b{color:#43e6a3}
+.stat-box.green span{color:#9fe8c8}
+.news-item{position:relative}
+.new-badge{position:absolute;top:6px;right:6px;z-index:5;background:linear-gradient(135deg,#1fbf7f,#43e6a3);color:#04231a;font-size:clamp(8.5px,.6vw,10px);font-weight:900;letter-spacing:.5px;line-height:1.5;padding:1px 7px;border-radius:9px;box-shadow:0 0 8px rgba(67,230,163,.55);cursor:pointer;user-select:none}
+.alert-card .new-badge{top:10px;right:10px}
+.new-badge:hover{filter:brightness(1.12)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="top">
+  <div>
+    <div class="kicker">TAX POLICY RADAR · CROSS-BORDER E-COMMERCE</div>
+    <h1 class="headline">税务合规<em>政策雷达看板</em></h1>
+    <div class="badges">
+      <span class="badge">四站官方源</span>
+      <span class="badge">跨境电商关键词评分</span>
+      <span class="badge">A / B / C 分级</span>
+      <span class="badge">每日 10:05 自动更新</span>
+    </div>
+  </div>
+  <div class="top-side">
+    <div class="thesis">扫描税务总局法规库 / 出口退税网 / shui5 / 海关总署，<br>按跨境电商关键词权重评分，<b>A级政策实时预警</b></div>
+    <div class="stat-boxes">
+      <div class="stat-box red"><b id="statA">-</b><span>A级预警</span></div>
+      <div class="stat-box"><b id="statTotal">-</b><span>收录政策</span></div>
+      <div class="stat-box"><b id="statNew">-</b><span>近次扫描新增</span></div>
+      <div class="stat-box green" id="statUnread" style="display:none" title="新增未读条目：点击后全部标为已读"><b id="statUnreadN">0</b><span>新增未读</span></div>
+    </div>
+  </div>
+</header>
+
+<div class="tab-nav">
+  <button class="tab-btn active" data-tab="tax">📗 P1 · 税务政策</button>
+  <button class="tab-btn" data-tab="cus">📘 P2 · 海关清关</button>
+  <button class="tab-btn" data-tab="pla">📙 P3 · 平台与合规</button>
+  <button class="tab-btn" data-tab="p4">⚙️ P4 · 规则与信息源</button>
+</div>
+
+<!-- ====== P1: Tax Policy ====== -->
+<div class="tab-page active" id="tab-tax">
+<section class="alert-zone" id="alertZoneTax"></section>
+<section class="main-grid">
+  <article class="card stream-card">
+    <div class="stream-head">
+      <div>
+        <h2>税务政策资讯流</h2>
+        <p class="sub">A/B/C 沿用税务评分口径（≥20 为 A）· 悬停暂停 · 点击标题查看原文</p>
+      </div>
+      <div class="actions">
+        <button class="btn" id="btnRefreshTax" type="button">重置筛选并刷新</button>
+        <button class="btn ai" id="btnAITax" type="button">复制 AI 简报提示词</button>
+      </div>
+    </div>
+    <div class="chips" id="lvChipsTax"></div>
+    <div class="chips" id="catChipsTax"></div>
+    <div class="scroller" id="scrollerTax"><div class="news-list" id="newsListTax"></div></div>
+    <div class="meta" id="streamMetaTax"></div>
+  </article>
+
+  <aside class="side">
+    <article class="card">
+      <h2>分级分布</h2>
+      <p class="sub">税务评分口径：≥20 为 A · 10-19 为 B · &lt;10 为 C</p>
+      <div id="lvBarsTax"></div>
+    </article>
+    <article class="card">
+      <h2>税种 × 信息源</h2>
+      <p class="sub">按收录条数统计</p>
+      <div class="kv-list" id="kvStatsTax"></div>
+    </article>
+    <article class="card">
+      <h2>数据快照</h2>
+      <div class="kv-list" id="snapStatsTax"></div>
+    </article>
+  </aside>
+</section>
+</div>
+<!-- ====== P2: Customs & Clearance ====== -->
+<div class="tab-page" id="tab-cus">
+<section class="alert-zone" id="alertZoneCus"></section>
+<section class="main-grid">
+  <article class="card stream-card">
+    <div class="stream-head">
+      <div>
+        <h2>海关清关资讯流</h2>
+        <p class="sub">中美欧加墨日等站点国家海关 / 关税 / 清关政策 · <b style="color:var(--red)">A=关务重点</b>（关税/清关强制合规）</p>
+      </div>
+      <div class="actions">
+        <button class="btn" id="btnRefreshCus" type="button">重置筛选并刷新</button>
+        <button class="btn ai" id="btnAICus" type="button">复制 AI 简报提示词</button>
+      </div>
+    </div>
+    <div class="chips" id="lvChipsCus"></div>
+    <div class="chips" id="catChipsCus"></div>
+    <div class="scroller" id="scrollerCus"><div class="news-list" id="newsListCus"></div></div>
+    <div class="meta" id="streamMetaCus"></div>
+  </article>
+
+  <aside class="side">
+    <article class="card">
+      <h2>分级分布</h2>
+      <p class="sub">A=关税/清关强制合规重点 · B/C 按评分参考</p>
+      <div id="lvBarsCus"></div>
+    </article>
+    <article class="card">
+      <h2>税种 × 信息源</h2>
+      <p class="sub">按收录条数统计</p>
+      <div class="kv-list" id="kvStatsCus"></div>
+    </article>
+    <article class="card">
+      <h2>数据快照</h2>
+      <div class="kv-list" id="snapStatsCus"></div>
+    </article>
+  </aside>
+</section>
+</div>
+<!-- ====== P3: Platform & Compliance ====== -->
+<div class="tab-page" id="tab-pla">
+<section class="alert-zone" id="alertZonePla"></section>
+<section class="main-grid">
+  <article class="card stream-card">
+    <div class="stream-head">
+      <div>
+        <h2>平台与合规资讯流</h2>
+        <p class="sub">亚马逊/沃尔玛/美客多平台规则 · CPSC 等境外机构与第三方资讯 · <b style="color:var(--red)">A=高影响合规</b>（强制限期/召回/禁售/准入受限）</p>
+      </div>
+      <div class="actions">
+        <button class="btn" id="btnRefreshPla" type="button">重置筛选并刷新</button>
+        <button class="btn ai" id="btnAIPla" type="button">复制 AI 简报提示词</button>
+      </div>
+    </div>
+    <div class="chips" id="lvChipsPla"></div>
+    <div class="chips" id="catChipsPla"></div>
+    <div class="scroller" id="scrollerPla"><div class="news-list" id="newsListPla"></div></div>
+    <div class="meta" id="streamMetaPla"></div>
+  </article>
+
+  <aside class="side">
+    <article class="card">
+      <h2>分级分布</h2>
+      <p class="sub">A=高影响合规（召回/禁售/强制限期）· B/C 按评分参考</p>
+      <div id="lvBarsPla"></div>
+    </article>
+    <article class="card">
+      <h2>税种 × 信息源</h2>
+      <p class="sub">按收录条数统计</p>
+      <div class="kv-list" id="kvStatsPla"></div>
+    </article>
+    <article class="card">
+      <h2>数据快照</h2>
+      <div class="kv-list" id="snapStatsPla"></div>
+    </article>
+  </aside>
+</section>
+</div>
+
+<!-- ====== P4: Rules & Sources（默认最后一页） ====== -->
+<div class="tab-page" id="tab-p4">
+<section class="p2-grid">
+  <!-- Left: Rules -->
+  <article class="card">
+    <h2>📐 设计文档 · 规则说明</h2>
+    <p class="sub">评分标尺、分级逻辑、类别与信息源映射规则</p>
+
+    <div class="rule-section" style="margin-top:14px;border:1px solid rgba(80,230,255,.14);border-radius:11px;padding:10px 12px">
+      <h3 style="color:var(--cyan)">📗 P1 · 税务政策 — 规则与信息源</h3>
+      <ul>
+        <li>收录：增值税 / 消费税 / 个税 / 企业所得税 / 出口退税等税收政策、申报与征管（以中国财税机关公告为主）。</li>
+        <li>判级：按税务评分口径（≥20 为 A）；公司退税主体所在地政策优先关注（申报地口径，内部维护）。</li>
+        <li>例外：<b>平潭综合实验区等无公司主体的区域性政策不作重点</b>（库内平潭条目已降级）。</li>
+      </ul>
+      <div class="board-src" id="bsrcTax"></div>
+    </div>
+    <div class="rule-section" style="margin-top:10px;border:1px solid rgba(255,189,89,.16);border-radius:11px;padding:10px 12px">
+      <h3 style="color:var(--amber)">📘 P2 · 海关清关 — 规则与信息源</h3>
+      <ul>
+        <li>收录：中国海关 + 亚马逊站点国家（美国 / 欧盟 / 加拿大 / 墨西哥 / 日本）的进出口清关、关税、商品归类与反倾销。</li>
+        <li>判级：A = 关税 / 清关强制合规重点（CBP、IOR、MRN/EORI、商品编号等）；与公司品线无关的单一品类（如无人机）最高 B。</li>
+        <li>站点国家海关资讯由每日检索（WebSearch 兜底）覆盖，无独立信息源。</li>
+      </ul>
+      <table class="rule-table" style="margin-top:8px">
+        <tr><th style="width:52px">页内级</th><th>P2 判级依据（评分仅作参考因子）</th></tr>
+        <tr><td style="color:#ff9da1;font-weight:900">A 重点</td><td>原 A 标识 / 评分≥20；或命中「关税 · 清关 · CBP · IOR · MRN · EORI · 商品编号」等强制合规且评分≥12（无人机等与司品线无关的单一品类除外，最高 B）</td></tr>
+        <tr><td style="color:#ffe3b5;font-weight:900">B 关注</td><td>评分 10–19 且不满足 A；或与司品线无关但有影响的品类关税（如无人机 232 关税 21→B）</td></tr>
+        <tr><td style="color:#c8f8ff;font-weight:900">C 一般</td><td>评分&lt;10 或程序性 / 低影响（如聚甲醛进口税率继承 7 分、电子单证 0 分）</td></tr>
+      </table>
+      <div class="board-src" id="bsrcCus"></div>
+    </div>
+    <div class="rule-section" style="margin-top:10px;border:1px solid rgba(129,214,160,.16);border-radius:11px;padding:10px 12px">
+      <h3 style="color:#81d6a0">📙 P3 · 平台与合规 — 规则与信息源</h3>
+      <ul>
+        <li>收录：平台规则（亚马逊 / 沃尔玛 / 美客多，含 <b>沃尔玛美国线下商超</b>动态）、CPSC/FCC 产品合规、上市公司披露与行业资讯。</li>
+        <li>判级：A = 高影响合规且与公司品线（汽车工具 / 小家电）相关；无关品类（3C 周边召回等）最高 B。</li>
+        <li>例外：<b>eBay 平台公司暂不涉及，不作重点</b>（库内 eBay 条目已降级）。</li>
+      </ul>
+      <table class="rule-table" style="margin-top:8px">
+        <tr><th style="width:52px">页内级</th><th>P3 判级依据（评分仅作参考因子）</th></tr>
+        <tr><td style="color:#ff9da1;font-weight:900">A 重点</td><td>平台 / 监管「强制限期 · 批量召回 · 禁售 · 准入受限 · 账户核验」且评分≥10，并与公司品线（汽车工具 / 小家电）相关或全品类强制（如 FCC 扫地机器人、泛欧 FBA、香港验证；eBay 禁售因不涉 eBay 已降 B）</td></tr>
+        <tr><td style="color:#ffe3b5;font-weight:900">B 关注</td><td>评分≥10 但不满足 A；3C 周边等司无关品类召回（如暖手宝 / 磁吸充电宝）；财报披露、物流动态</td></tr>
+        <tr><td style="color:#c8f8ff;font-weight:900">C 一般</td><td>评分&lt;10 或低影响（如小众厨具召回 Cuisinart 烧烤刷 7 分）</td></tr>
+      </table>
+      <div class="board-src" id="bsrcPla"></div>
+    </div>
+
+    <div class="rule-section" style="margin-top:16px">
+      <h3>一、评分标尺（0-30 分）</h3>
+      <p>按跨境电商关键词权重评分，核心维度及权重如下：</p>
+      <table class="rule-table">
+        <tr><th>维度</th><th>权重</th><th>说明</th></tr>
+        <tr><td>税种命中</td><td>0-8 分</td><td>出口退税(8) &gt; 关税/反倾销(7) &gt; 增值税(5) &gt; 消费税(5) &gt; 其他(1)</td></tr>
+        <tr><td>影响国家</td><td>0-6 分</td><td><b>中国(6) &gt; 美国(4) &gt; 欧盟(3)</b> &gt; 东南亚(2) &gt; 其他(1)</td></tr>
+        <tr><td>影响品线</td><td>0-6 分</td><td>电池(6) &gt; 3C(5) &gt; 跨境零售(4) &gt; 全品线(4) &gt; 出口业务(4) &gt; 服装(3) &gt; 其他(1)</td></tr>
+        <tr><td>发布机关级别</td><td>0-5 分</td><td>财政部+税务总局联合(5) &gt; 财政部/税务总局单独(4) &gt; 海关总署(4) &gt; 商务部(3) &gt; 其他(1)</td></tr>
+        <tr><td>时效与紧迫性</td><td>0-3 分</td><td>即刻生效(3) &gt; 30天内(2) &gt; 已征求意见(1) &gt; 远期(0)</td></tr>
+        <tr><td>信息源权威度</td><td>0-2 分</td><td>官网原文(2) &gt; 权威媒体转载(1) &gt; 社区/公众号(0.5)</td></tr>
+      </table>
+      <p style="margin-top:8px;color:var(--muted)">总分 = 各维度求和（上限 30 分）。<b>影响国家维度：中国政策权重最高</b>（国内税务/海关/退税变动直接影响所有出口卖家成本底线）。</p>
+
+      <h4 style="margin-top:14px">评分案例拆解</h4>
+      <table class="rule-table">
+        <tr><th>案例</th><th>税种</th><th>国家</th><th>品线</th><th>机关</th><th>时效</th><th>来源</th><th>总分</th></tr>
+        <tr><td>电池消费税调整</td><td>消费税(5)</td><td>中国(6)</td><td>电池(6)</td><td>财税联合(5)</td><td>即刻(3)</td><td>官网(2)</td><td><b>27</b></td></tr>
+        <tr><td>出口退税管理办法</td><td>出口退税(8)</td><td>中国(6)</td><td>出口业务(4)</td><td>财税联合(5)</td><td>30天内(2)</td><td>官网(2)</td><td><b>27→实际20.4</b></td></tr>
+        <tr><td>海关电池编号</td><td>关税(7)</td><td>中国(6)</td><td>电池(6)</td><td>海关(4)</td><td>即刻(3)</td><td>官网(2)</td><td><b>28→实际22.4</b></td></tr>
+        <tr><td>亚马逊MRN/EORI合规</td><td>增值税(5)</td><td>欧盟(3)</td><td>全品线(4)</td><td>其他(1)</td><td>即刻(3)</td><td>权威(1)</td><td><b>17→实际16</b></td></tr>
+        <tr><td>CPSC电池召回</td><td>其他(1)</td><td>美国(4)</td><td>电池(6)</td><td>其他(1)</td><td>即刻(3)</td><td>官网(2)</td><td><b>17→实际14</b></td></tr>
+      </table>
+      <p style="margin-top:6px;color:var(--muted)">注：实际得分可能低于维度求和，因 AI 根据政策措辞强度、适用范围等做微调（如出口退税管理办法涉及全品线但措辞偏程序性而非实质调整，下调至 20.4）。</p>
+
+      <table class="rule-table" style="margin-top:10px">
+        <tr><th>级别</th><th>评分区间</th><th>含义</th><th>参考值</th></tr>
+        <tr><td style="color:var(--red);font-weight:900">A级</td><td>≥ 20</td><td>重大政策，需立即行动</td><td>电池消费税=27 · 海关电池编号=22.4 · 出口退税管理办法=20.4</td></tr>
+        <tr><td style="color:var(--amber);font-weight:900">B级</td><td>10 - 19</td><td>重要动态，跟踪并评估</td><td>亚马逊MRN/EORI合规=16 · CPSC电池召回=14 · 非应税交易增值税=12.5</td></tr>
+        <tr><td style="color:var(--cyan);font-weight:900">C级</td><td>&lt; 10</td><td>一般信息，知晓即可</td><td>增值税申报表调整=9.6 · 离岸信托=5 · 限售股个税=0</td></tr>
+      </table>
+    </div>
+
+    <div class="rule-section" style="margin-top:18px">
+      <h3>二、分级逻辑</h3>
+      <ul>
+        <li><b>A级标识 = true</b> → 直接定级 A（人工标记的重大政策）</li>
+        <li>否则按评分阈值：score ≥ 20 → A · 10-19 → B · &lt;10 → C</li>
+      </ul>
+    </div>
+
+    <div class="rule-section" style="margin-top:18px">
+      <h3>三、类别（cat）派生规则</h3>
+      <p>按优先级顺序判断，命中即停：</p>
+      <table class="rule-table">
+        <tr><th>优先级</th><th>条件</th><th>类别</th></tr>
+        <tr><td>1</td><td>发布机关含「海关总署」或税种含「海关关税(反倾销)」</td><td>关务海关</td></tr>
+        <tr><td>2</td><td>标题含「离岸」或「信托」</td><td>国际税收</td></tr>
+        <tr><td>3</td><td>税种含「出口退税」</td><td>出口退税</td></tr>
+        <tr><td>4</td><td>税种含「消费税」</td><td>消费税</td></tr>
+        <tr><td>5</td><td>税种含「增值税」</td><td>增值税</td></tr>
+        <tr><td>6</td><td>以上均不命中</td><td>其他</td></tr>
+      </table>
+    </div>
+
+    <div class="rule-section" style="margin-top:18px">
+      <h3>四、信息源（site）映射规则</h3>
+      <table class="rule-table">
+        <tr><th>URL 域名包含</th><th>信息源标签</th></tr>
+        <tr><td>fgk.chinatax.gov.cn</td><td>fgk法规库</td></tr>
+        <tr><td>shui5.cn</td><td>shui5</td></tr>
+        <tr><td>taxrefund.com.cn</td><td>出口退税网</td></tr>
+        <tr><td>customs.gov.cn</td><td>海关总署</td></tr>
+        <tr><td>shanghai.chinatax.gov.cn</td><td>税务总局(沪)</td></tr>
+        <tr><td>people.com.cn</td><td>其他媒体</td></tr>
+        <tr><td>cifnews.com</td><td>雨果网</td></tr>
+        <tr><td>cpsc.gov</td><td>CPSC</td></tr>
+        <tr><td>URL 为空</td><td>其他</td></tr>
+        <tr><td>其余</td><td>其他媒体</td></tr>
+      </table>
+    </div>
+
+    <div class="rule-section" style="margin-top:18px">
+      <div class="rule-section" style="margin-top:18px">
+        <h3>五、品线与关注口径（公司实际业务）</h3>
+        <ul>
+          <li><b>公司关注品线：汽车工具类 + 小家电</b>（如空气泵、应急电源、雪刷、万用表、钳表、小冰箱、制冰机、冰沙机等）。</li>
+          <li>P2/P3 的 A 级判定以<b>与公司品线相关性</b>为参考：与品线相关或全品类强制合规 → A（重点关注）；与公司无关的单一品类事件（如无人机、3C 周边召回）最高定级 B。</li>
+          <li>P1 税务仍按税务评分口径定级（中国/财税/税种权重优先）。品线词表在 JS 的 COMPANY_LINES / OFF_LINES 中维护。</li>
+        </ul>
+      </div>
+
+      <h3>五、数据流</h3>
+      <ul>
+        <li>每日 10:00 WorkBuddy 自动化任务启动</li>
+        <li>读取 SOURCES_CONFIG（仅 enabled=true 的信息源）→ 执行检索</li>
+        <li>筛选 5-10 条 → AI 解读 → 写入飞书多维表格</li>
+        <li>拉取飞书表全量 → 生成 TAX_NEWS + SNAPSHOT → 更新本 HTML</li>
+        <li>推送摘要至微信 + 飞书</li>
+      </ul>
+    </div>
+  </article>
+
+  <!-- Right: Source Management -->
+  <article class="card">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap">
+      <div>
+        <h2>📡 信息源管理</h2>
+        <p class="sub">启用/禁用检索源 · 新增信息源将同步到自动化任务</p>
+      </div>
+      <div style="display:flex;gap:8px">
+        <button class="btn green" id="btnAddSrc" type="button">＋ 新增信息源</button>
+        <button class="btn ai" id="btnExportSrc" type="button">导出配置</button>
+      </div>
+    </div>
+
+    <div class="add-form" id="addSrcForm">
+      <div class="form-row">
+        <label>名称 *</label>
+        <input class="form-input" id="newSrcName" placeholder="如：亚马逊卖家中心公告" />
+      </div>
+      <div class="form-row">
+        <label>URL *</label>
+        <input class="form-input" id="newSrcUrl" placeholder="https://..." />
+      </div>
+      <div class="form-row">
+        <label>类别 *</label>
+        <select class="form-input" id="newSrcCat">
+          <option value="政策法规">政策法规（官方机构）</option>
+          <option value="平台动态">平台动态（亚马逊/沃尔玛/美客多）</option>
+          <option value="行业资讯">行业资讯（三方网站/公众号）</option>
+          <option value="上市公司">上市公司披露</option>
+          <option value="产品召回">产品召回（CPSC等）</option>
+        </select>
+      </div>
+      <div class="form-row">
+        <label>检索关键词</label>
+        <input class="form-input" id="newSrcKw" placeholder="如：出口退税 关税 亚马逊（空格分隔）" />
+      </div>
+      <div class="form-row">
+        <label>说明</label>
+        <input class="form-input" id="newSrcNote" placeholder="简要说明检索逻辑或注意事项" />
+      </div>
+      <div class="form-actions">
+        <button class="btn" id="btnCancelSrc" type="button">取消</button>
+        <button class="btn green" id="btnSaveSrc" type="button">确认添加</button>
+      </div>
+    </div>
+
+    <div class="src-list" id="srcList"></div>
+
+    <div style="margin-top:16px;padding:12px 14px;border:1px solid rgba(255,189,89,.25);border-radius:11px;background:rgba(96,62,13,.15)">
+      <div style="color:var(--amber);font-size:clamp(10px,.76vw,12px);font-weight:800;margin-bottom:4px">💡 变更生效方式</div>
+      <div style="color:#b9c5dd;font-size:clamp(10px,.72vw,12px);line-height:1.6">
+        信息源增减后，点击 <b style="color:var(--cyan)">导出配置</b> 复制更新指令，发送给 WorkBuddy 即可生效。
+        <br>WorkBuddy 会将变更写入看板 HTML 的 SOURCES_CONFIG 数据块，下次自动化任务运行时自动读取并同步检索。
+      </div>
+    </div>
+  </article>
+</section>
+</div>
+
+<footer class="foot">
+  <div class="boundary"><b>风险边界：</b>本看板仅作风险感知和线索归纳，不作为合规依据；政策条款适用、处罚与退税口径，以官方正式文件为准。所有条目均保留原文链接与飞书表溯源。</div>
+  <div class="pills">
+    <span class="pill" id="pillScan">上次扫描 -</span>
+    <span class="pill" id="pillNext">下次同步 每日 10:05</span>
+    <span class="pill">飞书表 tblo8d6cv3YPiz9w</span>
+  </div>
+</footer>
+
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+/* ===DATA-BEGIN=== */
+const SNAPSHOT = { updatedAt: "2026-09-09 10:02", lastScan: 1788919200000, source: "飞书税务政策表 tblo8d6cv3YPiz9w（59条）" };
+const TAX_NEWS = [
+ {"id": "p11", "lv": "A", "score": 20.4, "cat": "出口退税", "title": "关于出口业务增值税和消费税政策的公告", "no": "财政部 税务总局公告2026年第11号", "organ": "财政部+税务总局", "taxes": ["增值税", "消费税", "出口退税"], "lines": ["全品线", "出口业务"], "countries": ["中国"], "eff": 1767196800000, "site": "fgk法规库", "url": "https://fgk.chinatax.gov.cn/zcfgk/c102416/c5247437/content.html", "doc": "https://my.feishu.cn/docx/XIuMd0Y2foSS72x9IWzc0x9HnNb", "at": 1785676800000, "sum": "跨境电商出口核心法规，影响所有出口业务税负计算；外贸企业免征出口环节增值税并退还进项，生产企业适用免抵退；申报期限次年4月30日前"},
+ {"id": "p5", "lv": "A", "score": 20.4, "cat": "出口退税", "title": "关于发布《出口业务增值税和消费税退（免）税管理办法》的公告", "no": "国家税务总局公告2026年第5号", "organ": "税务总局", "taxes": ["增值税", "消费税", "出口退税"], "lines": ["全品线", "出口业务"], "countries": ["中国"], "eff": 1767196800000, "site": "fgk法规库", "url": "https://fgk.chinatax.gov.cn/zcfgk/c100012/c5247423/content.html", "doc": "https://my.feishu.cn/docx/J8kddfA5FoM83xxn6hfcjaMYn0g", "at": 1785676800000, "sum": "归并整合历史出口退税管理规定，形成统一管理办法（5章+9类证明事项）；备案表单精简、申报流程调整，直接影响日常退税操作"},
+ {"id": "p9", "lv": "B", "score": 10.8, "cat": "消费税", "title": "国家税务总局关于调整消费税纳税申报表有关事项的公告", "no": "国家税务总局公告2026年第9号", "organ": "税务总局", "taxes": ["消费税"], "lines": ["全品线"], "countries": ["中国"], "eff": 1774972800000, "site": "fgk法规库", "url": "https://fgk.chinatax.gov.cn/zcfgk/c100012/c5249181/content.html", "doc": "", "at": 1785676800000, "sum": ""},
+ {"id": "c40", "lv": "C", "score": 9.6, "cat": "增值税", "title": "财政部 税务总局关于调整铁路和航空运输企业汇总缴纳增值税分支机构名单的通知", "no": "财税〔2026〕40号", "organ": "财政部+税务总局", "taxes": ["增值税"], "lines": ["其他"], "countries": ["中国"], "eff": 1778688000000, "site": "税务总局(沪)", "url": "https://shanghai.chinatax.gov.cn/zcfw/zcfgk/zzs/202605/t480317.html", "doc": "", "at": 1785676800000, "sum": ""},
+ {"id": "n5", "lv": "C", "score": 0.0, "cat": "出口退税", "title": "商务部等6部门关于加力优化离境退税措施扩大入境消费的通知", "no": "-", "organ": "其他", "taxes": ["出口退税"], "lines": ["其他"], "countries": ["中国"], "eff": 1779033600000, "site": "其他媒体", "url": "http://finance.people.com.cn/n1/2026/0518/c1004-40721882.html", "doc": "", "at": 1785676800000, "sum": ""},
+ {"id": "p10", "lv": "C", "score": 0.0, "cat": "其他", "title": "国家税务总局关于修订部分税务执法文书的公告", "no": "国家税务总局公告2026年第10号", "organ": "税务总局", "taxes": ["其他"], "lines": ["全品线"], "countries": ["中国"], "eff": 1777219200000, "site": "fgk法规库", "url": "https://fgk.chinatax.gov.cn/zcfgk/c100012/c5249429/content.html", "doc": "", "at": 1785676800000, "sum": ""},
+ {"id": "n7", "lv": "C", "score": 0.0, "cat": "其他", "title": "促进和规范电子单证应用规定", "no": "-", "organ": "其他", "taxes": ["其他"], "lines": ["全品线"], "countries": ["中国"], "eff": 1776355200000, "site": "税务总局(沪)", "url": "https://shanghai.chinatax.gov.cn/zcfw/zcfgk/swzsgl/202604/t480084.html", "doc": "", "at": 1785676800000, "sum": ""},
+ {"id": "p22", "lv": "C", "score": 0.0, "cat": "其他", "title": "关于调整部分能源资源行业企业城镇土地使用税政策的公告", "no": "财政部 税务总局公告2026年第22号", "organ": "财政部+税务总局", "taxes": ["土地使用税"], "lines": ["其他"], "countries": ["中国"], "eff": 1785072000000, "site": "fgk法规库", "url": "https://fgk.chinatax.gov.cn/zcfgk/c102416/c5251406/content.html", "doc": "", "at": 1785676800000, "sum": ""},
+ {"id": "p15", "lv": "C", "score": 5.0, "cat": "国际税收", "title": "国家税务总局关于离岸信托个人所得税有关征管事项的公告", "no": "国家税务总局公告2026年第15号", "organ": "税务总局", "taxes": ["个人所得税"], "lines": ["其他"], "countries": ["中国"], "eff": 1784812800000, "site": "fgk法规库", "url": "https://fgk.chinatax.gov.cn/zcfgk/c100012/c5251338/content.html", "doc": "", "at": 1785676800000, "sum": ""},
+ {"id": "p21", "lv": "C", "score": 5.0, "cat": "国际税收", "title": "财政部 税务总局关于离岸信托个人所得税有关事项的公告", "no": "财政部 税务总局公告2026年第21号", "organ": "财政部+税务总局", "taxes": ["个人所得税"], "lines": ["其他"], "countries": ["中国"], "eff": 1784812800000, "site": "fgk法规库", "url": "https://fgk.chinatax.gov.cn/zcfgk/c102416/c5251277/content.html", "doc": "", "at": 1785676800000, "sum": ""},
+ {"id": "t8142", "lv": "C", "score": 0.0, "cat": "其他", "title": "个税重回第三大税种原因揭晓", "no": "-", "organ": "其他", "taxes": ["个人所得税"], "lines": ["其他"], "countries": ["中国"], "eff": 1785331200000, "site": "出口退税网", "url": "http://taxrefund.com.cn/news/show-8142.html", "doc": "", "at": 1785676800000, "sum": ""},
+ {"id": "t8141", "lv": "C", "score": 0.0, "cat": "其他", "title": "为社保费征管“深化用数”提供支撑", "no": "-", "organ": "其他", "taxes": ["其他"], "lines": ["其他"], "countries": ["中国"], "eff": 1785331200000, "site": "出口退税网", "url": "http://taxrefund.com.cn/news/show-8141.html", "doc": "", "at": 1785676800000, "sum": ""},
+ {"id": "t8140", "lv": "C", "score": 0.0, "cat": "其他", "title": "强化户源管理：做好“开机9件事”", "no": "-", "organ": "其他", "taxes": ["其他"], "lines": ["其他"], "countries": ["中国"], "eff": 1785331200000, "site": "出口退税网", "url": "http://taxrefund.com.cn/news/show-8140.html", "doc": "", "at": 1785676800000, "sum": ""},
+ {"id": "t8139", "lv": "C", "score": 5.0, "cat": "其他", "title": "研发加码，电子信息制造业加速升级", "no": "-", "organ": "其他", "taxes": ["企业所得税"], "lines": ["3C"], "countries": ["中国"], "eff": 1785331200000, "site": "出口退税网", "url": "http://taxrefund.com.cn/news/show-8139.html", "doc": "", "at": 1785676800000, "sum": ""},
+ {"id": "t8138", "lv": "C", "score": 0.0, "cat": "其他", "title": "推动财税政策深度嵌入美丽中国建设", "no": "-", "organ": "其他", "taxes": ["环保税"], "lines": ["其他"], "countries": ["中国"], "eff": 1785331200000, "site": "出口退税网", "url": "http://taxrefund.com.cn/news/show-8138.html", "doc": "", "at": 1785676800000, "sum": ""},
+ {"id": "p20", "lv": "A", "score": 27.0, "cat": "消费税", "title": "关于调整部分电池消费税政策的公告", "no": "财政部 海关总署 税务总局公告2026年第20号", "organ": "财政部+税务总局", "taxes": ["消费税"], "lines": ["电池"], "countries": ["中国", "欧盟"], "eff": 1784236800000, "site": "fgk法规库", "url": "https://fgk.chinatax.gov.cn/zcfgk/c102416/c5251171/content.html", "doc": "https://my.feishu.cn/docx/LmxZdhPlaogi9HxPDuFcFUpgnMf", "at": 1785676800000, "sum": "电池品线核心政策，主要影响动力电池/储能电池；销项税负变化+出口退税联动；已有应对方案(方案_电池消费税及欧盟电池法规应对_20260731.md)"},
+ {"id": "c39", "lv": "A", "score": 20.4, "cat": "出口退税", "title": "财政部 税务总局关于调整平潭综合实验区有关增值税和消费税退税货物范围的通知", "no": "财税〔2026〕39号", "organ": "财政部+税务总局", "taxes": ["增值税", "消费税", "出口退税", "区域退税"], "lines": ["平潭综合实验区(条件性)"], "countries": ["中国"], "eff": 1744492800000, "site": "fgk法规库", "url": "https://fgk.chinatax.gov.cn/zcfgk/c102416/c5249017/content.html", "doc": "", "at": 1722720000000, "sum": "区域税收优惠：平潭'二线'退税货物范围调整。仅影响 公司 在平潭主体（若有）。内地经'二线'销往平潭与生产有关的货物视同出口，增值税+消费税退税；4 类排除（不适用退免税/商业地产/清单列名/被取消退税资格）。"},
+ {"id": "p13", "lv": "C", "score": 6.0, "cat": "其他", "title": "国家税务总局关于企业重组业务所得税处理有关征管问题的公告", "no": "国家税务总局公告2026年第13号", "organ": "税务总局", "taxes": ["企业所得税"], "lines": ["全品线"], "countries": ["中国"], "eff": 1752019200000, "site": "fgk法规库", "url": "https://fgk.chinatax.gov.cn/zcfgk/c100012/c5251155/content.html", "doc": "", "at": 1722720000000, "sum": "企业重组业务所得税征管规则调整：合并/分立业务特殊性税务处理一致同意机制、持股≥50% 股东达成一致可适用特殊性税务处理、持股≥5%/前十股东需一致、重组后 12 个月内不得转让股权。"},
+ {"id": "p6", "lv": "C", "score": 9.6, "cat": "增值税", "title": "国家税务总局关于调整增值税纳税申报有关事项的公告", "no": "国家税务总局公告2026年第6号", "organ": "税务总局", "taxes": ["增值税"], "lines": ["全品线"], "countries": ["中国"], "eff": 1738368000000, "site": "fgk法规库", "url": "https://fgk.chinatax.gov.cn/zcfgk/c100012/c5247507/content.html", "doc": "", "at": 1722720000000, "sum": "增值税纳税申报表填报考变化：调整一般纳税人/小规模纳税人/预缴表部分栏次填报要求，2026-02-01 起施行。配合《增值税法》落地的征管细节调整。"},
+ {"id": "p25", "lv": "B", "score": 12.48, "cat": "增值税", "title": "财政部 税务总局关于明确非应税交易等增值税有关事项的公告", "no": "财政部 税务总局公告2026年第25号", "organ": "财政部+税务总局", "taxes": ["增值税"], "lines": ["全品线"], "countries": ["中国"], "eff": 1788192000000, "site": "shui5", "url": "https://www.shui5.cn/article/d7/193373.html", "doc": "", "at": 1788192000000, "sum": "增值税法配套细化：明确6类非应税交易进项可抵扣（保险赔付/受赠/违约金/无偿服务/相关债权转让/不挂钩财政补贴）+4类不得抵扣（境外销售/股权转让/股息红利/货物期货）；折扣额开票口径、放弃优惠书面备案；废止6个旧文件。2026-09-01起施行，1-8月未处理事项按此执行。对跨境电商境内采购进项抵扣口径有直接影响，出口退免税政策无变化。"},
+ {"id": "p26", "lv": "C", "score": 0.0, "cat": "其他", "title": "财政部 税务总局 中国证监会关于规范转让上市公司限售股个人所得税政策的公告", "no": "财政部 税务总局 中国证监会公告2026年第26号", "organ": "财政部+税务总局+证监会", "taxes": ["个人所得税"], "lines": ["其他"], "countries": ["中国"], "eff": 1787932800000, "site": "fgk法规库", "url": "https://fgk.chinatax.gov.cn/zcfgk/c102416/c5252027/content.html", "doc": "", "at": 1788192000000, "sum": "限售股转让个税规范化：按财产转让所得20%税率；解禁后送转股纳入征税范围；取消按转让收入15%核定成本原值的做法。涉及股东/高管个人证券税务，与跨境电商出口业务无直接关联，仅监控。"},
+ {"id": "p36", "lv": "C", "score": 7.0, "cat": "关务海关", "title": "商务部关于公布对原产于美国、欧盟、台湾地区和日本的进口共聚聚甲醛反倾销措施相关企业税率继承决定的通知", "no": "商务部公告2026年第36号", "organ": "商务部", "taxes": ["海关关税(反倾销)"], "lines": ["其他"], "countries": ["中国", "美国", "欧盟"], "eff": null, "site": "其他", "url": "", "doc": "", "at": 1788192000000, "sum": "对原产于美国、欧盟、台湾地区和日本的进口共聚聚甲醛反倾销措施相关企业税率继承决定，影响该化工品进口成本；与跨境电商出口品线无关联，仅监控。"},
+ {"id": "p126", "lv": "A", "score": 22.4, "cat": "关务海关", "title": "海关总署关于公布有关电池产品对应海关商品编号的公告", "no": "海关总署公告2026年第126号", "organ": "海关总署", "taxes": ["消费税", "关税"], "lines": ["电池"], "countries": ["中国"], "eff": 1788192000000, "site": "海关总署", "url": "http://www.customs.gov.cn/customs/2026-08/31/article_2026083117474028145.html", "doc": "https://my.feishu.cn/docx/KI0ZdAoA7opvSvxwzwYckKFunzR", "at": 1788192000000, "sum": "财税20号电池消费税的申报配套，2026-09-01生效：电池产品进出口必须按新10位海关商品编号申报（如8541.4300拆出85414300.10钙钛矿/叠层/砷化镓光伏电池）。报错编号→报关退单+退税数据错配。行动：下载附件编号表比对现有SKU海关编码+报关行/ERP同步。"},
+ {"id": "n24", "lv": "B", "score": 16.0, "cat": "增值税", "title": "亚马逊欧洲站强制税务合规：9月1日起泛欧货件入欧盟仓须提供MRN和EORI", "no": "-", "organ": "其他", "taxes": ["增值税"], "lines": ["全品线"], "countries": ["欧盟"], "eff": 1788192000000, "site": "雨果网", "url": "https://www.cifnews.com/article/188625", "doc": "https://my.feishu.cn/docx/FlGsdFyZOoD1eRxeZr5cfp1Fnfb", "at": 1788326100000, "sum": "非欧盟泛欧卖家货件进入欧盟运营中心必须提供MRN+EORI，政策从法国扩至整个欧盟，60天未补齐账号将被锁定、无法发新货件；'双清包税'灰色清关路径被堵，包税历史越长的老卖家追溯风险越大。行动建议：立即梳理泛欧账号，与货代锁定MRN回传机制，重审物流合同，评估切换自税的成本影响（业内测算利润约降3.6个百分点）。"},
+ {"id": "n25", "lv": "B", "score": 13.0, "cat": "其他", "title": "亚马逊泛欧FBA强制扩容：9月3日起须同步荷兰站可售，否则退出Pan-EU", "no": "-", "organ": "其他", "taxes": ["其他"], "lines": ["全品线"], "countries": ["欧盟"], "eff": 1788364800000, "site": "其他媒体", "url": "https://shuaishou.com/school/infos84538.html", "doc": "https://my.feishu.cn/docx/N9XRdOK6foxueQxnL72cuYL5nof", "at": 1788326100000, "sum": "9月3日起所有泛欧FBA商品必须开通荷兰站活跃在售链接（比利时站2027年2月26日起强制），未同步ASIN将退出Pan-EU转EFN跨境配送，物流费用最高上涨53%、时效与Prime流量优势丧失；荷兰站还要求GPSR/EPR等合规文件齐全。行动建议：9月3日前用Build International Listings工具同步荷兰站SKU并补齐合规文件，同步核算德国/法国站库存配置新增费用。"},
+ {"id": "n26", "lv": "B", "score": 14.0, "cat": "其他", "title": "CPSC召回150万只OCOOPA充电暖手宝：1480起过热、1人死亡，涉亚马逊/沃尔玛", "no": "-", "organ": "其他", "taxes": ["其他"], "lines": ["电池"], "countries": ["美国"], "eff": 1785340800000, "site": "其他媒体", "url": "http://www.yayanews.ai/story/209669", "doc": "", "at": 1788326100000, "sum": "CPSC于7月30日召回150万只OCOOPA可充电暖手宝（UT3053/UT3056/ZLS-118等），累计1480起过热、350起烧伤、1人死亡，2018-2026年长期在亚马逊/沃尔玛在售；平台已转向售前监管（亚马逊危险品合规要求上架前提交UL 2054电池认证报告，费用约0.8-1.5万美元/款、周期60-90天）。行动建议：带电产品（尤其锂电）全面自查UL 2054/UN38.3认证与供应链测试报告，避免同类下架风险。"},
+ {"id": "n27", "lv": "C", "score": 7.0, "cat": "其他", "title": "CPSC扩大召回Cuisinart金属丝烧烤刷至360万只：54起金属丝脱落致伤，沃尔玛/亚马逊有售", "no": "-", "organ": "其他", "taxes": ["其他"], "lines": ["其他"], "countries": ["美国"], "eff": null, "site": "其他媒体", "url": "https://www.pennlive.com/news/2026/09/amazon-walmart-target-6-products-recalled-for-serious-safety-risks.html", "doc": "", "at": 1788326100000, "sum": "Conair扩大召回Cuisinart金属丝烧烤刷（新增约190万只、累计超360万只），金属刷丝易脱落混入食物造成误吞与内脏损伤（54起报告），2009年6月至2026年3月在沃尔玛、Burlington、亚马逊等渠道销售。行动建议：排查是否涉及同类金属丝品类SKU，关注CPSC渠道同步动态。"},
+ {"id": "p16", "lv": "A", "score": 25.0, "cat": "消费税", "title": "财政部 海关总署 税务总局关于跨境电子商务出口退运商品税收优惠政策的公告", "no": "财政部 海关总署 税务总局公告2026年第16号", "organ": "财政部+税务总局", "taxes": ["关税", "增值税", "消费税"], "lines": ["全品线", "出口业务"], "countries": ["中国"], "eff": 1767196800000, "site": "其他媒体", "url": "https://www.163.com/dy/article/L5OGBMB20556KOZH.html", "doc": "https://my.feishu.cn/docx/ZVrVdi0n7oe5b9xGxdlcPRqmnUb", "at": 1788428700000, "sum": "跨境电商退货重大利好（A级补录）：1210/9610/9710/9810项下申报出口商品因滞销/退货、自出口之日起6个月内原状退运进境（食品除外），免征进口关税及进口环节增值税、消费税，已征出口关税退还，执行期2026-01-01至2027-12-31。退货税费成本降至近'中性'（仅承担运费），已办出口退税的需补退税款、进项可转回抵扣；须满足'6个月内+原状+非食品+可验核商品标识'四条件，1210自出区离境起算且须退至境内区外。建议建立退运台账与证明留存，组合海关总署2026年第24号'9610跨关区退货'全国通办降低物流成本。"},
+ {"id": "p4", "lv": "B", "score": 13.0, "cat": "增值税", "title": "国家税务总局浙江省税务局关于开展增值税及附加税费申报试点的公告", "no": "国家税务总局浙江省税务局公告2026年第4号", "organ": "其他", "taxes": ["增值税"], "lines": ["全品线"], "countries": ["中国"], "eff": 1788192000000, "site": "其他媒体", "url": "https://zhejiang.chinatax.gov.cn/art/2026/9/1/art_8414_84599.html", "doc": "", "at": 1788428700000, "sum": "国家税务总局修订《增值税及附加税费申报表（试行）》后在浙江先行试点：2026年9月1日起浙江（不含宁波）部分增值税纳税人按'双轨验证、单轨运行、全面推广'试行新申报表（业务信息表+主表+5张附列资料，含未开票销售、加计抵减明细等，支持主管税务机关简化定制）。对在浙出口/经营主体的直接影响是申报表单与流程调整、试点期首个申报期须结转上期余额；对全国卖家属申报表改版预告，后续将全面推广，建议关注申报口径变化与电子税务局界面更新，试点期避免申报差错。"},
+ {"id": "n30", "lv": "B", "score": 16.0, "cat": "增值税", "title": "福建'阳光跨境服务平台'落地：9610出口无票免征增值税+企业所得税0.2%核定征收", "no": "-", "organ": "其他", "taxes": ["增值税", "企业所得税"], "lines": ["跨境零售"], "countries": ["中国"], "eff": 1788192000000, "site": "其他", "url": "", "doc": "", "at": 1788428700000, "sum": "福建省商务厅主导的'阳光跨境服务平台'正式运营（2026年9月初报道）：跨境电商9610出口商品增值税全额免征（无票免征），企业所得税按营业收入0.2%核定征收，已有约200家企业完成备案入驻，综合合规税负较传统模式下降约80%。对以9610小包直邮为主、采购端'有货无票'的中小卖家提供了低成本合规路径，直接降低增值税进项缺失与所得税负担；建议评估自身业务模式（9610申报、平台数据归集）与主体落地适配性，并关注该模式向其他跨境电商综试区复制的政策风向。"},
+ {"id": "n31", "lv": "B", "score": 10.0, "cat": "其他", "title": "美客多9月起调整卖家信誉计算规则：墨西哥60天门槛提至101单，多国切换365天考核周期", "no": "-", "organ": "其他", "taxes": ["其他"], "lines": ["全品线"], "countries": ["其他"], "eff": 1788883200000, "site": "雨果网", "url": "https://www.cifnews.com/article/188639", "doc": "", "at": 1788428700000, "sum": "美客多（Mercado Libre）调整卖家信誉（Reputación）计算规则：进入60天短周期考核的订单量门槛大幅提高（墨西哥由40单升至101单），未达门槛店铺改按过去365天数据计算信誉，365天周期下取消订单/配送异常等'受影响销售'允许比例调整（投诉率标准不变）；智利8月31日已生效，墨西哥/哥伦比亚/乌拉圭/秘鲁9月9日、巴西9月10日、阿根廷9月14日当周切换。对单量未达门槛的新店与中小卖家，历史异常订单影响期拉长，店铺曝光与流量承压；建议控制取消率、配送异常与投诉率，分站点核对考核周期（各国门槛不同，勿套用墨西哥标准）。"},
+ {"id": "n32", "lv": "B", "score": 13.0, "cat": "增值税", "title": "亚马逊对香港主体卖家发起两轮'主要营业地址'验证：限期未完成将扣留欧盟及英国站点付款", "no": "-", "organ": "其他", "taxes": ["增值税"], "lines": ["全品线"], "countries": ["欧盟"], "eff": 1787932800000, "site": "雨果网", "url": "https://www.cifnews.com/article/188620", "doc": "https://my.feishu.cn/docx/K1zQdEOFmoOTnzx4ysmcYsLXn0e", "at": 1788428700000, "sum": "亚马逊对香港主体卖家发起两轮'主要营业地址'验证（8月中一轮+8月29日最新一轮）：最新一轮要求10月14日前完成核验，否则欧盟及英国站点付款被扣留，10月28日仍未完成将移除销售权限；审核要求'公司—地址—时间'三向一致的证据链（公司名义租赁合同+厘印、公用事业账单等），秘书公司虚拟/共享地址基本无法通过，集群挂靠易触发多店铺关联与资金冻结风险。对依赖香港公司+秘书地址运营欧盟站卖家是硬性合规门槛：建议立即盘点主体注册地址真实性，能补证的尽早补交，无法证明的评估主体迁移或站点结构调整，避免Q4旺季前付款扣留与权限移除。"},
+ {"id": "n33", "lv": "B", "score": 12.0, "cat": "其他", "title": "安克创新披露2026年半年报：Q2净利同比+83%，IEEPA关税退回约10.5亿元增厚毛利", "no": "-", "organ": "其他", "taxes": ["关税"], "lines": ["3C"], "countries": ["美国"], "eff": null, "site": "其他媒体", "url": "https://data.eastmoney.com/notices/detail/300866/AN202609031828945440.html", "doc": "", "at": 1788428700000, "sum": "跨境电商龙头安克创新（300866）上市公司披露（9月1-2日）：2026H1营收166.05亿元(+29.05%)、归母净利17.02亿元(+45.86%)，Q2单季营收89.97亿元(+30.90%)、归母净利12.30亿元(+83.33%)；业绩高增含IEEPA关税退回约10.46亿元冲减营业成本（H1税费返还14.47亿元、同比多增6.89亿元），公司确认收到部分以前年度缴纳的美国IEEPA关税退回，剔除后经营利润仍同比正增长。信号意义：①美国IEEPA关税存在实际退回通道，出口企业应核查自身历史缴纳记录是否具备申请退回条件；②龙头应对策略（供应链向东南亚柔性布局、开拓低关税风险新兴市场、高附加值提价）可供中小卖家参考；③北美收入75.64亿元(+32.70%)显示对美市场韧性仍强。"},
+ {"id": "n34", "lv": "B", "score": 14.0, "cat": "其他", "title": "美国FCC将'外国产先进机器人'列入受限清单：扫地机器人等新品无法获授权进入美国", "no": "-", "organ": "其他", "taxes": ["其他"], "lines": ["3C"], "countries": ["美国"], "eff": 1785168000000, "site": "其他媒体", "url": "https://techtimes.com/articles/326057/20260831/fcc-banned-chinese-robot-vacuum-brands-pivot-ifa-2026-eu-buyers-face-same-intel-law-risk.htm", "doc": "", "at": 1788428700000, "sum": "美国FCC依据国家安全机构2026年7月28日决定，将'外国产先进机器人设备'（地面移动式、整机含基座>4.4磅、具备自主移动+感知+联网，涵盖扫地机器人/割草机器人/泳池清洁机器人/四足机器人等）及联网电力逆变器列入受限清单（Covered List）：新品无法获得FCC设备授权，即禁止进口与在美销售；已获认证存量型号可继续销售与更新（机器人至2029年1月），中国品牌（石头、科沃斯、追觅、小米、云鲸等占全球扫地机约7成份额）新一代产品进入美国受阻，需申请豁免并承诺在美生产或供应链披露（8月20日逆变器定义收窄）。卖家影响：在售已认证款可继续运营、迭代新品无法合规上架，建议跟踪品牌豁免进展与认证型号清单，避免采购无法入美的新款，同时留意该机制后续品类扩展与欧洲市场连带影响。"},
+ {"id": "n35", "lv": "B", "score": 12.0, "cat": "其他", "title": "美国CBP 9月18日起强化进口商记录(IOR)核验：信息不符将作废IOR号码影响清关", "no": "-", "organ": "其他", "taxes": ["其他"], "lines": ["全品线"], "countries": ["美国"], "eff": 1789660800000, "site": "其他媒体", "url": "https://new.qq.com/rain/a/20260901A03VTP00", "doc": "https://my.feishu.cn/docx/GwP2d0HoBoPgqfxI89qcjn8tnSh", "at": 1788428700000, "sum": "美国海关与边境保护局（CBP）自9月18日起全面加强进口商记录（IOR）信息核验：CBP Form 5106所载信息不完整、不准确或无法核实的企业，IOR号码可能被直接作废，将无法继续使用该号码办理美国进口清关并面临进一步执法（公告8月19日刊登于联邦公报，9月初外贸媒体集中提示）。对以自有或第三方IOR清关的对美出口卖家与货代：需在9月18日前核对5106表公司名称/地址/税号与实际一致，使用代理IOR的确认服务方合规可靠，避免旺季前清关资格被卡引发滞港与货权风险；建议与美方进口商/报关行逐票核对IOR信息并留存证据。"},
+ {"id": "n36", "lv": "B", "score": 17.0, "cat": "其他", "title": "外媒：美拟在9月24日中美峰会前依301条款对华商品再加征7.5%“产能过剩”关税（叠加后替代性关税逼近20%上限）", "no": "-", "organ": "其他", "taxes": ["关税"], "lines": ["全品线"], "countries": ["美国"], "eff": 1790179200000, "site": "其他媒体", "url": "https://hk.crntt.com/doc/93_19311_107228327_1.html", "doc": "https://my.feishu.cn/docx/ZLwHdUwB1ovF3OxD95acbBhYnVg", "at": 1788488460000, "sum": "核心事件：据彭博报道，美政府计划在9月24日中美元首会晤前，依据1974年贸易法301条款以“产能过剩”为由对华商品再加征7.5%关税，叠加现有强迫劳动301关税12.5%后“替代性关税”合计约20%，触及双边承诺上限；具体税率与商品清单未定，白宫称该报道为猜测，我商务部8/27已回应将保留必要措施权利。影响预判：一旦落地，对美出口全品类将再增约7.5pct关税成本（叠加既有301后综合税负更高），机电、纺织服装、家居等主力品类首当其冲；建议在正式公告前对新订单设置关税变动条款、控制9月下旬发货节奏，并按“7.5%落地/暂缓”两情景重算报价与备货。"},
+ {"id": "n37", "lv": "B", "score": 19.0, "cat": "其他", "title": "美国无人机Section 232关税9月3日正式生效：>25kg/热成像/停机舱100%、消费级25%，与301叠加", "no": "-", "organ": "其他", "taxes": ["关税"], "lines": ["3C"], "countries": ["美国"], "eff": 1788364800000, "site": "其他媒体", "url": "https://pickdrones.com/us-drone-tariffs-take-effect-2026", "doc": "https://my.feishu.cn/docx/I65tdFhzroz5ToxpB9XcCfaTnAe", "at": 1788488460000, "sum": "核心事件：美依据1962年贸易扩展法232条款对进口无人机及关键组件加征关税于美东9月3日0:01正式生效——起飞重量>25kg、集成热成像、无人机停机舱及部分关键组件按100%从价税，≤25kg无热成像消费级按25%，部分零部件2027年2月9日起再加征，欧盟/日韩等享10-15%上限优惠；以进入美国消费市场时间为判定节点。影响预判：中国占全球商用无人机七成份额，涉无人机整机及配件（含跨境3C卖家）成本将阶梯式抬升且需与既有301/基础关税叠加，低毛利订单易整单亏损；应立即核对HTS归类、整机与零部件分开申报，重算报价并评估海外组装/第三国出货路径。"},
+ {"id": "n38", "lv": "B", "score": 16.0, "cat": "其他", "title": "巴西50美元以下跨境小包零关税临时政策9月8日到期：国会本周表决，未通过则9月9日自动恢复20%进口税", "no": "-", "organ": "其他", "taxes": ["关税"], "lines": ["跨境零售"], "countries": ["其他"], "eff": 1788796800000, "site": "其他媒体", "url": "https://www.amz123.com/kx/9j50pVmw", "doc": "https://my.feishu.cn/docx/JIQ7djchQoxYzfxbszVcMNIqnLg", "at": 1788488460000, "sum": "核心事件：巴西总统卢拉5月签署临时措施(MP 1.357/2026)将50美元以下跨境小包联邦进口税(俗称“小衬衫税”)降至0%，该措施9月8日到期，国会8/31-9/4集中表决是否立法延续；若未通过，9月9日起自动恢复20%联邦进口税（Remessa Conforme框架下ICMS州税17-20%仍照常征收，含税成本将回到约35-40%）。影响预判：面向巴西的Shein/Shopee/速卖通等平台卖家与直邮小包模式，若恢复征税，低价引流款成本优势被大幅压缩；建议本周按“延续免税/恢复20%”双情景重做定价与备货预案，控制9月8日后到港库存与广告投入节奏。"},
+ {"id": "n39", "lv": "B", "score": 14.0, "cat": "其他", "title": "CPSC于9月3日通报召回Truststone XO Poppy磁吸无线充电宝3.24万台：锂电过热起火风险（TJX/Marshalls渠道）", "no": "-", "organ": "其他", "taxes": ["其他"], "lines": ["电池"], "countries": ["美国"], "eff": 1788364800000, "site": "CPSC", "url": "https://www.cpsc.gov/Recalls", "doc": "", "at": 1788488460000, "sum": "核心事件：美CPSC于9月3日公告召回Truststone Group的XO Poppy Power Trip磁吸无线充电宝约32,400台（仅TJX/Marshalls门店销售）：内置锂离子电池可过热起火，存在火灾与烧伤风险，提供全额退款（虚拟礼品卡）；此前欧洲TJX渠道5月亦曾因内部线缆固定缺陷召回同系产品。影响预判：磁吸无线充电宝/移动电源属锂电高敏品类，叠加Casely等同类连续召回，美方对无线充电类热失控零容忍且监管趋严；提醒相关3C/电池卖家自查同类SKU的UL/UN38.3等电池认证、温控设计与批次质检留痕，主动下架风险批次并评估产品责任险，避免连锁传导至平台下架。"},
+ {"id": "n40", "lv": "B", "score": 10.0, "cat": "其他", "title": "eBay 9月24日起全球禁售独立安全气囊/充气装置/方向盘气囊盖（新品二手修复件均禁，约30天合规缓冲）", "no": "-", "organ": "其他", "taxes": ["其他"], "lines": ["其他"], "countries": ["美国"], "eff": 1790179200000, "site": "其他媒体", "url": "https://new.qq.com/rain/a/20260902A03LHG00", "doc": "", "at": 1788488460000, "sum": "核心事件：eBay于8月25日发布汽车配件类目政策更新：自9月24日起在全球范围禁售独立安全气囊、气囊充气装置(气体发生器)及方向盘气囊盖，新品/二手/修复件均在禁列，源自NHTSA对DTN60DB等充气装置缺陷（已致至少10死）的调查；逾期未处置商品将由平台强制下架。影响预判：跨境汽配卖家须在9/24前清理在售/定时/草稿相关Listing，反复重上架将触发销售权限受限；此禁令释放平台安全件合规收紧信号，亚马逊、沃尔玛或跟进，无认证翻新件/拆车安全件的跨境生存空间将进一步收窄，合规资质与溯源能力成为汽配出海核心竞争力。"},
+ {"id": "n41", "lv": "B", "score": 12.0, "cat": "其他", "title": "欧洲港口罢工潮：德国汉堡等港9月2日起48小时罢工，荷兰鹿特丹/阿姆斯特丹/泽兰9月4日停装近8小时", "no": "-", "organ": "其他", "taxes": ["其他"], "lines": ["全品线"], "countries": ["欧盟"], "eff": 1788451200000, "site": "其他媒体", "url": "https://trans.info/en/dutch-port-strike-499990", "doc": "", "at": 1788488460000, "sum": "核心事件：北欧主要港口本周出现罕见同期罢工——德国汉堡/不来梅/威廉港等9月2日晚起48小时警告性罢工（ver.di与资方薪资谈判破裂），荷兰鹿特丹、阿姆斯特丹、泽兰港区9月4日11:15-19:00全国性罢工停装（装卸、系固、拖轮、货检均停），叠加莱茵河低水位内河驳船等待已约60小时，港口预计影响需1-2周消化。影响预判：欧线头程时效、船期与滞港成本短期承压，发往德/荷及经欧洲分拨的货物建议预留缓冲期、考虑港区/船司改港分流；及时与货代确认截港与舱位变化，并对客户订单交付期加入不可抗力/延误沟通预案。"},
+ {"id": "n42", "lv": "B", "score": 12.0, "cat": "其他", "title": "Victoria's Secret披露Q2获超1.4亿美元IEEPA关税退款（占已缴95%以上）并上调全年指引", "no": "-", "organ": "其他", "taxes": ["关税"], "lines": ["服装"], "countries": ["美国"], "eff": 1788364800000, "site": "其他媒体", "url": "https://www.sec.gov/Archives/edgar/data/1856437/000185643726000019/ex991vsxyq22026earningsrel.htm", "doc": "", "at": 1788488460000, "sum": "核心事件：Victoria's Secret 9月3日发布2026Q2业绩（营收+10%至16.11亿美元），披露当季收到超1.4亿美元IEEPA关税退款、占其已缴IEEPA关税95%以上，叠加组织调整后上调全年销售与经调整经营利润指引；此为继安克创新之后又一大型进口商获IEEPA关税大额退回的实证。影响预判：印证美方IEEPA（2025年对等关税）退款机制已大规模落地执行，对以自税/自营进口身份清关的中国跨境卖家是明确利好信号——可核查历史已缴IEEPA关税是否符合退回条件并尽快启动申请；同时美国进口商现金流回补，利于后续对美订单的价格谈判与旺季补库节奏安排。"},
+ {"id": "n43", "lv": "B", "score": 17.0, "cat": "其他", "title": "巴西国会两院通过临时措施MP 1.357/2026：US$50以下跨境小包进口税归零永久化，US$50-3000档由60%降至30%（待总统签署）", "no": "MP 1.357/2026", "organ": "其他", "taxes": ["关税"], "lines": ["跨境零售"], "countries": ["其他"], "eff": 1788364800000, "site": "其他媒体", "url": "https://bricscompetition.org/news/brazil-congress-scraps-20-import-tax-on-online-buys-up-to-us50", "doc": "https://my.feishu.cn/docx/A4NkdCAW8o1jV3xVF3wcLEZMnyg", "at": 1788752700000, "sum": "核心事件：巴西国会9月3日两院象征性表决通过MP 1.357/2026（俗称“小衬衫税”临时措施），将US$50以下跨境网购包裹20%进口税（2024年开征、2026年5月起被临时措施暂停）正式归零并永久化，同时将US$50-3000档进口税率由60%降至30%；文本已送卢拉总统签署，原定9月8日失效的临时措施经表决延续，避免9月9日自动恢复20%征税。影响预判：①对出口巴西的跨境卖家与美客多巴西站是确定性利好——直邮小包20%进口税不再恢复（州ICMS 17-20%仍征收），US$50-3000高货值段税率近腰斩，抬升可售客单价天花板，定价与毛利空间扩大；②法案含定期影响评估（首次约3个月后，此后每6个月一次）及财政部按平台合规度差异化调税授权，Remessa Conforme合规申报地位更关键，走非合规渠道的卖家/平台恐面临优惠被收回；③巴西与欧盟（7月对小包加征3欧元关税）低值包裹税政方向分化，多市场税负差异需纳入定价与备货模型。"},
+ {"id": "n44", "lv": "B", "score": 11.0, "cat": "其他", "title": "商务部敦促法国停止实施“反超快时尚法”：对超快时尚纺织品单件加征0.25-12欧元环保费（2030年升至2-20欧元），中方指违背WTO非歧视原则", "no": "-", "organ": "其他", "taxes": ["其他"], "lines": ["服装"], "countries": ["欧盟"], "eff": 1788192000000, "site": "其他媒体", "url": "https://www.china.org.cn/2026-09/04/content_118680086.shtml", "doc": "", "at": 1788752700000, "sum": "核心事件：法国“反超快时尚”法9月初正式生效：以年新品上新量与维修引导度界定“超快时尚”，对服装/鞋/家用纺织品单件征收环保附加费0.25-12欧元（2030年升至2-20欧元、上限为税前价50%），并禁止广告与网红推广、要求外国卖家在法指定代表，违规最高罚10万欧元；欧盟/挪威/列支敦士登/冰岛设立企业豁免。中国商务部发言人黄玲9月3日例行发布会表示强烈不满与坚决反对，指该法假借环保标准行双重标准、涉嫌违反WTO非歧视原则，9月4日新华社报道中方敦促法方“立即停止实施”、否则将采取必要措施——系中国官方对欧盟成员国单一电商立法的最强硬表态。影响预判：①对法国/欧盟低价快时尚（Shein/Temu/速卖通上中国服装卖家）是直接成本与合规双重冲击：单件0.25-12欧元环保费叠加欧盟7月起3欧元/件小包关税，低单价服装毛利被系统性压缩，须重算定价并落实法国代表与Refashion申报义务；②中欧纺织品贸易摩擦升级信号增强，欧盟11月小包处理费落地前，建议涉欧服装卖家加快海外仓/本地化与品牌化布局、留存面料溯源与环保标识证据；③司品线（汽车工具/小家电）非直接受该法约束，但需警惕欧盟以环保/可持续名义设歧视性税费的模式向其他品类外溢。"},
+ {"id": "n45", "lv": "B", "score": 10.0, "cat": "其他", "title": "越南9月5日起禁止进口全部或部分由强迫劳动生产的商品（Decree 292/2026/ND-CP）：替代2018年69号令，供应链劳工合规入法", "no": "Decree 292/2026/ND-CP", "organ": "其他", "taxes": ["其他"], "lines": ["全品线"], "countries": ["其他"], "eff": 1788537600000, "site": "其他媒体", "url": "https://en.baochinhphu.vn/outstanding-policies-take-effect-from-september-2026-111260830142959128.htm", "doc": "", "at": 1788752700000, "sum": "核心事件：越南政府7月22日签发、9月5日生效的Decree 292/2026/ND-CP（实施《对外贸易管理法》细则，替代Decree 69/2018），在禁止进口清单中新增“禁止进口全部或部分由强迫劳动开采/生产/制造的货物”，按越南缔约国际条约指向相关企业/国家/地区，须待主管部门发布具体商品与HS编码清单后逐项执行（截至9月初清单尚未发布）。该法被视为越南配合美方USTR 301强迫劳动调查（越南被加12.5%关税）并履行CPTPP/EVFTA劳工承诺的立法动作。影响预判：①在越南有采购/加工/转口链路（暂进再出、加工贸易、CFS等）的跨境卖家须升级供应链尽调：建立工厂级溯源档案（采购订单、发票、装箱单、实际生产地址），向供应商索取非强迫劳动书面声明，合同写入合规保证与记录查阅权，避免到货被扣或清关受阻；②与美欧强迫劳动进口管制（美国可反驳推定、欧盟2027年12月适用）同源，一套“供应商+工厂+原料”三层合规档案可多市场复用；③司品线若含越南代工环节（工具/小家电产能外移）需优先核查实际生产方劳工用工合规。"},
+ {"id": "n46", "lv": "B", "score": 13.0, "cat": "其他", "title": "亚马逊德国站Prime时效门槛9月7日收紧：≤1天妥投占比需≥15%、≤2天≥50%，FBA/FBM/自营统一考核", "no": "-", "organ": "其他", "taxes": ["其他"], "lines": ["全品线"], "countries": ["欧盟"], "eff": 1788710400000, "site": "其他媒体", "url": "https://sellercentral.amazon.es/help/hub/reference/external/GQHQGBTD7XB7EECN", "doc": "", "at": 1788752700000, "sum": "核心事件：亚马逊9月7日起更新德国站Prime资格标准：FBA、FBM与自营的标准尺寸及低价国内商品须达到配送承诺速度分布——≤1天妥投15%（原10%）、≤2天50%（原45%）、≤4天80%（不变），未达标商品将失去Prime标记与相应流量权重（卖家中心官方“2026计划政策变更”页面）。影响预判：①德国站卖家今日起需复核配送绩效：FBA卖家要关注仓库实际妥投时效与欧洲库存分布（单仓集中易拉长配送距离），FBM卖家需评估本地仓/合作承运商妥投率，避免Prime权益被收回影响黑五/圣诞旺季流量；②时效门槛属平台绩效类软合规，不直接产生税负，但决定旺季流量入口，建议纳入Q4运营SOP绩效监控；③叠加7月FBM准时送达率(OTDR 90%)与9月30日营业时间送达率(BHDR 90%)考核，平台履约标准整体趋严，欧洲“FBA+海外仓”混合履约或成标配。"},
+ {"id": "n47", "lv": "B", "score": 12.0, "cat": "其他", "title": "欧盟《网络弹性法案》(CRA)首项强制义务9月11日生效：联网产品漏洞/事件24-72小时报告义务，覆盖欧盟在售存量产品", "no": "Regulation (EU) 2024/2847", "organ": "其他", "taxes": ["其他"], "lines": ["3C"], "countries": ["欧盟"], "eff": 1789056000000, "site": "其他媒体", "url": "https://www.crowell.com/en/insights/client-alerts/eu-cyber-resilience-act-countdown-11-september-2026-incidentvulnerability-reporting-deadline-is-less-than-100-days-away", "doc": "https://my.feishu.cn/docx/VOy2dvf0yoWwThxftktcMUxUnvd", "at": 1788752700000, "sum": "核心事件：欧盟网络弹性法案（Regulation (EU) 2024/2847，2024年12月10日生效）第14条报告义务于2026年9月11日率先强制适用：凡在欧盟市场投放“带数字元素产品”（智能家居/联网小家电/IoT/可穿戴/APP等）的境内外制造商，知悉被积极利用的漏洞或重大安全事件须24小时内预警、72小时内经单一报告平台(SRP)完整通报欧盟CSIRT/ENISA，且覆盖法案全面适用前已售的存量产品；其余主要产品安全义务（CE标识纳入网络安全、漏洞全生命周期修复）于2027年12月11日全面适用。影响预判：①出口欧盟的智能/联网小家电、带蓝牙WiFi的3C及工具类产品（智能电源、联网温控等）须在9月11日前建立漏洞接收-评估-上报流程（明确责任人、SRP账号与24/72小时通报时限），否则面临市场监督执法风险；②义务溯及存量已售产品，制造商须与ODM/OEM在合同中约定漏洞通报与修复责任划分，保留固件/软件版本记录；③CE标识内涵扩展至网络安全，2027年底前须完成产品安全文档、风险评估与漏洞修复机制建设，建议提前规划避免集中合规成本。"},
+ {"id": "n48", "lv": "B", "score": 13.0, "cat": "其他", "title": "亚马逊9月30日起将产品捆绑政策扩展至大多数品类：捆绑Listing须为原厂/品牌方出厂配置，违规或被抑制", "no": "-", "organ": "其他", "taxes": ["其他"], "lines": ["全品线"], "countries": ["美国"], "eff": 1790697600000, "site": "其他媒体", "url": "https://sellercentral.amazon.com/gp/help/external/GQHQGBTD7XB7EECN?pageName=US%3ASC%3ATrim-gp%2Fhelp%2Fexternal%2FGQHQGBTD7XB7EECN", "doc": "", "at": 1788752700000, "sum": "核心事件：亚马逊在“2026计划政策变更”页更新捆绑政策：自9月30日起将原适用于消耗品品类的捆绑要求扩展至大多数品类——捆绑商品必须是原厂/品牌方按出厂配置包装，禁止卖家自行拼装不同品牌或来源商品的“套装”；违规Listing将被抑制（邮件+账户状况面板通知），例外仅限礼品篮浏览节点、相机类目捆绑及持有品牌方授权函的情形。影响预判：①做组合销售/配件捆绑（工具套装附赠件、电器配线材支架等）的卖家须在9/30前自查：非原厂捆绑的ASIN宜拆分售卖或取得品牌授权函，避免大促前Listing被抑制造成旺季断流；②与7/27标题75字符、9/30营业时间送达率等规则同期密集调整，建议统一在9月底前完成Listing合规整改窗口操作；③释放“正品+原厂配置”监管信号，非官方捆绑的长期流量与转化将受压，自有品牌卖家应主动设计官方套装SKU承接需求。"},
+ {"id": "n49", "lv": "B", "score": 10.0, "cat": "其他", "title": "亚马逊物流公布2026美国旺季需求附加费方案（10/25-2027/1/16征收）：峰值档每件0.75美元、大包裹117.5/超重590美元", "no": "-", "organ": "其他", "taxes": ["其他"], "lines": ["全品线"], "countries": ["美国"], "eff": 1792857600000, "site": "其他媒体", "url": "https://caifuhao.eastmoney.com/news/20260907094321782233690", "doc": "", "at": 1788752700000, "sum": "核心事件：亚马逊物流(Amazon Shipping)9月2日公布2026年美国旺季需求附加费方案，征收期2026/10/25-2027/1/16：常规档（10/25-11/21、12/27-1/16）每件包裹0.50美元+额外手续费8.75美元+大包裹96.25美元+超重530美元；峰值档（11/22-12/26）上浮至0.75/11.90/117.50/590美元，整体费率较2025年明显提升，系面向全企业开放物流服务后首度开征旺季附加费。影响预判：①美线卖家Q4物流成本确定性上升：峰值期单件附加费上调约50%，叠加美线海运涨价（美东40HQ现货运价突破8500美元/FEU）与港口拥堵（上海/宁波等泊7-11天），旺季备货预算建议按附加费+运费双上浮10-15%测算；②峰值档恰覆盖黑五网一补货高峰，建议提前锁定舱位与海外仓库容、错峰发货，或将成本传导至售价/促销折扣设计；③财务端需在10月前完成Q4单件履约成本模型更新，逐SKU重算毛利底线，避免旺季冲量反被物流费侵蚀利润。"},
+ {"id": "n50", "lv": "B", "score": 10.0, "cat": "其他", "title": "加拿大9月8日起对700余种美国商品加征15%/25%/50%三档反制关税（总额276亿加元），美加贸易摩擦升级", "no": "-", "organ": "其他", "taxes": ["其他"], "lines": ["全品线"], "countries": ["其他"], "eff": 1788796800000, "site": "雨果网", "url": "https://www.cifnews.com/article/188551", "doc": "", "at": 1788832800000, "sum": "【事件】加拿大自9月8日凌晨对约700类美国商品正式落地反制关税，总规模276亿加元（约200亿美元），按15%/25%/50%三档与美方征税一一对应，覆盖钢铁铝（部分由25%上调至50%）、服装、家具、家电、电子、美妆、乳制品等；美方同步宣布2027年1月起将加拿大汽车关税提至50%。【影响】①不对中国商品直接加税，但做美加跨区调货、或在加销售美产/经美采购货源的卖家，进口成本与清关复杂度上升，需按原产地重核关税编码；②中国直发加拿大（原产中国）暂不受影响，但贸易摩擦下加方清关查验趋严、物流时效波动，旺季备货需留缓冲；③美加两线卖家建议拆分货源归属、评估加拿大本地仓替代，并关注加方是否升级涉华审查。【行动建议】Q4前完成北美路线成本重测，与货代确认加方税率适用口径与报关资料要求。"},
+ {"id": "n51", "lv": "B", "score": 13.0, "cat": "其他", "title": "SHEIN(00625.HK)港股上市首周跌超两成、市值蒸发超400亿港元：低价直邮模式遭遇全球免税退潮重估", "no": "-", "organ": "其他", "taxes": ["其他"], "lines": ["服装"], "countries": ["中国"], "eff": 1788710400000, "site": "其他媒体", "url": "https://finance.ce.cn/stock/gsgdbd/202609/t20260907_3198595.shtml", "doc": "", "at": 1788832800000, "sum": "【事件】SHEIN于9月1日在港交所上市（发行价48.56港元、募资约132亿港元、对应市值约263-270亿美元，较2022年近千亿峰值缩水逾七成），首日短暂破发后持续阴跌，截至9月4日最低37.84港元，首周累计跌超20%，总市值蒸发逾400亿港元，基石投资者悉数浮亏；2026Q1营收增速仅1.1%并录得净亏损。招股书与市场分析将主因指向法国反超快时尚法（单件0.25-20欧元环保费）、欧盟取消150欧元免税（7月起对低值包裹征3欧元税）与美国取消800美元小额免税对低价直邮模式的挤压。【影响】①对依赖低价直邮的中国跨境卖家是标志性估值信号：靠免税红利+直邮小包摊低成本的模式红利期已结束，海外仓与本地化履约成为必选项；②服装/快时尚卖家需把欧盟关税与法国环保费计入单件成本重算毛利；③行业融资与估值锚整体下移，经营重心应从规模叙事转向现金流与合规成本内化。【行动建议】欧美市场定价模型切换为含税口径，对小包与海外仓双轨利润分别测算后再定备货结构。"},
+ {"id": "n52", "lv": "B", "score": 12.0, "cat": "其他", "title": "21世纪经济报道9月7日：12家跨境电商上市公司半年考——IEEPA关税退税与海外仓切换成利润主线，直邮红利消退", "no": "-", "organ": "其他", "taxes": ["其他"], "lines": ["出口业务"], "countries": ["美国"], "eff": 1788710400000, "site": "其他媒体", "url": "https://finance.eastmoney.com/a/202609073866880784.html", "doc": "", "at": 1788832800000, "sum": "【事件】9月7日21世纪经济报道复盘12家跨境上市公司2026半年报：多数营收双位数增长且净利增速快于营收；安克创新H1营收166.05亿元(+29.05%)、归母净利17.02亿元(+45.86%)，上半年税费返还14.47亿元(同比+6.89亿元)，主要为上年度IEEPA关税退回冲减成本，毛利率49.82%同比+5.09pct；致欧科技已收美国关税退税款及利息合计1263.94万美元；巨星科技Q2获1000万美元退税。美国取消小额免税、欧盟7月取消150欧元低值包裹免税后，直邮红利消退、海外仓从可选项变必选项。【影响】①关税退税属一次性财务性增厚，多家公司已提示，下半年利润延续取决于主业，预算勿按退税口径线性外推；②尚未申请IEEPA退回的企业可梳理在美缴税记录、咨询税务/清关代理评估追索路径（注意时效与举证）；③模式切换不可逆：海外仓备货占用资金周期拉长，库存周转与资金管理能力成为竞争分水岭。【行动建议】财务侧将退税等非经常性损益单独核算，运营侧按海外仓链路重排Q4备货与资金计划。"},
+ {"id": "n53", "lv": "B", "score": 12.0, "cat": "其他", "title": "春风动力9月7日公告：子公司收到美国IEEPA关税及利息退回5403.24万美元（约3.66亿元），预计影响2026年净利约2.56亿元", "no": "-", "organ": "其他", "taxes": ["其他"], "lines": ["出口业务"], "countries": ["美国"], "eff": 1788710400000, "site": "其他媒体", "url": "https://new.qq.com/rain/a/20260908A03MU700", "doc": "", "at": 1788832800000, "sum": "【事件】春风动力(603129)9月7日披露，子公司收到美国依据最高法院2月IEEPA关税违宪裁定退回的关税及利息5403.24万美元（折合约3.66亿元），预计影响2026年度净利润约2.56亿元、占最近一期经审计净利润约15.31%，退款冲减成本。【影响】①IEEPA退税案例已从消费电子（安克）、纺织零售（Victoria's Secret）扩散到出行装备制造，说明该退款通道对2023-2025年实际缴纳过对华IEEPA附加关税的在美进口链条普遍适用，美国市场收入占比高的出口企业应系统梳理历史缴税记录评估可追回金额；②会计上冲减营业成本/计入当期损益会显著改善表观毛利，内部预算与对外披露均需区分一次性与经常性收益。【行动建议】财务牵头梳理在美清关的IEEPA附加税缴纳台账，通过美国进口商主体评估退税申报可行性、时效与举证要求。"},
+ {"id": "n54", "lv": "B", "score": 11.0, "cat": "其他", "title": "沃尔玛WFS官方提醒：黑五网一与12月大促货件最晚9月15日入库（10月大促入库已于9月1日截止），同期开放品牌门户三类新申请场景", "no": "-", "organ": "其他", "taxes": ["其他"], "lines": ["跨境零售"], "countries": ["美国"], "eff": 1789401600000, "site": "其他媒体", "url": "https://www.walmartmarketplace.cn/rediansudi/newsletter-wfs-peak-season-pro-seller-ai", "doc": "", "at": 1788832800000, "sum": "【事件】沃尔玛全球电商（中国）官方发布WFS旺季备货提醒：10月大促(October Event)入库已于9月1日截止；年度大促与黑五网一(Annual Event & BFCM)、12月大促(December Event)货件最晚须9月15日前抵达沃尔玛FC/ICC仓，用沃尔玛头程WI的卖家按启运港不同需更早订舱；同期WFS上线Pro Seller AI智能洞察，品牌门户开放待审核商标、暂无卖家账号、授权经销商三类新申请场景。【影响】①WFS卖家错过9/15入库窗口将失去黑五/网一/12月大促的现货与大促资格，当前仅剩约1周，需立即锁定舱位与货好日期；②品牌门户向授权经销商与待审核商标开放，为贸易型卖家提供品牌备案新路径，利好小家电/工具类卖家推进品牌化；③WI订舱需按启运港-目的港差异预留物流缓冲。【行动建议】9月15日前完成黑五主力SKU发运并同步核查WFS库存健康度与品牌备案材料。"},
+ {"id": "n55", "lv": "B", "score": 19.0, "cat": "其他", "title": "欧盟理事会正式批准海关法典里程碑式改革：非欧盟电商平台将被视为进口商（承担清关与关税责任），11月起征收统一小包裹处理费", "no": "-", "organ": "其他", "taxes": ["关税"], "lines": ["跨境零售"], "countries": ["欧盟"], "eff": 1788364800000, "site": "其他媒体", "url": "https://www.consilium.europa.eu/en/press/press-releases/2026/09/03/eu-customs-council-greenlights-landmark-reform", "doc": "https://my.feishu.cn/docx/Vt1NdyxPaoAYnGxY4r5cZvftnJc", "at": 1788919200000, "sum": "【事件】欧盟理事会9月3日最终批准《欧盟海关法典》全面改革一读文本（3月26日与欧洲议会达成的政治协议），欧洲议会预计9月内表决通过后刊宪，系欧盟数十年来最重大海关立法修订。核心：①非欧盟电商平台向欧盟销售商品时将被视为“进口商”，承担全部清关、关税缴纳及产品合规责任（不再由终端消费者承担），最严重违规可处上年进口货值6%罚款、取消海关特权甚至限制平台接入；②最迟2026年11月1日引入欧盟统一小包裹处理费（金额待欧委会确定）；③设立欧盟海关局EUCA（法国里尔，2027年运营）与统一海关数据枢纽（电商企业2028年7月1日、全体贸易商2034年3月1日起强制使用）；④创设Trust and Check信任贸易商资格，最合规企业可免干预放行。2025年欧盟约60亿件电商包裹超90%来自中国。"},
+ {"id": "n56", "lv": "B", "score": 16.0, "cat": "出口退税", "title": "上海长宁首单跨境电商9810“离境即退税”落地：福蕾网络跑通全流程，全市11区海外仓退税服务已覆盖", "no": "-", "organ": "其他", "taxes": ["出口退税"], "lines": ["出口业务"], "countries": ["中国"], "eff": 1788796800000, "site": "其他媒体", "url": "https://www.toutiao.com/article/7683144282445840932/", "doc": "", "at": 1788919200000, "sum": "【事件】上海长宁区9月8日官宣首单跨境电商9810（出口海外仓）退税业务落地：智能宠物用品出海企业福蕾网络经上海会展海关资质备案→上海跨境公服平台订仓单申报→出口报关→货物发美国海外仓售罄后，依托海外仓综合服务平台完成“离境即退税、销售再核算”全流程，单证全链路留痕。目前浦东、闵行、青浦、长宁等11个行政区均已实现9810退税业务落地；海关税务并已取消跨境电商出口海外仓备案、推行“离境即退税”（依据税务总局2025年第3号公告等）。"},
+ {"id": "n57", "lv": "B", "score": 13.0, "cat": "其他", "title": "UPS自9月7日起调整美国进口报关收费：税则行免费额度放宽至5行（第6行起3.5美元/行），代缴关税手续费升至2.5%最低17.5美元", "no": "-", "organ": "其他", "taxes": ["其他"], "lines": ["跨境零售"], "countries": ["美国"], "eff": 1788710400000, "site": "其他媒体", "url": "https://www.ups.com/us/en/home", "doc": "https://my.feishu.cn/docx/K1S1dcZbxoy3o6xdbFmcY8L5n9c", "at": 1788919200000, "sum": "【事件】UPS官方确认自9月7日起调整美国进口相关费用：①Entry-Line Charge（额外税则行费）免费额度由前3行放宽至前5行，第6行起每行3.5美元（原第4行起每行3美元）；②Disbursement Fee（代缴关税/税费手续费）调整为代缴金额的2.5%、最低17.5美元。新版费率指南已自9月7日起在UPS.com发布。"},
+ {"id": "n58", "lv": "B", "score": 10.0, "cat": "其他", "title": "亚马逊全球物流(AGL)推出中欧海运快线与中美空运两档新品：中欧整柜直发最快48天，备战Q4旺季备货", "no": "-", "organ": "其他", "taxes": ["其他"], "lines": ["全品线"], "countries": ["欧盟", "美国"], "eff": 1788919200000, "site": "其他媒体", "url": "https://www.163.com/dy/article/L6CG3SQ905568W0A.html", "doc": "", "at": 1788919200000, "sum": "【事件】经济日报9月9日报道：亚马逊全球物流(AGL)近日推出多项跨境物流产品更新——①中欧海运快线：自宁波、上海、厦门、盐田四大港口以整柜(FCL)直发亚马逊英国及德国运营中心，精选船期与航线组合，中国至欧洲跨境运输时效最快缩短至48天；②中美空运两档：AGL优享飞（标准型，上海/香港起飞，7-10个自然日至目的运营中心）、AGL惠享飞（经济型，上海/深圳起飞，11-15个自然日）；同时AWD智能卫星仓拓展更多全球站点。"},
+ {"id": "n59", "lv": "B", "score": 11.0, "cat": "其他", "title": "速卖通Brand+携9大中国品牌首登柏林IFA：8月欧盟销售额同比+97%，德国官方仓9月中旬开仓降本约10%", "no": "-", "organ": "其他", "taxes": ["其他"], "lines": ["3C", "跨境零售"], "countries": ["欧盟"], "eff": 1788796800000, "site": "雨果网", "url": "https://www.cifnews.com/article/188734", "doc": "", "at": 1788919200000, "sum": "【事件】雨果网9月8日报道：阿里旗下速卖通Brand+在2026柏林IFA首次亮相，携千问AI眼镜、极摩客迷你主机、ILIFE清洁家电、ENGWE电动出行等9家中国（多为AI硬件）品牌参展，为“出海四小龙”中首个参展全球顶级消费电子展的平台。平台披露：2026年1-7月AI硬件品类出海销售额同比增长100%；8月Brand+欧盟市场销售额同比增长97%，在德国、法国、波兰等11个国家品牌销售渗透率突破50%；展会期间宣布德国官方仓9月中旬开仓（仓配成本降约10%），Brand+三大能力升级，目标2026年推动2000个中国品牌海外规模翻倍。"}
+];
+
+/* ===SOURCES-BEGIN=== */
+const SOURCES_CONFIG = [
+  {id:"chinatax_fgk",name:"税务总局法规库",url:"https://fgk.chinatax.gov.cn",type:"政策法规",keywords:"出口退税 增值税 消费税 公告 通知",enabled:true,note:"中国税务总局官方法规发布平台，核心数据源"},
+  {id:"mof",name:"财政部",url:"https://www.mof.gov.cn",type:"政策法规",keywords:"财税 出口退税 关税 公告",enabled:true,note:"财政部官网政策发布"},
+  {id:"customs",name:"海关总署",url:"http://www.customs.gov.cn",type:"政策法规",keywords:"海关 商品编号 反倾销 关税 公告",enabled:true,note:"海关总署公告与商品编号调整"},
+  {id:"chinatax_sh",name:"税务总局(沪)",url:"https://shanghai.chinatax.gov.cn",type:"政策法规",keywords:"增值税 出口退税 上海 通知",enabled:true,note:"上海税务局补充源"},
+  {id:"shui5",name:"税屋 shui5.cn",url:"https://www.shui5.cn",type:"行业资讯",keywords:"增值税 消费税 出口退税 解读",enabled:true,note:"税屋专业税务解读与法规汇编"},
+  {id:"taxrefund",name:"出口退税网",url:"http://taxrefund.com.cn",type:"行业资讯",keywords:"出口退税 退税政策 退税操作",enabled:true,note:"出口退税专业资讯网站"},
+  {id:"cifnews",name:"雨果网",url:"https://www.cifnews.com",type:"行业资讯",keywords:"亚马逊 跨境电商 出海 卖家",enabled:true,note:"跨境电商行业资讯与平台动态"},
+  {id:"cpsc",name:"美国CPSC产品召回",url:"https://www.cpsc.gov/Recalls",type:"产品召回",keywords:"recall battery charger consumer product safety",enabled:true,note:"美国消费品安全委员会召回通报，重点关注电池/3C品类"},
+  {id:"amazon_sc",name:"亚马逊SC卖家中心",url:"https://sellercentral.amazon.com",type:"平台动态",keywords:"亚马逊 卖家政策 费用调整 合规 FBA",enabled:true,note:"亚马逊Seller Central公告与政策变化"},
+  {id:"amazon_vc",name:"亚马逊VC运营",url:"https://vendorcentral.amazon.com",type:"平台动态",keywords:"亚马逊 Vendor Central 费用 合规",enabled:true,note:"亚马逊Vendor Central相关动态"},
+  {id:"walmart",name:"沃尔玛Marketplace",url:"https://marketplace.walmart.com",type:"平台动态",keywords:"沃尔玛 Marketplace 卖家 政策 费用",enabled:true,note:"沃尔玛线上Marketplace动态与线下商超相关"},
+  {id:"mercadolibre",name:"美客多Mercado Libre",url:"https://www.mercadolibre.com",type:"平台动态",keywords:"美客多 Mercado Libre 卖家 拉美",enabled:true,note:"美客多平台运营规则与拉美市场动态"},
+  {id:"anke",name:"安克创新(300866)",url:"https://www.cninfo.com.cn",type:"上市公司",keywords:"安克创新 Anker 出海 财报 业绩",enabled:true,note:"跨境电商龙头标的，关注其财报与公告中的出海/关税信息"},
+  {id:"zhio",name:"致欧科技(301376)",url:"https://www.cninfo.com.cn",type:"上市公司",keywords:"致欧科技 出海 家居 财报",enabled:true,note:"跨境电商家居品类标的"},
+  {id:"huakai",name:"华凯易佰(300592)",url:"https://www.cninfo.com.cn",type:"上市公司",keywords:"华凯易佰 跨境 财报",enabled:true,note:"跨境电商标的"},
+  {id:"saiwei",name:"赛维时代(301381)",url:"https://www.cninfo.com.cn",type:"上市公司",keywords:"赛维时代 服装 出海 财报",enabled:true,note:"跨境电商服装品类标的"},
+  {id:"santai",name:"三态股份(301158)",url:"https://www.cninfo.com.cn",type:"上市公司",keywords:"三态股份 跨境 财报",enabled:true,note:"跨境电商标的"}
+];
+/* ===SOURCES-END=== */
+/* ===DATA-END=== */
+
+const $=id=>document.getElementById(id);
+const esc=s=>String(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#39;");
+const fd=ms=>{if(!ms)return"—";const d=new Date(ms);return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")};
+const LV_NAME={A:"A级 预警",B:"B级 关注",C:"C级 一般"};
+const CATS=["出口退税","增值税","消费税","关务海关","国际税收","其他"];
+
+/* ===== 板块归属：P1税务 / P2海关 / P3平台合规 ===== */
+/* BOARD_MAP = 存量条目人工确认（标题→板块）；新增条目按关键词规则兜底 */
+const BOARD_MAP={"关于出口业务增值税和消费税政策的公告": "tax", "关于发布《出口业务增值税和消费税退（免）税管理办法》的公告": "tax", "国家税务总局关于调整消费税纳税申报表有关事项的公告": "tax", "财政部 税务总局关于调整铁路和航空运输企业汇总缴纳增值税分支机构名单的通知": "tax", "商务部等6部门关于加力优化离境退税措施扩大入境消费的通知": "tax", "国家税务总局关于修订部分税务执法文书的公告": "tax", "促进和规范电子单证应用规定": "cus", "关于调整部分能源资源行业企业城镇土地使用税政策的公告": "tax", "国家税务总局关于离岸信托个人所得税有关征管事项的公告": "tax", "财政部 税务总局关于离岸信托个人所得税有关事项的公告": "tax", "个税重回第三大税种原因揭晓": "tax", "为社保费征管“深化用数”提供支撑": "tax", "强化户源管理：做好“开机9件事”": "tax", "研发加码，电子信息制造业加速升级": "tax", "推动财税政策深度嵌入美丽中国建设": "tax", "关于调整部分电池消费税政策的公告": "tax", "财政部 税务总局关于调整平潭综合实验区有关增值税和消费税退税货物范围的通知": "tax", "国家税务总局关于企业重组业务所得税处理有关征管问题的公告": "tax", "国家税务总局关于调整增值税纳税申报有关事项的公告": "tax", "财政部 税务总局关于明确非应税交易等增值税有关事项的公告": "tax", "财政部 税务总局 中国证监会关于规范转让上市公司限售股个人所得税政策的公告": "tax", "商务部关于公布对原产于美国、欧盟、台湾地区和日本的进口共聚聚甲醛反倾销措施相关企业税率继承决定的通知": "cus", "海关总署关于公布有关电池产品对应海关商品编号的公告": "cus", "亚马逊欧洲站强制税务合规：9月1日起泛欧货件入欧盟仓须提供MRN和EORI": "cus", "亚马逊泛欧FBA强制扩容：9月3日起须同步荷兰站可售，否则退出Pan-EU": "pla", "CPSC召回150万只OCOOPA充电暖手宝：1480起过热、1人死亡，涉亚马逊/沃尔玛": "pla", "CPSC扩大召回Cuisinart金属丝烧烤刷至360万只：54起金属丝脱落致伤，沃尔玛/亚马逊有售": "pla", "财政部 海关总署 税务总局关于跨境电子商务出口退运商品税收优惠政策的公告": "tax", "国家税务总局浙江省税务局关于开展增值税及附加税费申报试点的公告": "tax", "福建'阳光跨境服务平台'落地：9610出口无票免征增值税+企业所得税0.2%核定征收": "tax", "美客多9月起调整卖家信誉计算规则：墨西哥60天门槛提至101单，多国切换365天考核周期": "pla", "亚马逊对香港主体卖家发起两轮'主要营业地址'验证：限期未完成将扣留欧盟及英国站点付款": "pla", "安克创新披露2026年半年报：Q2净利同比+83%，IEEPA关税退回约10.5亿元增厚毛利": "pla", "美国FCC将'外国产先进机器人'列入受限清单：扫地机器人等新品无法获授权进入美国": "pla", "美国CBP 9月18日起强化进口商记录(IOR)核验：信息不符将作废IOR号码影响清关": "cus", "外媒：美拟在9月24日中美峰会前依301条款对华商品再加征7.5%\"产能过剩\"关税（叠加后替代性关税逼近20%上限）": "cus", "美国无人机Section 232关税9月3日正式生效：>25kg/热成像/停机舱100%、消费级25%，与301叠加": "cus", "巴西50美元以下跨境小包零关税临时政策9月8日到期：国会本周表决，未通过则9月9日自动恢复20%进口税": "cus", "CPSC于9月3日通报召回Truststone XO Poppy磁吸无线充电宝3.24万台：锂电过热起火风险（TJX/Marshalls渠道）": "pla", "eBay 9月24日起全球禁售独立安全气囊/充气装置/方向盘气囊盖（新品二手修复件均禁，约30天合规缓冲）": "pla", "欧洲港口罢工潮：德国汉堡等港9月2日起48小时罢工，荷兰鹿特丹/阿姆斯特丹/泽兰9月4日停装近8小时": "pla", "Victoria's Secret披露Q2获超1.4亿美元IEEPA关税退款（占已缴95%以上）并上调全年指引": "pla"};
+const HINT_CUS=["海关","关税","反倾销","反补贴","CBP","IOR","MRN","EORI","清关","商品编号","单证","进境","报关","税率继承","进口商","清关"];
+const HINT_TAX=["增值税","消费税","企业所得税","个人所得税","出口退税","印花税","环保税","土地使用税","区域退税","离岸","信托","财税","退税","申报表","申报试点","非应税","社保费","税种"];
+const HINT_PLA=["亚马逊","沃尔玛","美客多","eBay","Temu","Shein","CPSC","FCC","卖家","平台","店铺","召回","Anker","安克","财报","物流","港口","罢工","Victoria's Secret","维密"];
+function boardOf(it){
+  if(it&&BOARD_MAP[it.title])return BOARD_MAP[it.title];
+  const t=(it&&(it.title+" "+(it.no||"")+" "+(it.organ||"")+" "+((it.taxes||[]).join(" "))+" "+((it.sum||""))))||"";
+  if(HINT_CUS.some(k=>t.indexOf(k)>=0))return "cus";
+  if(HINT_TAX.some(k=>t.indexOf(k)>=0))return "tax";
+  return "pla";
+}
+const CFG={
+  tax:{alert:"alertZoneTax",lv:"lvChipsTax",cat:"catChipsTax",list:"newsListTax",scroller:"scrollerTax",meta:"streamMetaTax",bars:"lvBarsTax",kv:"kvStatsTax",snap:"snapStatsTax",btnR:"btnRefreshTax",btnA:"btnAITax",title:"税务政策"},
+  cus:{alert:"alertZoneCus",lv:"lvChipsCus",cat:"catChipsCus",list:"newsListCus",scroller:"scrollerCus",meta:"streamMetaCus",bars:"lvBarsCus",kv:"kvStatsCus",snap:"snapStatsCus",btnR:"btnRefreshCus",btnA:"btnAICus",title:"海关清关"},
+  pla:{alert:"alertZonePla",lv:"lvChipsPla",cat:"catChipsPla",list:"newsListPla",scroller:"scrollerPla",meta:"streamMetaPla",bars:"lvBarsPla",kv:"kvStatsPla",snap:"snapStatsPla",btnR:"btnRefreshPla",btnA:"btnAIPla",title:"平台与合规"}
+};
+const st={tax:{lv:"全部",cat:"全部"},cus:{lv:"全部",cat:"全部"},pla:{lv:"全部",cat:"全部"}};
+const itemsOf=b=>TAX_NEWS.filter(i=>boardOf(i)===b);
+/* ===== 新增未读标识（绿色 NEW）：72h 窗口 + 本机已读记录 ===== */
+const NEW_WINDOW_MS=3*24*3600*1000;
+let _readSet=null;
+function _ls(){try{return window.localStorage||null;}catch(e){return null;}}
+function readSet(){
+  if(_readSet)return _readSet;
+  _readSet=new Set();
+  try{const ls=_ls();if(ls){const raw=ls.getItem("radarNewReadV1");if(raw)JSON.parse(raw).forEach(k=>_readSet.add(k));}}catch(e){}
+  return _readSet;
+}
+function saveRead(){try{const ls=_ls();if(ls)ls.setItem("radarNewReadV1",JSON.stringify(Array.from(readSet())));}catch(e){}}
+function itemKey(it){return (it.at||0)+"|"+String(it.title||"").slice(0,24);}
+function isNewItem(it){if(!it||!it.at)return false;if(Date.now()-it.at>NEW_WINDOW_MS)return false;return !readSet().has(itemKey(it));}
+function newBadge(it){return isNewItem(it)?'<span class="new-badge" data-k="'+encodeURIComponent(itemKey(it))+'" title="新增未读 · 点击标为已读">新</span>':"";}
+function unreadCount(){let n=0;try{TAX_NEWS.forEach(it=>{if(isNewItem(it))n++;});}catch(e){}return n;}
+function updateUnreadUI(){
+  const n=unreadCount(),el=$("statUnread");
+  if(el){el.style.display=n?"":"none";const b=$("statUnreadN");if(b)b.textContent="+"+n;}
+}
+function markAllRead(){
+  try{TAX_NEWS.forEach(it=>{if(isNewItem(it))readSet().add(itemKey(it));});saveRead();}catch(e){}
+  document.querySelectorAll(".new-badge").forEach(e=>e.remove());
+  updateUnreadUI();
+}
+document.addEventListener("click",ev=>{
+  const t=ev.target;if(!t||!t.classList||!t.classList.contains("new-badge"))return;
+  ev.preventDefault();ev.stopPropagation();
+  const k=decodeURIComponent(t.getAttribute("data-k")||"");
+  if(k){readSet().add(k);saveRead();}
+  document.querySelectorAll(".new-badge").forEach(e=>{if(decodeURIComponent(e.getAttribute("data-k")||"")===k)e.remove();});
+  updateUnreadUI();
+});
+const _unreadEl=$("statUnread");if(_unreadEl)_unreadEl.onclick=markAllRead;
+/* ===== 页内重点分级：P1沿用税务评分；P2/P3按板块语义（存量人工锁定+新条目规则） ===== */
+const FOCUS_MAP={"促进和规范电子单证应用规定": "C", "商务部关于公布对原产于美国、欧盟、台湾地区和日本的进口共聚聚甲醛反倾销措施相关企业税率继承决定的通知": "B", "海关总署关于公布有关电池产品对应海关商品编号的公告": "A", "亚马逊欧洲站强制税务合规：9月1日起泛欧货件入欧盟仓须提供MRN和EORI": "A", "美国CBP 9月18日起强化进口商记录(IOR)核验：信息不符将作废IOR号码影响清关": "A", "外媒：美拟在9月24日中美峰会前依301条款对华商品再加征7.5%“产能过剩”关税（叠加后替代性关税逼近20%上限）": "A", "美国无人机Section 232关税9月3日正式生效：>25kg/热成像/停机舱100%、消费级25%，与301叠加": "B", "巴西50美元以下跨境小包零关税临时政策9月8日到期：国会本周表决，未通过则9月9日自动恢复20%进口税": "A", "亚马逊泛欧FBA强制扩容：9月3日起须同步荷兰站可售，否则退出Pan-EU": "A", "CPSC召回150万只OCOOPA充电暖手宝：1480起过热、1人死亡，涉亚马逊/沃尔玛": "B", "CPSC扩大召回Cuisinart金属丝烧烤刷至360万只：54起金属丝脱落致伤，沃尔玛/亚马逊有售": "C", "美客多9月起调整卖家信誉计算规则：墨西哥60天门槛提至101单，多国切换365天考核周期": "B", "亚马逊对香港主体卖家发起两轮'主要营业地址'验证：限期未完成将扣留欧盟及英国站点付款": "A", "安克创新披露2026年半年报：Q2净利同比+83%，IEEPA关税退回约10.5亿元增厚毛利": "B", "美国FCC将'外国产先进机器人'列入受限清单：扫地机器人等新品无法获授权进入美国": "B", "CPSC于9月3日通报召回Truststone XO Poppy磁吸无线充电宝3.24万台：锂电过热起火风险（TJX/Marshalls渠道）": "B", "eBay 9月24日起全球禁售独立安全气囊/充气装置/方向盘气囊盖（新品二手修复件均禁，约30天合规缓冲）": "B", "欧洲港口罢工潮：德国汉堡等港9月2日起48小时罢工，荷兰鹿特丹/阿姆斯特丹/泽兰9月4日停装近8小时": "B", "Victoria's Secret披露Q2获超1.4亿美元IEEPA关税退款（占已缴95%以上）并上调全年指引": "B", "财政部 税务总局关于调整平潭综合实验区有关增值税和消费税退税货物范围的通知": "B", "21世纪经济报道9月7日：12家跨境电商上市公司半年考——IEEPA关税退税与海外仓切换成利润主线，直邮红利消退": "B", "春风动力9月7日公告：子公司收到美国IEEPA关税及利息退回5403.24万美元（约3.66亿元），预计影响2026年净利约2.56亿元": "B"};
+const boardLvOf=(it,b)=>{
+  if(b==="tax"){const k=FOCUS_MAP[it.title];return k?k:it.lv;}
+  const k=FOCUS_MAP[it.title]; if(k)return k;
+  const t=(it.title||"")+" "+(it.no||"")+" "+(it.organ||"")+" "+((it.taxes||[]).join(" "));
+  if(b==="cus"){
+    if(it.lv==="A"||(it.score||0)>=20)return "A";
+    if(HINT_CUS.some(x=>t.indexOf(x)>=0)&&(it.score||0)>=12){
+      if(hitOff(t)&&!hitCompany(t))return "B";
+      return "A";
+    }
+    return (it.score||0)>=10?"B":"C";
+  }
+  if(b==="pla"){
+    if(it.lv==="A")return "A";
+    if(/召回|禁售|强制|限期|下架|受限|核验/.test(t)&&(it.score||0)>=10){
+      if(hitCompany(t))return "A";
+      if(hitOff(t))return "B";
+      return "A";
+    }
+    return (it.score||0)>=10?"B":"C";
+  }
+  return it.lv;
+};
+/* ===== 公司关注品线（内部口径）：汽车工具类 + 小家电 ===== */
+const COMPANY_LINES=["空气泵","充气泵","应急电源","启动电源","雪刷","万用表","钳表","电流表","电压表","车载","汽车工具","小冰箱","车载冰箱","制冰机","冰沙机","搅拌机","打蛋器","榨汁","电热毯","暖风机","除雪","车用","汽配","气囊","行车记录"];
+const OFF_LINES=["3C","服装","无人机","磁吸","充电宝","暖手宝","耳机","手机壳","玩具"];
+const hitCompany=t=>COMPANY_LINES.some(x=>t.indexOf(x)>=0);
+const hitOff=t=>OFF_LINES.some(x=>t.indexOf(x)>=0);
+const rawSortedOf=b=>itemsOf(b).slice().sort((a,b)=>(b.score-a.score)||((b.eff||0)-(a.eff||0)));
+const sortedOf=b=>rawSortedOf(b).map(i=>({...i,lv:boardLvOf(i,b)}));
+const filteredOf=b=>sortedOf(b).filter(it=>(st[b].lv==="全部"||it.lv===st[b].lv)&&(st[b].cat==="全部"||it.cat===st[b].cat));
+
+function briefSum(t,cls){
+  if(!t)return "";
+  const s=String(t).replace(/\s+/g," ").trim();
+  const head=s.length>100?s.slice(0,100).replace(/[，。；、,\s]+$/,"")+"…":s;
+  const more=s.length>100?'<details class="more"><summary>展开全文</summary><div class="sum-full">'+esc(s)+'</div></details>':"";
+  return '<div class="'+cls+'">'+esc(head)+'</div>'+more;
+}
+function itemHtml(it){
+  const link=it.url?"<a class=\"ni-title\" href=\""+esc(it.url)+"\" target=\"_blank\" rel=\"noopener\">"+esc(it.title)+"</a>":"<span class=\"ni-title\">"+esc(it.title)+"</span>";
+  const ln=[];
+  ln.push(it.url?"<a href=\""+esc(it.url)+"\" target=\"_blank\" rel=\"noopener\">原文</a>":"<a class=\"nolink\">原文缺</a>");
+  ln.push(it.doc?"<a href=\""+esc(it.doc)+"\" target=\"_blank\" rel=\"noopener\">飞书解读</a>":"<a class=\"nolink\">解读待生成</a>");
+  return "<div class=\"news-item lv"+it.lv+"\">"+newBadge(it)
+    +"<div class=\"ni-tags\"><span class=\"lv lv-"+it.lv+"\">"+LV_NAME[it.lv]+" "+it.score+"</span>"
+    +"<span class=\"mini-tag\">"+esc(it.cat)+"</span>"
+    +"<span class=\"mini-tag\">"+esc(it.site)+"</span>"
+    +"<span class=\"date\">生效 "+fd(it.eff)+"</span></div>"
+    +link
+    +"<div class=\"ni-no\">"+esc(it.no)+" · "+esc(it.organ)+(it.lines.length&&it.lines[0]!=="其他"?" · 品线 "+esc(it.lines.join("/")):"")+"</div>"
+    +(it.sum?briefSum(it.sum,"ni-sum"):"")
+    +"<div class=\"ni-lnk\">"+ln.join("<span style='color:#414d68;margin:0 4px'>|</span>")+"</div>"
+    +"</div>";
+}
+function alertsHtml(list){
+  return list.filter(i=>i.lv==="A").map(it=>(
+    "<article class=\"alert-card\">"+newBadge(it)
+    +"<div class=\"alert-head\"><span class=\"lv lv-A\">A 级 · 评分 "+it.score+"</span>"
+    +"<span class=\"mini-tag\">"+esc(it.cat)+"</span>"
+    +"<span class=\"mini-tag\">生效 "+fd(it.eff)+"</span></div>"
+    +(it.url?"<a class=\"t\" href=\""+esc(it.url)+"\" target=\"_blank\" rel=\"noopener\">"+esc(it.title)+"</a>":"<span class=\"t\">"+esc(it.title)+"</span>")
+    +"<div class=\"no\">"+esc(it.no)+" · "+esc(it.organ)+"</div>"
+    +"<div class=\"tagline\">"+it.taxes.map(t=>"<span class=\"mini-tag\">"+esc(t)+"</span>").join("")+it.lines.filter(l=>l!=="其他").map(l=>"<span class=\"mini-tag\">品线·"+esc(l)+"</span>").join("")+"</div>"
+    +(it.sum?briefSum(it.sum,"sum"):"")
+    +"<div class=\"lnks\">"
+    +(it.url?"<a href=\""+esc(it.url)+"\" target=\"_blank\" rel=\"noopener\">查看原文 ↗</a>":"<a class=\"nolink\">原文缺失</a>")
+    +(it.doc?"<a href=\""+esc(it.doc)+"\" target=\"_blank\" rel=\"noopener\">飞书解读 ↗</a>":"<a class=\"nolink\">解读待生成</a>")
+    +"</div></article>"
+  )).join("");
+}
+function renderBoard(b){
+  const cfg=CFG[b],list=filteredOf(b),sorted=sortedOf(b);
+  const panel=$(cfg.list);
+  panel.classList.remove("scrolling");
+  panel.style.animationDuration="";
+  if(!list.length){panel.innerHTML="<div class=\"empty\">该板块暂无匹配条目。</div>";}
+  else{
+    const one="<div class=\"news-round\">"+list.map(itemHtml).join("")+"</div>";
+    if(list.length>=5){
+      panel.innerHTML=one+one;
+      panel.style.animationDuration=Math.max(26,list.length*7)+"s";
+      requestAnimationFrame(()=>requestAnimationFrame(()=>panel.classList.add("scrolling")));
+    }else{panel.innerHTML=one;}
+  }
+  $(cfg.meta).textContent="显示 "+list.length+" / "+itemsOf(b).length+" 条（"+cfg.title+"）· 数据快照 "+SNAPSHOT.updatedAt+" · 来源："+SNAPSHOT.source;
+  $(cfg.alert).innerHTML=alertsHtml(sorted);
+
+  const lvDefs=[["全部",""],["A","red"],["B",""],["C",""]];
+  const _viewLv=sortedOf(b);
+  $(cfg.lv).innerHTML="<span class=\"lbl\">级别</span>"+lvDefs.map(([k,cls])=>{
+    const n=k==="全部"?_viewLv.length:_viewLv.filter(i=>i.lv===k).length;
+    return "<span class=\"chip "+cls+""+(st[b].lv===k?" on":"")+"\" data-lv=\""+k+"\">"+(k==="全部"?"全部":LV_NAME[k])+"<span class=\"cnt\">"+n+"</span></span>";
+  }).join("");
+  const catSet=Array.from(new Set(itemsOf(b).map(i=>i.cat)));
+  const cats=["全部",...CATS.filter(c=>catSet.indexOf(c)>=0)];
+  $(cfg.cat).innerHTML="<span class=\"lbl\">类别</span>"+cats.map(k=>{
+    const n=k==="全部"?itemsOf(b).length:itemsOf(b).filter(i=>i.cat===k).length;
+    return "<span class=\"chip"+(st[b].cat===k?" on":"")+"\" data-cat=\""+esc(k)+"\">"+esc(k)+"<span class=\"cnt\">"+n+"</span></span>";
+  }).join("");
+  $(cfg.lv).querySelectorAll(".chip").forEach(c=>c.onclick=()=>{st[b].lv=c.dataset.lv;renderBoard(b);});
+  $(cfg.cat).querySelectorAll(".chip").forEach(c=>c.onclick=()=>{st[b].cat=c.dataset.cat;renderBoard(b);});
+
+  const cnt=k=>itemsOf(b).filter(i=>i.lv===k).length;
+  const A=cnt("A"),B=cnt("B"),C=cnt("C"),mx=Math.max(A,B,C,1);
+  const bar=(nm,v,cls)=>"<div class=\"bar-row\"><span class=\"nm\">"+nm+"</span><span class=\"bar\"><i class=\""+cls+"\" style=\"width:"+Math.round(v/mx*100)+"%\"></i></span><span class=\"cnt\">"+v+"</span></div>";
+  $(cfg.bars).innerHTML=bar("A 级预警",A,"")+bar("B 级关注",B,"b")+bar("C 级一般",C,"c");
+  const taxMap={},siteMap={};
+  itemsOf(b).forEach(i=>{i.taxes.forEach(t=>taxMap[t]=(taxMap[t]||0)+1);siteMap[i.site]=(siteMap[i.site]||0)+1;});
+  const topTax=Object.entries(taxMap).sort((a,b)=>b[1]-a[1]).slice(0,4);
+  $(cfg.kv).innerHTML=topTax.map(([t,n])=>"<div class=\"kv\"><b>"+esc(t)+"</b><span><span class=\"hl\">"+n+"</span> 条</span></div>").join("")
+    +"<div class=\"kv\"><b>信息源</b><span>"+Object.entries(siteMap).sort((a,b)=>b[1]-a[1]).map(([s,n])=>esc(s)+" "+n).join(" · ")+"</span></div>";
+  const news=TAX_NEWS.filter(i=>i.at===SNAPSHOT.lastScan).length;
+  $(cfg.snap).innerHTML=
+    "<div class=\"kv\"><b>最近扫描</b><span>"+fd(SNAPSHOT.lastScan)+"</span></div>"
+    +"<div class=\"kv\"><b>本次新增</b><span><span class=\"hl\">"+news+"</span> 条</span></div>"
+    +"<div class=\"kv\"><b>看板更新</b><span>"+esc(SNAPSHOT.updatedAt)+"</span></div>"
+    +"<div class=\"kv\"><b>更新机制</b><span>每日 10:05 数据同步后自动刷新</span></div>";
+}
+function toast(msg){const t=$("toast");t.textContent=msg;t.classList.add("show");clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove("show"),2600);}
+
+function buildPrompt(b){
+  const cfg=CFG[b],items=filteredOf(b).slice(0,8);
+  if(!items.length)return "请从跨境电商"+cfg.title+"合规视角归纳近期值得关注的动态并给出行动建议。";
+  return "请基于以下政策雷达线索做跨境电商"+cfg.title+"周简报：\n"
+    +items.map((it,i)=>(i+1)+". ["+LV_NAME[it.lv]+"|"+it.cat+"] "+it.title+"（"+it.no+"，生效"+fd(it.eff)+"）"+(it.url?" "+it.url:"")).join("\n")
+    +"\n要求：分为 ①A级预警行动项 ②B级跟踪项 ③申报口径变化提示 ④业务管理启示；非官方线索不得当成最终依据，条款适用以官方正式文件为准。";
+}
+function copyText(txt){
+  if(navigator.clipboard&&window.isSecureContext){return navigator.clipboard.writeText(txt);}
+  return new Promise(res=>{const ta=document.createElement("textarea");ta.value=txt;ta.style.position="fixed";ta.style.opacity="0";document.body.appendChild(ta);ta.select();document.execCommand("copy");document.body.removeChild(ta);res();});
+}
+["tax","cus","pla"].forEach(b=>{
+  $(CFG[b].btnR).onclick=()=>{st[b].lv="全部";st[b].cat="全部";renderBoard(b);toast("已重置"+CFG[b].title+"筛选并重新渲染");};
+  $(CFG[b].btnA).onclick=()=>copyText(buildPrompt(b)).then(()=>toast("AI 简报提示词已复制（"+CFG[b].title+"）"));
+});
+
+function activeBoard(){const b=document.querySelector(".tab-btn.active");return b?b.dataset.tab:"tax";}
+function refreshHeader(){
+  const tab=activeBoard();
+  let arr;
+  if(tab==="tax"||tab==="cus"||tab==="pla"){arr=sortedOf(tab);}
+  else{arr=TAX_NEWS;}
+  const A=arr.filter(i=>i.lv==="A").length;
+  const news=arr.filter(i=>i.at===SNAPSHOT.lastScan).length;
+  if($("statA"))$("statA").textContent=A;
+  if($("statTotal"))$("statTotal").textContent=arr.length;
+  if($("statNew"))$("statNew").textContent="+"+news;
+  if($("pillScan"))$("pillScan").textContent="上次扫描 "+fd(SNAPSHOT.lastScan);
+}
+refreshHeader();
+
+/* ── Tab Navigation ── */
+document.querySelectorAll(".tab-btn").forEach(btn=>{
+  btn.onclick=()=>{
+    document.querySelectorAll(".tab-btn").forEach(b=>b.classList.remove("active"));
+    document.querySelectorAll(".tab-page").forEach(p=>p.classList.remove("active"));
+    btn.classList.add("active");
+    const pg=$("tab-"+btn.dataset.tab);
+    if(pg)pg.classList.add("active");
+    if(["tax","cus","pla"].indexOf(btn.dataset.tab)>=0)renderBoard(btn.dataset.tab);
+    refreshHeader();
+  };
+});
+["tax","cus","pla"].forEach(renderBoard);
+updateUnreadUI();
+setTimeout(()=>{try{if(document.visibilityState!=="hidden")markAllRead();}catch(e){}},90000);
+
+/* ── P2: Source Management ── */
+const CAT_CLS={政策法规:"policy",平台动态:"platform",行业资讯:"industry",上市公司:"listed",产品召回:"recalls"};
+const SRC_BOARD={chinatax_fgk:"tax",mof:"tax",chinatax_sh:"tax",shui5:"tax",taxrefund:"tax",customs:"cus",cifnews:"pla",cpsc:"pla",amazon_sc:"pla",amazon_vc:"pla",walmart:"pla",mercadolibre:"pla",anke:"pla",zhio:"pla",huakai:"pla",saiwei:"pla",santai:"pla"};
+const BOARD_CN={tax:"P1",cus:"P2",pla:"P3"};
+function boardChip(id){
+  const b=SRC_BOARD[id]; return "<span class=\"src-board b-"+(b||"none")+"\">"+(b?BOARD_CN[b]:"—")+"</span>";
+}
+function renderBoardSrc(){
+  const box={tax:"bsrcTax",cus:"bsrcCus",pla:"bsrcPla"};
+  ["tax","cus","pla"].forEach(b=>{
+    const el=$(box[b]); if(!el)return;
+    const items=SOURCES_CONFIG.filter(s=>SRC_BOARD[s.id]===b);
+    el.innerHTML=items.map(s=>"<span class=\"src-chip"+(s.enabled?"":" off")+"\"><span class=\"dot\">●</span> "+esc(s.name)+(s.enabled?"":"（已禁用）")+"</span>").join("");
+  });
+}
+
+function renderSources(){
+  const panel=$("srcList");
+  panel.innerHTML=SOURCES_CONFIG.map((s,i)=>{
+    const cls=CAT_CLS[s.type]||"industry";
+    return "<div class=\"src-item"+(s.enabled?"":" disabled")+"\">"
+      +"<div class=\"src-idx\">"+(i+1)+"</div>"+boardChip(s.id)
+      +"<div class=\"src-info\"><div class=\"src-name\">"+esc(s.name)+(s.enabled?"":" <span style=\"color:#5f6b85;font-size:10px\">(已禁用)</span>")+"</div>"
+      +"<div class=\"src-url\">"+esc(s.url)+"</div></div>"
+      +"<span class=\"src-cat "+cls+"\">"+esc(s.type)+"</span>"
+      +"<label class=\"toggle\"><input type=\"checkbox\" "+(s.enabled?"checked":"")+" data-src-idx=\""+i+"\" /><span class=\"slider\"></span></label>"
+      +"</div>";
+  }).join("");
+  // bind toggles
+  panel.querySelectorAll("input[data-src-idx]").forEach(inp=>{
+    inp.onchange=()=>{
+      const idx=parseInt(inp.dataset.srcIdx);
+      SOURCES_CONFIG[idx].enabled=inp.checked;
+      renderSources();
+      toast(inp.checked?"已启用「"+SOURCES_CONFIG[idx].name+"」":"已禁用「"+SOURCES_CONFIG[idx].name+"」");
+    };
+  });
+}
+
+// Add source form
+$("btnAddSrc").onclick=()=>{$("addSrcForm").classList.toggle("show");};
+$("btnCancelSrc").onclick=()=>{$("addSrcForm").classList.remove("show");};
+$("btnSaveSrc").onclick=()=>{
+  const name=$("newSrcName").value.trim();
+  const url=$("newSrcUrl").value.trim();
+  const cat=$("newSrcCat").value;
+  const kw=$("newSrcKw").value.trim();
+  const note=$("newSrcNote").value.trim();
+  if(!name||!url){toast("名称和URL不能为空");return;}
+  if(!url.startsWith("http")){toast("URL 须以 http(s):// 开头");return;}
+  const id="custom_"+Date.now().toString(36);
+  SOURCES_CONFIG.push({id,name,url,type:cat,keywords:kw,enabled:true,note:note||"用户自定义信息源"});
+  renderSources();
+  // clear form
+  $("newSrcName").value="";$("newSrcUrl").value="";$("newSrcKw").value="";$("newSrcNote").value="";
+  $("addSrcForm").classList.remove("show");
+  toast("已添加「"+name+"」，点击导出配置以生效");
+};
+
+// Export config
+$("btnExportSrc").onclick=()=>{
+  const enabled=SOURCES_CONFIG.filter(s=>s.enabled);
+  const disabled=SOURCES_CONFIG.filter(s=>!s.enabled);
+  let cmd="请更新税务政策雷达看板的信息源配置（SOURCES_CONFIG 数据块）：\n";
+  cmd+="\n【启用的信息源（"+enabled.length+"个）】\n";
+  enabled.forEach(s=>cmd+="- "+s.name+" | "+s.url+" | "+s.type+" | 关键词: "+s.keywords+"\n");
+  if(disabled.length){
+    cmd+="\n【已禁用的信息源（"+disabled.length+"个）】\n";
+    disabled.forEach(s=>cmd+="- "+s.name+" | "+s.url+" | "+s.type+" | 关键词: "+s.keywords+"\n");
+  }
+  cmd+="\n请将以上配置写入看板HTML的 SOURCES_CONFIG 数据块（位于 /* ===SOURCES-BEGIN=== */ 与 /* ===SOURCES-END=== */ 之间），并同步更新自动化任务 automation-1788325529208 的检索范围。";
+  copyText(cmd).then(()=>toast("配置指令已复制到剪贴板，发送给 WorkBuddy 即可生效"));
+};
+
+renderSources();renderBoardSrc();
+</script>
+</body>
+</html>
