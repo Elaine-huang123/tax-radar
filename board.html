@@ -4,18 +4,6 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>税务政策雷达看板 · 跨境电商税务合规</title>
-<script>
-/* 轻量访问门禁：有本地存储且未登录时跳转登录页；无存储环境（隐私模式/自动化）放行 */
-try{(function(){
-  var has=false;
-  try{if(window.sessionStorage||window.localStorage)has=true;}catch(e){}
-  if(!has)return;
-  var ok=false;
-  try{ok=sessionStorage.getItem("radarAuth")==="1";}catch(e){}
-  if(!ok){try{ok=localStorage.getItem("radarAuth")==="1"&&(Date.now()-(localStorage.getItem("radarAuthTs")||0))<86400000;}catch(e2){}}
-  if(!ok){location.replace("index.html");}
-})();}catch(e){}
-</script>
 <style>
 :root{--bg:#070b18;--text:#f6f8ff;--muted:#98a6c5;--line:rgba(148,163,184,.17);--panel:linear-gradient(155deg,rgba(19,29,57,.88),rgba(8,13,28,.89));--blue:#55a7ff;--cyan:#50e6ff;--purple:#a78bfa;--amber:#ffbd59;--green:#43e6a3;--red:#ff6b72}
 *{box-sizing:border-box}
@@ -223,6 +211,12 @@ details.more .sum-full{margin-top:8px;padding-top:8px;border-top:1px dashed rgba
 .stat-box.green{border:1px solid rgba(67,230,163,.55);cursor:pointer;background:rgba(67,230,163,.07)}
 .stat-box.green b{color:#43e6a3}
 .stat-box.green span{color:#9fe8c8}
+.stat-box.reset{cursor:pointer;border-color:rgba(148,163,184,.38);background:rgba(148,163,184,.07)}
+.stat-box.reset b{font-size:clamp(15px,1.2vw,20px);color:#9fb0c9}
+.stat-box.reset:hover{filter:brightness(1.2)}
+.tab-new{display:none;margin-left:6px;padding:1px 7px;border-radius:9px;background:linear-gradient(135deg,#1fbf7f,#43e6a3);color:#04231a;font-size:clamp(8.5px,.6vw,10px);font-weight:900;vertical-align:middle;line-height:1.5}
+.tab-new.on{display:inline-block}
+.build-stamp{margin-top:5px;font-size:clamp(9px,.6vw,11px);color:#6f7f9c;letter-spacing:.03em;text-align:right}
 .news-item{position:relative}
 .new-badge{position:absolute;top:6px;right:6px;z-index:5;background:linear-gradient(135deg,#1fbf7f,#43e6a3);color:#04231a;font-size:clamp(8.5px,.6vw,10px);font-weight:900;letter-spacing:.5px;line-height:1.5;padding:1px 7px;border-radius:9px;box-shadow:0 0 8px rgba(67,230,163,.55);cursor:pointer;user-select:none}
 .alert-card .new-badge{top:10px;right:10px}
@@ -245,19 +239,21 @@ details.more .sum-full{margin-top:8px;padding-top:8px;border-top:1px dashed rgba
   </div>
   <div class="top-side">
     <div class="thesis">扫描税务总局法规库 / 出口退税网 / shui5 / 海关总署，<br>按跨境电商关键词权重评分，<b>A级政策实时预警</b></div>
+    <div class="build-stamp" title="用于确认看板是否为最新版本">构建 v2026-09-14.2</div>
     <div class="stat-boxes">
       <div class="stat-box red"><b id="statA">-</b><span>A级预警</span></div>
       <div class="stat-box"><b id="statTotal">-</b><span>收录政策</span></div>
-      <div class="stat-box"><b id="statNew">-</b><span>近次扫描新增</span></div>
+      <div class="stat-box"><b id="statNew">-</b><span>今日新增</span></div>
       <div class="stat-box green" id="statUnread" style="display:none" title="新增未读条目：点击后全部标为已读"><b id="statUnreadN">0</b><span>新增未读</span></div>
+      <div class="stat-box reset" id="statResetRead" title="清除本机已读记录，恢复全部「新」角标"><b>↺</b><span>重置已读</span></div>
     </div>
   </div>
 </header>
 
 <div class="tab-nav">
-  <button class="tab-btn active" data-tab="tax">📗 P1 · 税务政策</button>
-  <button class="tab-btn" data-tab="cus">📘 P2 · 海关清关</button>
-  <button class="tab-btn" data-tab="pla">📙 P3 · 平台与合规</button>
+  <button class="tab-btn active" data-tab="tax">📗 P1 · 税务政策<span class="tab-new" id="TabNewTax"></span></button>
+  <button class="tab-btn" data-tab="cus">📘 P2 · 海关清关<span class="tab-new" id="TabNewCus"></span></button>
+  <button class="tab-btn" data-tab="pla">📙 P3 · 平台与合规<span class="tab-new" id="TabNewPla"></span></button>
   <button class="tab-btn" data-tab="p4">⚙️ P4 · 规则与信息源</button>
 </div>
 
@@ -391,7 +387,7 @@ details.more .sum-full{margin-top:8px;padding-top:8px;border-top:1px dashed rgba
       <h3 style="color:var(--cyan)">📗 P1 · 税务政策 — 规则与信息源</h3>
       <ul>
         <li>收录：增值税 / 消费税 / 个税 / 企业所得税 / 出口退税等税收政策、申报与征管（以中国财税机关公告为主）。</li>
-        <li>判级：按税务评分口径（≥20 为 A）；公司退税主体所在地政策优先关注（申报地口径，内部维护）。</li>
+        <li>判级：按税务评分口径（≥20 为 A）；公司退税主体所在地（申报地口径，内部维护）政策优先关注。</li>
         <li>例外：<b>平潭综合实验区等无公司主体的区域性政策不作重点</b>（库内平潭条目已降级）。</li>
       </ul>
       <div class="board-src" id="bsrcTax"></div>
@@ -503,7 +499,7 @@ details.more .sum-full{margin-top:8px;padding-top:8px;border-top:1px dashed rgba
       <div class="rule-section" style="margin-top:18px">
         <h3>五、品线与关注口径（公司实际业务）</h3>
         <ul>
-          <li><b>公司关注品线：汽车工具类 + 小家电</b>（如空气泵、应急电源、雪刷、万用表、钳表、小冰箱、制冰机、冰沙机等）。</li>
+          <li><b>公司关注品线（内部口径）</b>。</li>
           <li>P2/P3 的 A 级判定以<b>与公司品线相关性</b>为参考：与品线相关或全品类强制合规 → A（重点关注）；与公司无关的单一品类事件（如无人机、3C 周边召回）最高定级 B。</li>
           <li>P1 税务仍按税务评分口径定级（中国/财税/税种权重优先）。品线词表在 JS 的 COMPANY_LINES / OFF_LINES 中维护。</li>
         </ul>
@@ -593,7 +589,7 @@ details.more .sum-full{margin-top:8px;padding-top:8px;border-top:1px dashed rgba
 
 <script>
 /* ===DATA-BEGIN=== */
-const SNAPSHOT = { updatedAt: "2026-09-09 10:02", lastScan: 1788919200000, source: "飞书税务政策表 tblo8d6cv3YPiz9w（59条）" };
+const SNAPSHOT = { updatedAt: "2026-09-14 11:44", lastScan: 1789355400000, source: "飞书税务政策表 tblo8d6cv3YPiz9w（81条）" };
 const TAX_NEWS = [
  {"id": "p11", "lv": "A", "score": 20.4, "cat": "出口退税", "title": "关于出口业务增值税和消费税政策的公告", "no": "财政部 税务总局公告2026年第11号", "organ": "财政部+税务总局", "taxes": ["增值税", "消费税", "出口退税"], "lines": ["全品线", "出口业务"], "countries": ["中国"], "eff": 1767196800000, "site": "fgk法规库", "url": "https://fgk.chinatax.gov.cn/zcfgk/c102416/c5247437/content.html", "doc": "https://my.feishu.cn/docx/XIuMd0Y2foSS72x9IWzc0x9HnNb", "at": 1785676800000, "sum": "跨境电商出口核心法规，影响所有出口业务税负计算；外贸企业免征出口环节增值税并退还进项，生产企业适用免抵退；申报期限次年4月30日前"},
  {"id": "p5", "lv": "A", "score": 20.4, "cat": "出口退税", "title": "关于发布《出口业务增值税和消费税退（免）税管理办法》的公告", "no": "国家税务总局公告2026年第5号", "organ": "税务总局", "taxes": ["增值税", "消费税", "出口退税"], "lines": ["全品线", "出口业务"], "countries": ["中国"], "eff": 1767196800000, "site": "fgk法规库", "url": "https://fgk.chinatax.gov.cn/zcfgk/c100012/c5247423/content.html", "doc": "https://my.feishu.cn/docx/J8kddfA5FoM83xxn6hfcjaMYn0g", "at": 1785676800000, "sum": "归并整合历史出口退税管理规定，形成统一管理办法（5章+9类证明事项）；备案表单精简、申报流程调整，直接影响日常退税操作"},
@@ -653,7 +649,29 @@ const TAX_NEWS = [
  {"id": "n56", "lv": "B", "score": 16.0, "cat": "出口退税", "title": "上海长宁首单跨境电商9810“离境即退税”落地：福蕾网络跑通全流程，全市11区海外仓退税服务已覆盖", "no": "-", "organ": "其他", "taxes": ["出口退税"], "lines": ["出口业务"], "countries": ["中国"], "eff": 1788796800000, "site": "其他媒体", "url": "https://www.toutiao.com/article/7683144282445840932/", "doc": "", "at": 1788919200000, "sum": "【事件】上海长宁区9月8日官宣首单跨境电商9810（出口海外仓）退税业务落地：智能宠物用品出海企业福蕾网络经上海会展海关资质备案→上海跨境公服平台订仓单申报→出口报关→货物发美国海外仓售罄后，依托海外仓综合服务平台完成“离境即退税、销售再核算”全流程，单证全链路留痕。目前浦东、闵行、青浦、长宁等11个行政区均已实现9810退税业务落地；海关税务并已取消跨境电商出口海外仓备案、推行“离境即退税”（依据税务总局2025年第3号公告等）。"},
  {"id": "n57", "lv": "B", "score": 13.0, "cat": "其他", "title": "UPS自9月7日起调整美国进口报关收费：税则行免费额度放宽至5行（第6行起3.5美元/行），代缴关税手续费升至2.5%最低17.5美元", "no": "-", "organ": "其他", "taxes": ["其他"], "lines": ["跨境零售"], "countries": ["美国"], "eff": 1788710400000, "site": "其他媒体", "url": "https://www.ups.com/us/en/home", "doc": "https://my.feishu.cn/docx/K1S1dcZbxoy3o6xdbFmcY8L5n9c", "at": 1788919200000, "sum": "【事件】UPS官方确认自9月7日起调整美国进口相关费用：①Entry-Line Charge（额外税则行费）免费额度由前3行放宽至前5行，第6行起每行3.5美元（原第4行起每行3美元）；②Disbursement Fee（代缴关税/税费手续费）调整为代缴金额的2.5%、最低17.5美元。新版费率指南已自9月7日起在UPS.com发布。"},
  {"id": "n58", "lv": "B", "score": 10.0, "cat": "其他", "title": "亚马逊全球物流(AGL)推出中欧海运快线与中美空运两档新品：中欧整柜直发最快48天，备战Q4旺季备货", "no": "-", "organ": "其他", "taxes": ["其他"], "lines": ["全品线"], "countries": ["欧盟", "美国"], "eff": 1788919200000, "site": "其他媒体", "url": "https://www.163.com/dy/article/L6CG3SQ905568W0A.html", "doc": "", "at": 1788919200000, "sum": "【事件】经济日报9月9日报道：亚马逊全球物流(AGL)近日推出多项跨境物流产品更新——①中欧海运快线：自宁波、上海、厦门、盐田四大港口以整柜(FCL)直发亚马逊英国及德国运营中心，精选船期与航线组合，中国至欧洲跨境运输时效最快缩短至48天；②中美空运两档：AGL优享飞（标准型，上海/香港起飞，7-10个自然日至目的运营中心）、AGL惠享飞（经济型，上海/深圳起飞，11-15个自然日）；同时AWD智能卫星仓拓展更多全球站点。"},
- {"id": "n59", "lv": "B", "score": 11.0, "cat": "其他", "title": "速卖通Brand+携9大中国品牌首登柏林IFA：8月欧盟销售额同比+97%，德国官方仓9月中旬开仓降本约10%", "no": "-", "organ": "其他", "taxes": ["其他"], "lines": ["3C", "跨境零售"], "countries": ["欧盟"], "eff": 1788796800000, "site": "雨果网", "url": "https://www.cifnews.com/article/188734", "doc": "", "at": 1788919200000, "sum": "【事件】雨果网9月8日报道：阿里旗下速卖通Brand+在2026柏林IFA首次亮相，携千问AI眼镜、极摩客迷你主机、ILIFE清洁家电、ENGWE电动出行等9家中国（多为AI硬件）品牌参展，为“出海四小龙”中首个参展全球顶级消费电子展的平台。平台披露：2026年1-7月AI硬件品类出海销售额同比增长100%；8月Brand+欧盟市场销售额同比增长97%，在德国、法国、波兰等11个国家品牌销售渗透率突破50%；展会期间宣布德国官方仓9月中旬开仓（仓配成本降约10%），Brand+三大能力升级，目标2026年推动2000个中国品牌海外规模翻倍。"}
+ {"id": "n59", "lv": "B", "score": 11.0, "cat": "其他", "title": "速卖通Brand+携9大中国品牌首登柏林IFA：8月欧盟销售额同比+97%，德国官方仓9月中旬开仓降本约10%", "no": "-", "organ": "其他", "taxes": ["其他"], "lines": ["3C", "跨境零售"], "countries": ["欧盟"], "eff": 1788796800000, "site": "雨果网", "url": "https://www.cifnews.com/article/188734", "doc": "", "at": 1788919200000, "sum": "【事件】雨果网9月8日报道：阿里旗下速卖通Brand+在2026柏林IFA首次亮相，携千问AI眼镜、极摩客迷你主机、ILIFE清洁家电、ENGWE电动出行等9家中国（多为AI硬件）品牌参展，为“出海四小龙”中首个参展全球顶级消费电子展的平台。平台披露：2026年1-7月AI硬件品类出海销售额同比增长100%；8月Brand+欧盟市场销售额同比增长97%，在德国、法国、波兰等11个国家品牌销售渗透率突破50%；展会期间宣布德国官方仓9月中旬开仓（仓配成本降约10%），Brand+三大能力升级，目标2026年推动2000个中国品牌海外规模翻倍。"},
+ {"id": "p133", "lv": "B", "score": 15.0, "cat": "关务海关", "title": "海关总署关于二氯二氢硅商品编号申报要求的公告", "no": "海关总署公告2026年第133号", "organ": "海关总署", "taxes": ["海关关税(反倾销)"], "lines": ["其他"], "countries": ["中国"], "eff": 1788796800000, "site": "海关总署", "url": "http://www.customs.gov.cn/customs/2026-09/08/article_2026090808295058638.html", "doc": "https://my.feishu.cn/docx/Q7Qpddww7oqefyxBSrfctO6Cn2c", "at": 1789005000000, "sum": "【事件】根据商务部公告2026年第37号，自2026年9月8日起对原产于日本的进口二氯二氢硅实施临时反倾销措施（保证金形式），海关总署配套明确：申报进口税则号列28539090项下商品时，“二氯二氢硅”须填报商品编号28539090.61。【影响】该化学品主要应用于半导体/光伏材料等上游环节，与公司主营汽车工具、小家电出口品线无直接交集；对跨境卖家整体影响有限，仅涉及从日本进口该原料的供应链企业需调整HS编码与保证金申报。【行动建议】常规出口卖家无需专门应对；若供应商涉及日本进口二氯二氢硅，协助其核对报关编号与临时反倾销保证金缴纳。"},
+ {"id": "p28", "lv": "A", "score": 27.0, "cat": "增值税", "title": "财政部 税务总局关于发布《境内单位代扣代缴自然人增值税管理办法》的公告", "no": "财政部 税务总局公告2026年第28号", "organ": "财政部+税务总局", "taxes": ["增值税"], "lines": ["全品线"], "countries": ["中国"], "eff": 1793462400000, "site": "fgk法规库", "url": "https://fgk.chinatax.gov.cn/zcfgk/c102416/c5252181/content.html", "doc": "https://my.feishu.cn/docx/ZKsMd53dGoyvBbxNnwqcli5uncf", "at": 1789005000000, "sum": "【事件】财政部、税务总局发布《境内单位代扣代缴自然人增值税管理办法》（2026年第28号），明确境内自然人发生研发、软件、设计、咨询、广播影视节目制作、文化、教育等应税交易时，支付价款的境内单位为扣缴义务人；按销售额×征收率计算应扣缴增值税，同时扣缴附加税费；解缴税款计税期间为一个月，次月15日内申报。【影响】公司若向自然人采购设计、翻译、咨询服务、个人软件开发等灵活用工服务，需新增代扣代缴义务；自然人已缴税的无需重复扣缴，已扣缴的可由自然人凭完税信息申请代开发票。该办法与《增值税法》配套，填补自然人服务交易征管空白，直接影响采购结算流程与进项凭证管理。【行动建议】11月1日前梳理向自然人支付服务费的业务场景与合同；在财务系统中增加自然人供应商代扣代缴计税、申报与台账功能；与自然人明确发票开具与税款承担方式。"},
+ {"id": "p19", "lv": "A", "score": 26.0, "cat": "增值税", "title": "国家税务总局关于境内单位代扣代缴自然人增值税有关申报事项的公告", "no": "国家税务总局公告2026年第19号", "organ": "税务总局", "taxes": ["增值税"], "lines": ["全品线"], "countries": ["中国"], "eff": 1793462400000, "site": "fgk法规库", "url": "https://fgk.chinatax.gov.cn/zcfgk/c100012/c5252176/content.html", "doc": "https://my.feishu.cn/docx/OTr5dQfqIojwoQxtZgNcmNBrnsd", "at": 1789005000000, "sum": "【事件】税务总局发布第19号公告，制定《境内单位代扣代缴自然人增值税及附加税费申报表》及其附列资料，与第28号同步于2026年11月1日施行。【影响】这是第28号的申报配套，明确扣缴义务人须按月填报自然人姓名、身份证件、应税交易项目、销售额、征收率、减免税额、应扣缴增值税及城建税/教育费附加/地方教育附加等明细；自然人已代开发票的无需重复扣缴。对财务的影响是新增一套月度申报表与明细台账。【行动建议】在电子税务局开通相应申报模块后，按表样设计内部采集模板；与薪酬/采购系统对接，确保自然人交易数据完整、及时、可核验。"},
+ {"id": "p27", "lv": "A", "score": 24.0, "cat": "其他", "title": "财政部 税务总局关于外籍个人股息红利个人所得税政策有关事项的公告", "no": "财政部 税务总局公告2026年第27号", "organ": "财政部+税务总局", "taxes": ["个人所得税"], "lines": ["其他"], "countries": ["中国"], "eff": 1788192000000, "site": "fgk法规库", "url": "https://fgk.chinatax.gov.cn/zcfgk/c102416/c5252107/content.html", "doc": "https://my.feishu.cn/docx/UKf9d1RHmom83exYzDxcRBfxn8d", "at": 1789005000000, "sum": "【事件】财政部、税务总局公告2026年第27号明确：外籍个人从外商投资企业取得的股息红利所得，自2026年9月1日起按“利息、股息、红利所得”缴纳20%个人所得税；外商投资企业支付时须代扣代缴，次月15日内申报；未扣缴的由外籍个人在次年6月30日前缴纳。【影响】废止1994年以来外籍个人从外商投资企业取得股息红利暂免个税政策，全国统一税制；若公司存在外籍股东或计划引入外资，分红税负由0%升至20%，直接影响利润分配、股东回报与跨境资金安排；对纯内资出口卖家无直接税负影响，但属资本市场与外资架构重要信号。【行动建议】排查现有股东结构中有无外籍自然人股东及历史分红安排；评估未来融资/股权架构时外资股东的税后收益变化；如已发生9月1日后分红，补扣缴并更正申报。"},
+ {"id": "n64", "lv": "B", "score": 19.0, "cat": "其他", "title": "亚马逊美国站商业责任险新规：11月2日起强化安全类目强制投保，中国大陆卖家须通过AIA", "no": "-", "organ": "其他", "taxes": ["其他"], "lines": ["跨境零售"], "countries": ["美国"], "eff": 1793548800000, "site": "其他媒体", "url": "https://sellercentral.amazon.com/help/hub/reference/external/GQHQGBTD7XB7EECN", "doc": "https://my.feishu.cn/docx/B0JsdoSwFoqXDTx0ItOcHpo5nDh", "at": 1789005000000, "sum": "【事件】亚马逊美国站自2026年11月2日起更新商业责任险要求：①销售“强化安全上架要求”类目商品（含儿童产品、化妆品/可摄入商品、消防相关、家用医疗设备、锂电池商品、户外动力、个人防护装备、睡眠商品、轮胎、水上安全等）的卖家，无论月销售额是否达到1万美元，均须维持单次事故及累计100万美元保额的商业责任险；②公司地址位于中国大陆的卖家，新投保/续保须通过亚马逊保险加速器（AIA）获取保单，11月2日起非AIA新提交保单将被拒绝，11月2日前已提交的合规第三方保单可用至到期。【影响】公司小家电/工具/含锂电池产品若在美国站销售，可能落入锂电池商品、一般家用设备、户外动力等类目，即使月销未达1万美元也须强制投保；中国大陆卖家未来保险渠道受限，需在AIA内比价投保，保费与理赔可预期性成为运营成本项；未合规将导致相关Listing被停用、销售权限受限。【行动建议】立即对照Amazon Seller Central“强化安全上架要求类目”清单排查在售ASIN；确认现有保单是否覆盖相关商品、是否将Amazon列为附加被保险人、免赔额≤1万美元、无日落条款；大陆卖家规划11月2日前通过AIA完成投保或续保，预留审核周期。"},
+ {"id": "n65", "lv": "A", "score": 23.0, "cat": "增值税", "title": "深圳跨境电商税务自查9月11日届满：全国多地卖家收到预警短信，海关报关单/平台订单/企业申报三方7×24比对", "no": "-", "organ": "税务总局", "taxes": ["增值税"], "lines": ["跨境零售"], "countries": ["中国"], "eff": 1789056000000, "site": "其他媒体", "url": "https://www.52by.com/article/234828", "doc": "https://my.feishu.cn/docx/CsmKdhwN9odW5vxivtkc52Kjnle", "at": 1789094100000, "sum": "事件概述：深圳等地税务局9月以来向跨境电商卖家批量发送自查预警短信，明确标注店铺名/公司名/差异金额/异常月份，9月11日为自查截止日。海关报关单、平台按季推全量订单、企业《增值税申报表》三方数据7×24自动比对运行中。\n对卖家影响：小规模纳税人《增值税申报表》第13栏“出口免税销售额”和第14栏必须如实填列，免税≠零申报；差异金额被系统自动锁定后未自查补报将面临滞纳金+信用降级。\n行动建议：立即完成“报关额 vs 平台实付GMV vs 申报出口免税销售额”三表对账底稿并留档；9810“离境即退税”须配套海外仓入出库与盘点表；申报地主体尤其关注区域性核查。"},
+ {"id": "n66", "lv": "B", "score": 14.0, "cat": "其他", "title": "亚马逊APEX专利申诉窗口期由21天压缩至14天，3C/家居/母婴新品上架前置专利校验", "no": "-", "organ": "其他", "taxes": ["其他"], "lines": ["3C"], "countries": ["美国"], "eff": 1788883200000, "site": "其他媒体", "url": "https://sellerview.ai/blog/amazon-seller-fees-2025-vs-2026", "doc": "", "at": 1789094100000, "sum": "事件概述：亚马逊将APEX专利申诉窗口从21天压缩至14天，逾期未提交有效抗辩材料ASIN将永久下架；同时3C/家居/母婴类目新品上架自动比对全球专利库，进行前置专利校验。\n对卖家影响：仿品生存空间被系统性压缩，新品上架前须完成目标市场专利与商标检索；申诉时间缩短意味着收到专利投诉后须在14天内完成材料准备。\n行动建议：9月内建立新品上架前专利/商标前置检索清单（3C/家居/母婴强制）；对在售链接排查专利风险；准备APEX申诉标准模板（授权链+差异比对+在先使用证据）。"},
+ {"id": "n67", "lv": "B", "score": 13.0, "cat": "其他", "title": "亚马逊欧洲站锂电池TIC认证9月30日强制生效：移动电源/储能/电动工具/锂电家居配件无证书直接下架", "no": "-", "organ": "其他", "taxes": ["其他"], "lines": ["电池"], "countries": ["欧盟"], "eff": 1790697600000, "site": "其他媒体", "url": "https://www.52by.com/article/234828", "doc": "https://my.feishu.cn/docx/QSljdUyhboeedgxcFe1cJz7MnBg", "at": 1789094100000, "sum": "事件概述：亚马逊欧洲站要求移动电源、储能产品、电动工具、含锂电池家居配件在9月30日前取得有效TIC（Testing, Inspection and Certification）证书，否则直接下架。FBA仓内现货老SKU优先核验，申诉周期漫长。\n对卖家影响：含锂电池产品（如公司应急电源/启动电源等含锂电部件的汽车工具类产品）如出口欧洲须完成TIC认证；无证书将导致Listing下架、FBA库存积压。\n行动建议：立即盘点欧洲站含锂电池ASIN的TIC证书覆盖率；联系CMA资质检测机构出具备注报告；预留充足换证时间（申诉周期可能超30天）；同步检查UN38.3报告和运输鉴定书是否在有效期内。"},
+ {"id": "n68", "lv": "B", "score": 10.0, "cat": "其他", "title": "9月14日起多平台低价引流SKU专项治理：配件/低配小样异常低价链接将被下架扣分", "no": "-", "organ": "其他", "taxes": ["其他"], "lines": ["跨境零售"], "countries": ["其他"], "eff": 1789315200000, "site": "其他媒体", "url": "https://www.52by.com/article/234828", "doc": "https://my.feishu.cn/docx/LzIkd9QNqoZ9w8xZxTQcAOFinJb", "at": 1789094100000, "sum": "事件概述：亚马逊等多平台9月14日起启动低价引流SKU专项排查，利用配件、低配小样设置异常低价诱导点击、实际成交为主商品的链接将被下架、扣分。多平台同步核验前台标价与真实成交价一致性。\n对卖家影响：依靠低价配件SKU做引流的运营方式不再可行；变体结构中存在“配件引流+主品成交”模式的链接面临批量下架风险。\n行动建议：9月14日前完成全店变体结构排查，保证前台展示商品与低价SKU实物一致；移除“配件/小样引流”变体设置；核对各平台前台标价与真实成交价一致性。"},
+ {"id": "n69", "lv": "B", "score": 10.0, "cat": "其他", "title": "亚马逊印度站9月7日起Closing Fee上调：低价商品+1卢比、高价值+3卢比", "no": "-", "organ": "其他", "taxes": ["其他"], "lines": ["跨境零售"], "countries": ["其他"], "eff": 1788710400000, "site": "其他媒体", "url": "https://www.ormguru.com/blog/amazon-closing-fee-increase-from-7-september-2026-complete-seller-cost-breakdown", "doc": "", "at": 1789094100000, "sum": "事件概述：亚马逊印度站自9月7日起上调Closing Fee，定价≤500卢比的订单每单+1卢比，>500卢比的+3卢比。适用于FBA、Easy Ship和Seller Flex三种履约模式。\n对卖家影响：印度站卖家每单成本小幅上升，旺季大促（Diwali）期间订单量激增时影响累积明显。\n行动建议：核算印度站SKU利润率，调整定价模型吸收新增费用；关注Festive Season备货窗口；如公司未在印度站经营可作信息储备。"},
+ {"id": "n70", "lv": "B", "score": 13.0, "cat": "其他", "title": "亚马逊2026秋季Prime Day/黑五备货关键截止节点：Deal提报9/8关闭，FBA最少拆分9/9截止，优化拆分9/16截止，黑五提报10/20截止", "no": "-", "organ": "其他", "taxes": ["其他"], "lines": ["跨境零售"], "countries": ["美国"], "eff": 1788883200000, "site": "其他媒体", "url": "https://www.52by.com/article/234828", "doc": "", "at": 1789094100000, "sum": "事件概述：亚马逊2026秋季会员日Deal提报9月8日关闭，FBA最少拆分入仓9月9日截止，优化拆分9月16日截止；黑五网一提报窗口至10月20日。秋促活动价不计入黑五价格回溯门槛。\n对卖家影响：错过入仓截止日将无法参与秋促；黑五备货窗口收窄，FBA入仓压力集中在9月中下旬。\n行动建议：确认秋促备货已入仓（9/9最少拆分截止前）；规划黑五备货时间线（10/20前提报+11月入仓）；利用秋促参考数据优化黑五选品与定价策略。"},
+ {"id": "n71", "lv": "B", "score": 18.0, "cat": "其他", "title": "跨国公司本外币跨境资金集中运营新规9月14日全国推广", "no": "-", "organ": "其他", "taxes": ["其他"], "lines": ["跨境零售"], "countries": ["中国"], "eff": null, "site": "其他媒体", "url": "https://www.pbc.gov.cn/goutongjiaoliu/113456/113469/5171270/index.html", "doc": "", "at": 1789353060000, "sum": "事件概述：人民银行、外汇局联合发布《关于跨国公司本外币跨境资金集中运营业务有关事宜的通知》，9月14日起全国推广，不再限于试点。核心红利：①降低建池门槛（自贸区可进一步下调）；②本外币一体化（集中外债与境外放款额度，允许自主归集比例）；③简化备案（一个窗口对外）。\n对卖家影响：多主体（多国子公司、本地法人）跨境资金归集与轧差净额结算成本下降，备货现金流压力缓解，可与仓单质押/库存融资组合成金融增值服务。\n行动建议：集团型跨境卖家启动资金池备案，统筹境内外资金调配，优先本币结算降低汇兑成本。"},
+ {"id": "n72", "lv": "B", "score": 14.0, "cat": "其他", "title": "亚马逊FBM单个Offer可被单独停用新规（8/31起生效）", "no": "-", "organ": "其他", "taxes": ["其他"], "lines": ["跨境零售"], "countries": ["美国"], "eff": null, "site": "其他媒体", "url": "https://sellercentral.amazon.com", "doc": "", "at": 1789353060000, "sum": "事件概述：自2026年8月31日起，若某个FBM（卖家自配送）Offer危及账户健康，亚马逊可临时停用该Offer，而账户其余Listing与整体账户健康可能不受影响。评估四项指标：取消率、迟发率、订单缺陷率、准时送达率。停用前平台先发警告邮件。\n对卖家影响：单个高营收Offer停用会立即断销量、掉排名、浪费广告预算；Q4旺季前夕该风险放大。\n行动建议：Q4前做SKU级FBM目录自查，留存订单号、承运商扫描记录、买家沟通、A-to-z记录等证据。"},
+ {"id": "n73", "lv": "B", "score": 13.0, "cat": "其他", "title": "CMA CGM宣布10/1起旺季附加费：远东→美西$4000/美东$10000/40ft", "no": "-", "organ": "其他", "taxes": ["其他"], "lines": ["跨境零售"], "countries": ["美国"], "eff": null, "site": "其他媒体", "url": "https://www.cma-cgm.com", "doc": "", "at": 1789353060000, "sum": "事件概述：达飞轮船（CMA CGM）宣布自2026年10月1日起实施旺季附加费（PSS）：远东及印巴→美西4,000美元/40ft；印巴→美东10,000美元/40ft。若其他船司跟进，跨太平洋现货价可能进一步跳涨。\n对卖家影响：Q4旺季海运成本攀升，大件/重货影响最大；叠加巴拿马运河枯水导致美东船期延误，运价上行压力加大。\n行动建议：旺季备货本月中旬前完成订舱锁舱，避免最后一周挤兑；中小批量秋冬家居/汽配小件可考虑中欧班列替代方案。"},
+ {"id": "n74", "lv": "B", "score": 15.0, "cat": "其他", "title": "CPSC 9月10日批量召回：SHEIN熊形磁铁/指灯/电吹风等多品类（电池吞食/起火/电击）", "no": "-", "organ": "其他", "taxes": ["其他"], "lines": ["3C"], "countries": ["美国"], "eff": null, "site": "CPSC", "url": "https://www.cpsc.gov/Recalls", "doc": "", "at": 1789353060000, "sum": "事件概述：CPSC于9月10日通报多起召回：ZMC Group发光玩具（纽扣电池吞食风险，违反Reese's Law）、Cade California指灯（电池吞食）、SHEIN熊形冰箱磁铁（磁铁吞食）、广州电吹风刷（电击/灼伤）、Triumph摩托车（气门故障）等。多起为亚马逊渠道销售。\n对卖家影响：CPSC持续严格执行Reese's Law（纽扣/硬币电池安全标准），含锂电池部件产品需确保电池仓不可被儿童轻易打开、包装须有警示标签。\n行动建议：含电池产品核查电池仓安全设计、儿童防护包装及警示标签合规；亚马逊渠道产品关注CPSC eFiling要求。"},
+ {"id": "n75", "lv": "B", "score": 12.0, "cat": "其他", "title": "亚马逊美国站Q4旺季FBA配送费+3.5%燃油附加费双重叠加（10/15起）", "no": "-", "organ": "其他", "taxes": ["其他"], "lines": ["跨境零售"], "countries": ["美国"], "eff": null, "site": "其他媒体", "url": "https://www.amz123.com/t/uJirBLtp", "doc": "", "at": 1789353060000, "sum": "事件概述：10月15日至2027年1月14日旺季期间，美国站FBA订单全面加收旺季配送费（小号标准+0.19美元/件、大号标准+0.39美元/件、超大件+2.81美元/件，平均+0.32美元），叠加4月17日起生效的3.5%燃油及物流附加费（按履约费用计算，平均每单位+0.17美元）。库存规则同步收紧：库龄181天起计超龄附加费，超365天最高达常规仓储费13倍。\n对卖家影响：低客单价薄利润产品Q4盈利被进一步压缩；大件/重货双重冲击最大。\n行动建议：将旺季配送费与3.5%附加费全部纳入成本核算，逐SKU重算Q4利润；依据历史销量合理规划备货，关注库龄变化。"},
+ {"id": "n76", "lv": "B", "score": 14.0, "cat": "其他", "title": "亚马逊含逼真AI生成人物图片须加元数据标记（6/6起已强制，存量需回补）", "no": "-", "organ": "其他", "taxes": ["其他"], "lines": ["跨境零售"], "countries": ["美国"], "eff": null, "site": "其他媒体", "url": "https://sellercentral.amazon.com", "doc": "", "at": 1789353060000, "sum": "事件概述：亚马逊要求商品图片、视频及A+内容中若出现photorealistic AI-generated people（逼真AI生成人物），上传前必须嵌入指定元数据标记（文件上传在dc:subject/XMP字段加入关键词contains-synthetic-performer；A+ Content Manager可勾选AI-generated people）。6月6日起已强制执行，此前发布但符合条件的素材也需回补。适用全球站点。\n对卖家影响：使用AI生成模特图/场景图的Listing需补充标记，否则可能被下架。边界：真实人物照片（即使后期AI修饰）、影视角色、明显非逼真形象不适用。\n行动建议：排查存量图片/A+素材是否含AI生成人物，及时回补标记；新素材在上传前确认标记嵌入。"},
+ {"id": "n77", "lv": "A", "score": 19.0, "cat": "其他", "title": "美国CBP拟议规则：加强进口披露以实现供应链可见性（要求提交外国出口文件、识别IOR与制造商，打击非法转运）", "no": "91 FR 56408（Docket USCBP-2026-1058）", "organ": "其他", "taxes": ["关税"], "lines": ["全品线"], "countries": ["美国"], "eff": null, "site": "其他媒体", "url": "https://www.federalregister.gov/documents/2026/09/02/2026-17926/heightened-import-disclosures-for-supply-chain-visibility", "doc": "https://my.feishu.cn/docx/Q31AdiUuQotGcexoYdpc8K2yn6b", "at": 1789354200000, "sum": "事件概述：美国海关与边境保护局（CBP）9月2日在《联邦公报》发布拟议规则预先通知（ANPRM，91 FR 56408，Docket USCBP-2026-1058，涉及19 CFR Parts 141/142/143/163），落实总统行政令E.O. 14411《加强海关执法》。围绕三大支柱征求公众意见（共64问，评论截止2026年12月1日）：①要求进口商（IOR）提交外国出口文件——出口报关单、商业发票、装箱单、原产地证书、出口许可证、运输单据（提单/空运单）；②强化进口相关当事方识别——考虑重新定义或替换制造商识别码（MID），强制披露全球商业标识（GBI：D-U-N-S/GLN/LEI），并可能把在线市场（online marketplace）纳入识别范围；③引入AI等技术追踪供应链，扩大CTPAT要求并拟禁止使用被认定为国家安全风险的“受涵盖物流平台”（如LOGINK）。\n对卖家影响：政策方向是把清关合规责任前移至进口商与供应链上游——出口报关单与原产地证书若成为强制随附单证，低报申报与三方转运路径将被压缩；IOR身份核验与MID/GBI披露强化，意味着境内主体若直接或间接充当美国IOR，须承担更高的单证留存与真实性责任（19 U.S.C. 1508/1509记录保存与传唤权）。公司对美全品线出口（汽车工具、小家电、含锂电池产品）均在适用范围内。边界提示：当前为拟议阶段（ANPRM，未生效、无最终披露清单与合规时间表，后续须经NPRM→最终规则），但E.O. 14411已明确政策取向，中期落地概率较高。\n行动建议：①建立出口单证一致性内控——出口报关单/发票/装箱单/原产地证书的申报口径（价格、归类、数量、原产地）须与美方进口申报可交叉核验；②梳理美国线IOR架构（自持IOR vs 第三方IOR/双清包税），评估单证披露义务与法律责任归属；③对经第三国转运链路开展原产地合规审查，防范“非法转运”认定；④关注12月1日评论窗口，可通过行业协会口径提交成本影响意见，争取过渡期与“合理谨慎”安全港；⑤跟踪MID/GBI替换对ACE系统对接与报关行协同的影响。"},
+ {"id": "n78", "lv": "B", "score": 17.0, "cat": "其他", "title": "亚马逊德国站升级参考价及建议零售价(RRP)验证规则，欧盟其他站点陆续跟进", "no": "-", "organ": "其他", "taxes": ["其他"], "lines": ["全品线"], "countries": ["欧盟"], "eff": null, "site": "其他媒体", "url": "https://channelx.world/2026/09/update-your-recommended-retail-prices-on-amazon/", "doc": "", "at": 1789355400000, "sum": "事件概述：2026-09-09起亚马逊德国站正式升级RRP/参考价双重验证规则，要求站内曾以RRP价格成交的记录必须在Rufus价格历史图表中作为精选报价展示足够天数（算法口径≈过去90天至少10%可购买天数以RRP作为FeaturedOffer稳定成交）；此前英国站6/23已先行落地，欧盟其他站点将陆续铺开；同时美国站List Price底层校验同步升级，后台出现Saleshistrogrammatchbutfopfailed报错。\n对卖家影响：（1）依赖大额Coupon/站外Code/历史划线价的ASIN面临参考价被静默隐藏，点击率与转化率即时下降；（2）秋促/黑五LD/BD提报门槛=有效参考价，划线价丢失会导致已申报活动被临时取消；（3）RRP与日常售价差距>30%或长期高折扣的Listing属于高风险群。\n行动建议：（a）本周全店导出近90天实际成交价，对比后台RRP，差距>30%或大额Code依赖的ASIN优先收敛RRP至日常售价1.15-1.25倍区间；（b）多渠道铺设外部参考价（独立站/Target/BestBuy），含EAN/UPC/品牌/型号，作为申诉证据；（c）每月预留≥10%无大额促销周期，让ASIN以接近原价稳定成交沉淀FOP数据；（d）将划线价渲染状态纳入每日早盘巡店SOP。\n适用边界：仅适用于亚马逊德国站及后续欧盟各站；新品低流量Listing（PriceHistory<10天）尚处观察期可能暂免。"},
+ {"id": "n79", "lv": "B", "score": 15.0, "cat": "其他", "title": "亚马逊暂停与货运航司21 Air LLC合作：9/6迈阿密机场跑道事故后Q4旺季前物流渠道切换", "no": "-", "organ": "其他", "taxes": ["其他"], "lines": ["全品线"], "countries": ["美国"], "eff": null, "site": "其他媒体", "url": "https://usstock.jrj.com.cn/2026/09/14101858425063.shtml", "doc": "", "at": 1789355400000, "sum": "事件概述：2026-09-14亚马逊官方博客确认暂停与货运航空公司21 Air LLC的合作，背景是21 Air运营的波音767货机（航班号7598）于9/6在迈阿密国际机场冲出停机坪撞上两辆车，造成地面5人死亡、5人受伤；NTSB调查期间亚马逊主动暂停合作。\n对卖家影响：（1）使用21 Air承运的FBA头程/AGL跨境空运货物需切换其他航司或地面运输，短期舱位紧张与运价上涨概率上升；（2）2026年Q4旺季前黑五/网一备货时效可能受波及，需关注FBA入库截止节点；（3）锂电池品线（公司实际品线含空气泵、应急电源、雪刷等带电产品）受航空货代更严审查影响，需提前确认替代航司的DGR合规能力。\n行动建议：（a）核对在途或近期计划发运的FBA头程货代承运合同，确认是否涉及21 Air；（b）联系货代/AGL客户经理取得替代航司方案并锁定舱位（建议优先Atlas Air/Southern Air/ATS等大型货代）；（c）黑五FBA最晚入库10月中旬前完成入仓的货物建议走替代航司排载；（d）含锂货物提前准备UN38.3/MSDS/UN3480-3481标签以应对更严审查。\n适用边界：仅影响通过21 Air承运的跨境空运段，对海运/铁路/卡派等不受波及。"},
+ {"id": "n80", "lv": "B", "score": 13.0, "cat": "其他", "title": "沃尔玛 Ship with Walmart 物流折扣升级：9月起Rising/Advanced/Pro卖家2日达标签最高35%off", "no": "-", "organ": "其他", "taxes": ["其他"], "lines": ["全品线"], "countries": ["美国"], "eff": null, "site": "其他媒体", "url": "https://marketplacelearn.walmart.com/releasenotes", "doc": "", "at": 1789355400000, "sum": "事件概述：沃尔玛Marketplace自2026年9月起将Ship with Walmart (SWW) 物流折扣升级，针对Rising/Advanced/Pro Seller层级：3日达标签最高15%off、2日达标签最高35%off，条件是所选运输时效必须与向买家展示的delivery promise一致；折扣即时适用，卖家可在Seller Center/GeekSeller等集成工具直接买标并打单。\n对卖家影响：（1）使用Walmart Fulfilled Network或自发货卖家物流成本显著下降，旺季前的FBM定价竞争力提升；（2）触发条件=配送时效与承诺一致，对Shipping Template设置准确性要求上升（已有International Shipping Templates可选用，Custom最快10日达/Default最快13日达）；（3）保护条款：符合资格的运输若NTR/INR可享最高100美元赔付+卖家保护，仍由沃尔玛对接承运商理赔。\n行动建议：（a）复核当前店铺Seller Performance等级，未达Rising的优先冲指标（取消率≤2%、及时配送率≥90%、有效追踪率≥99%、回复率≥95%、迟发率≤5%）；（b）Walmart后台定价模型更新：自发货美国订单的运费模板与delivery promise匹配；（c）涉及美区大件（家具/家电/汽配）的Listing切换至2日达+SWW享35%折扣+100美元赔付；（d）配合9/14发布的热门商品激励计划（Hot Items Incentive，2日达或WFS享100%佣金减免+仓储费100%减免+配送费15%减免），最大化激励叠加。\n适用边界：仅Rising/Advanced/Pro卖家享折扣；其他卖家继续按原报价；multi-box fulfillment不在SWW适用范围内。"},
+ {"id": "n81", "lv": "B", "score": 12.0, "cat": "其他", "title": "速卖通“平台配”美国商家数月环比涨超200%：跨境直发→本地仓近配成为出海四小龙共同动作", "no": "-", "organ": "其他", "taxes": ["其他"], "lines": ["全品线"], "countries": ["美国"], "eff": null, "site": "其他媒体", "url": "https://hao.chwang.com/daily", "doc": "", "at": 1789355400000, "sum": "事件概述：出海网2026-09-14早报显示，阿里速卖通“平台配”在美国市场正式上线13.5KG以上家具/家电/渔具等重大件“本地发货、本地配送”，8月环比7月使用平台配的商家数翻超2倍、NR率大降30%、签收时效平均快1.8天；9月中旬将再开德国站；同步推出“NR违规处罚周期减免+新商288元投流补贴”组合拳（揽收晚/到货慢不罚，NR不进店铺考核），整体运营成本降超10%。\n对卖家影响：（1）平台直配/海外仓本地配送成为平台合规主流方向，跨境直发模式（AliExpress Standard Shipping/ePacket）边际成本与时效劣势扩大；（2）以速卖通为主战场的卖家需评估切到平台官方配的可行性（“物流—��要发货/运费模板”切换），换取罚款豁免、流量补贴与“像本国店一样快”的买家信任；（3）背景：欧盟618本地仓订单规模已压过跨境直发；SHEIN、Temu均同步将履约前置到本地仓，跨境直发往“本地仓近配”迁移是行业拐点；（4）大件品线（家具/家电/渔具）成本与时效优势放大，但需确认本地仓备货深度。\n行动建议：（a）盘点目前跨境直发单量中重大件/高NR率的SKU，评估切到速卖通平台配的运费差与NR改善收益；（b）新入驻商家优先申请“288元投流补贴+NR处罚减免”组合券，降低试错成本；（c）涉及欧洲市场的Listing同步关注德国站9月中旬平台配上线的细则，争取与法国/西班牙/墨西哥/波兰同步政策套利；（d）建立“平台配NR率/签收时效”周看板，作为后续调整运营策略的核心KPI。\n适用边界：仅适用于速卖通美国站商家；其他平台（Temu/SHEIN）有类似但独立的本地仓履约政策，需分别对照。"}
 ];
 
 /* ===SOURCES-BEGIN=== */
@@ -661,6 +679,7 @@ const SOURCES_CONFIG = [
   {id:"chinatax_fgk",name:"税务总局法规库",url:"https://fgk.chinatax.gov.cn",type:"政策法规",keywords:"出口退税 增值税 消费税 公告 通知",enabled:true,note:"中国税务总局官方法规发布平台，核心数据源"},
   {id:"mof",name:"财政部",url:"https://www.mof.gov.cn",type:"政策法规",keywords:"财税 出口退税 关税 公告",enabled:true,note:"财政部官网政策发布"},
   {id:"customs",name:"海关总署",url:"http://www.customs.gov.cn",type:"政策法规",keywords:"海关 商品编号 反倾销 关税 公告",enabled:true,note:"海关总署公告与商品编号调整"},
+  {id:"fedreg",name:"美国联邦公报 Federal Register",url:"https://www.federalregister.gov",type:"政策法规",keywords:"CBP customs import disclosure supply chain tariff executive order forced labor importer of record",enabled:true,note:"美国联邦公报，CBP拟议/最终规则、关税与总统行政令原文发布平台（海关清关）"},
   {id:"chinatax_sh",name:"税务总局(沪)",url:"https://shanghai.chinatax.gov.cn",type:"政策法规",keywords:"增值税 出口退税 上海 通知",enabled:true,note:"上海税务局补充源"},
   {id:"shui5",name:"税屋 shui5.cn",url:"https://www.shui5.cn",type:"行业资讯",keywords:"增值税 消费税 出口退税 解读",enabled:true,note:"税屋专业税务解读与法规汇编"},
   {id:"taxrefund",name:"出口退税网",url:"http://taxrefund.com.cn",type:"行业资讯",keywords:"出口退税 退税政策 退税操作",enabled:true,note:"出口退税专业资讯网站"},
@@ -707,6 +726,9 @@ const st={tax:{lv:"全部",cat:"全部"},cus:{lv:"全部",cat:"全部"},pla:{lv:
 const itemsOf=b=>TAX_NEWS.filter(i=>boardOf(i)===b);
 /* ===== 新增未读标识（绿色 NEW）：72h 窗口 + 本机已读记录 ===== */
 const NEW_WINDOW_MS=3*24*3600*1000;
+/* 「今日新增」：抓取时间 >= 本机当日 00:00 的条目数（跨板块全库口径） */
+function todayStartMs(){const d=new Date();d.setHours(0,0,0,0);return d.getTime();}
+function todayNewCount(arr){const t0=todayStartMs();return (arr||TAX_NEWS).filter(i=>(i.at||0)>=t0).length;}
 let _readSet=null;
 function _ls(){try{return window.localStorage||null;}catch(e){return null;}}
 function readSet(){
@@ -720,9 +742,19 @@ function itemKey(it){return (it.at||0)+"|"+String(it.title||"").slice(0,24);}
 function isNewItem(it){if(!it||!it.at)return false;if(Date.now()-it.at>NEW_WINDOW_MS)return false;return !readSet().has(itemKey(it));}
 function newBadge(it){return isNewItem(it)?'<span class="new-badge" data-k="'+encodeURIComponent(itemKey(it))+'" title="新增未读 · 点击标为已读">新</span>':"";}
 function unreadCount(){let n=0;try{TAX_NEWS.forEach(it=>{if(isNewItem(it))n++;});}catch(e){}return n;}
+/* 页签上的「新」计数：让用户一眼看出新条目落在哪个板块 */
+function updateTabNew(){
+  [["tax","TabNewTax"],["cus","TabNewCus"],["pla","TabNewPla"]].forEach(function(p){
+    const el=$(p[1]); if(!el)return;
+    let n=0; try{n=itemsOf(p[0]).filter(isNewItem).length;}catch(e){}
+    el.textContent=n?String(n):"";
+    el.className="tab-new"+(n?" on":"");
+  });
+}
 function updateUnreadUI(){
   const n=unreadCount(),el=$("statUnread");
   if(el){el.style.display=n?"":"none";const b=$("statUnreadN");if(b)b.textContent="+"+n;}
+  updateTabNew();
 }
 function markAllRead(){
   try{TAX_NEWS.forEach(it=>{if(isNewItem(it))readSet().add(itemKey(it));});saveRead();}catch(e){}
@@ -739,7 +771,7 @@ document.addEventListener("click",ev=>{
 });
 const _unreadEl=$("statUnread");if(_unreadEl)_unreadEl.onclick=markAllRead;
 /* ===== 页内重点分级：P1沿用税务评分；P2/P3按板块语义（存量人工锁定+新条目规则） ===== */
-const FOCUS_MAP={"促进和规范电子单证应用规定": "C", "商务部关于公布对原产于美国、欧盟、台湾地区和日本的进口共聚聚甲醛反倾销措施相关企业税率继承决定的通知": "B", "海关总署关于公布有关电池产品对应海关商品编号的公告": "A", "亚马逊欧洲站强制税务合规：9月1日起泛欧货件入欧盟仓须提供MRN和EORI": "A", "美国CBP 9月18日起强化进口商记录(IOR)核验：信息不符将作废IOR号码影响清关": "A", "外媒：美拟在9月24日中美峰会前依301条款对华商品再加征7.5%“产能过剩”关税（叠加后替代性关税逼近20%上限）": "A", "美国无人机Section 232关税9月3日正式生效：>25kg/热成像/停机舱100%、消费级25%，与301叠加": "B", "巴西50美元以下跨境小包零关税临时政策9月8日到期：国会本周表决，未通过则9月9日自动恢复20%进口税": "A", "亚马逊泛欧FBA强制扩容：9月3日起须同步荷兰站可售，否则退出Pan-EU": "A", "CPSC召回150万只OCOOPA充电暖手宝：1480起过热、1人死亡，涉亚马逊/沃尔玛": "B", "CPSC扩大召回Cuisinart金属丝烧烤刷至360万只：54起金属丝脱落致伤，沃尔玛/亚马逊有售": "C", "美客多9月起调整卖家信誉计算规则：墨西哥60天门槛提至101单，多国切换365天考核周期": "B", "亚马逊对香港主体卖家发起两轮'主要营业地址'验证：限期未完成将扣留欧盟及英国站点付款": "A", "安克创新披露2026年半年报：Q2净利同比+83%，IEEPA关税退回约10.5亿元增厚毛利": "B", "美国FCC将'外国产先进机器人'列入受限清单：扫地机器人等新品无法获授权进入美国": "B", "CPSC于9月3日通报召回Truststone XO Poppy磁吸无线充电宝3.24万台：锂电过热起火风险（TJX/Marshalls渠道）": "B", "eBay 9月24日起全球禁售独立安全气囊/充气装置/方向盘气囊盖（新品二手修复件均禁，约30天合规缓冲）": "B", "欧洲港口罢工潮：德国汉堡等港9月2日起48小时罢工，荷兰鹿特丹/阿姆斯特丹/泽兰9月4日停装近8小时": "B", "Victoria's Secret披露Q2获超1.4亿美元IEEPA关税退款（占已缴95%以上）并上调全年指引": "B", "财政部 税务总局关于调整平潭综合实验区有关增值税和消费税退税货物范围的通知": "B", "21世纪经济报道9月7日：12家跨境电商上市公司半年考——IEEPA关税退税与海外仓切换成利润主线，直邮红利消退": "B", "春风动力9月7日公告：子公司收到美国IEEPA关税及利息退回5403.24万美元（约3.66亿元），预计影响2026年净利约2.56亿元": "B"};
+const FOCUS_MAP={"促进和规范电子单证应用规定": "C", "商务部关于公布对原产于美国、欧盟、台湾地区和日本的进口共聚聚甲醛反倾销措施相关企业税率继承决定的通知": "B", "海关总署关于公布有关电池产品对应海关商品编号的公告": "A", "亚马逊欧洲站强制税务合规：9月1日起泛欧货件入欧盟仓须提供MRN和EORI": "A", "美国CBP 9月18日起强化进口商记录(IOR)核验：信息不符将作废IOR号码影响清关": "A", "外媒：美拟在9月24日中美峰会前依301条款对华商品再加征7.5%“产能过剩”关税（叠加后替代性关税逼近20%上限）": "A", "美国无人机Section 232关税9月3日正式生效：>25kg/热成像/停机舱100%、消费级25%，与301叠加": "B", "巴西50美元以下跨境小包零关税临时政策9月8日到期：国会本周表决，未通过则9月9日自动恢复20%进口税": "A", "亚马逊泛欧FBA强制扩容：9月3日起须同步荷兰站可售，否则退出Pan-EU": "A", "CPSC召回150万只OCOOPA充电暖手宝：1480起过热、1人死亡，涉亚马逊/沃尔玛": "B", "CPSC扩大召回Cuisinart金属丝烧烤刷至360万只：54起金属丝脱落致伤，沃尔玛/亚马逊有售": "C", "美客多9月起调整卖家信誉计算规则：墨西哥60天门槛提至101单，多国切换365天考核周期": "B", "亚马逊对香港主体卖家发起两轮'主要营业地址'验证：限期未完成将扣留欧盟及英国站点付款": "A", "安克创新披露2026年半年报：Q2净利同比+83%，IEEPA关税退回约10.5亿元增厚毛利": "B", "美国FCC将'外国产先进机器人'列入受限清单：扫地机器人等新品无法获授权进入美国": "B", "CPSC于9月3日通报召回Truststone XO Poppy磁吸无线充电宝3.24万台：锂电过热起火风险（TJX/Marshalls渠道）": "B", "eBay 9月24日起全球禁售独立安全气囊/充气装置/方向盘气囊盖（新品二手修复件均禁，约30天合规缓冲）": "B", "欧洲港口罢工潮：德国汉堡等港9月2日起48小时罢工，荷兰鹿特丹/阿姆斯特丹/泽兰9月4日停装近8小时": "B", "Victoria's Secret披露Q2获超1.4亿美元IEEPA关税退款（占已缴95%以上）并上调全年指引": "B", "财政部 税务总局关于调整平潭综合实验区有关增值税和消费税退税货物范围的通知": "B", "21世纪经济报道9月7日：12家跨境电商上市公司半年考——IEEPA关税退税与海外仓切换成利润主线，直邮红利消退": "B", "春风动力9月7日公告：子公司收到美国IEEPA关税及利息退回5403.24万美元（约3.66亿元），预计影响2026年净利约2.56亿元": "B", "CPSC 9月10日批量召回：SHEIN熊形磁铁/指灯/电吹风等多品类（电池吞食/起火/电击）": "B", "亚马逊含逼真AI生成人物图片须加元数据标记（6/6起已强制，存量需回补）": "B"};
 const boardLvOf=(it,b)=>{
   if(b==="tax"){const k=FOCUS_MAP[it.title];return k?k:it.lv;}
   const k=FOCUS_MAP[it.title]; if(k)return k;
@@ -852,10 +884,10 @@ function renderBoard(b){
   const topTax=Object.entries(taxMap).sort((a,b)=>b[1]-a[1]).slice(0,4);
   $(cfg.kv).innerHTML=topTax.map(([t,n])=>"<div class=\"kv\"><b>"+esc(t)+"</b><span><span class=\"hl\">"+n+"</span> 条</span></div>").join("")
     +"<div class=\"kv\"><b>信息源</b><span>"+Object.entries(siteMap).sort((a,b)=>b[1]-a[1]).map(([s,n])=>esc(s)+" "+n).join(" · ")+"</span></div>";
-  const news=TAX_NEWS.filter(i=>i.at===SNAPSHOT.lastScan).length;
+  const news=todayNewCount(TAX_NEWS);
   $(cfg.snap).innerHTML=
     "<div class=\"kv\"><b>最近扫描</b><span>"+fd(SNAPSHOT.lastScan)+"</span></div>"
-    +"<div class=\"kv\"><b>本次新增</b><span><span class=\"hl\">"+news+"</span> 条</span></div>"
+    +"<div class=\"kv\"><b>今日新增</b><span><span class=\"hl\">"+news+"</span> 条</span></div>"
     +"<div class=\"kv\"><b>看板更新</b><span>"+esc(SNAPSHOT.updatedAt)+"</span></div>"
     +"<div class=\"kv\"><b>更新机制</b><span>每日 10:05 数据同步后自动刷新</span></div>";
 }
@@ -884,7 +916,7 @@ function refreshHeader(){
   if(tab==="tax"||tab==="cus"||tab==="pla"){arr=sortedOf(tab);}
   else{arr=TAX_NEWS;}
   const A=arr.filter(i=>i.lv==="A").length;
-  const news=arr.filter(i=>i.at===SNAPSHOT.lastScan).length;
+  const news=todayNewCount(TAX_NEWS);
   if($("statA"))$("statA").textContent=A;
   if($("statTotal"))$("statTotal").textContent=arr.length;
   if($("statNew"))$("statNew").textContent="+"+news;
@@ -906,11 +938,19 @@ document.querySelectorAll(".tab-btn").forEach(btn=>{
 });
 ["tax","cus","pla"].forEach(renderBoard);
 updateUnreadUI();
-setTimeout(()=>{try{if(document.visibilityState!=="hidden")markAllRead();}catch(e){}},90000);
+/* 重置已读：清除本机已读记录并重渲染，恢复全部「新」角标 */
+const _resetReadEl=$("statResetRead");
+if(_resetReadEl)_resetReadEl.onclick=()=>{
+  try{readSet().clear();saveRead();}catch(e){}
+  ["tax","cus","pla"].forEach(renderBoard);
+  updateUnreadUI();refreshHeader();
+  toast("已重置本机已读记录，「新」角标已全部恢复");
+};
+/* 注：原「打开 90 秒后自动全部已读」定时器已移除——改由用户点击角标 /「新增未读」/「重置已读」自主控制 */
 
 /* ── P2: Source Management ── */
 const CAT_CLS={政策法规:"policy",平台动态:"platform",行业资讯:"industry",上市公司:"listed",产品召回:"recalls"};
-const SRC_BOARD={chinatax_fgk:"tax",mof:"tax",chinatax_sh:"tax",shui5:"tax",taxrefund:"tax",customs:"cus",cifnews:"pla",cpsc:"pla",amazon_sc:"pla",amazon_vc:"pla",walmart:"pla",mercadolibre:"pla",anke:"pla",zhio:"pla",huakai:"pla",saiwei:"pla",santai:"pla"};
+const SRC_BOARD={chinatax_fgk:"tax",mof:"tax",chinatax_sh:"tax",shui5:"tax",taxrefund:"tax",customs:"cus",fedreg:"cus",cifnews:"pla",cpsc:"pla",amazon_sc:"pla",amazon_vc:"pla",walmart:"pla",mercadolibre:"pla",anke:"pla",zhio:"pla",huakai:"pla",saiwei:"pla",santai:"pla"};
 const BOARD_CN={tax:"P1",cus:"P2",pla:"P3"};
 function boardChip(id){
   const b=SRC_BOARD[id]; return "<span class=\"src-board b-"+(b||"none")+"\">"+(b?BOARD_CN[b]:"—")+"</span>";
