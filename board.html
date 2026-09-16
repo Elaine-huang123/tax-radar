@@ -82,7 +82,13 @@ body:before{content:"";position:fixed;inset:0;background:radial-gradient(circle 
 .chip.red.on{background:linear-gradient(135deg,#ff6b72,#ff9d5c);color:#200507}
 .chip:has(.cnt) .cnt{opacity:.65;margin-left:3px;font-size:.9em}
 
-.scroller{position:relative;flex:1;min-height:420px;max-height:560px;margin-top:13px;overflow:hidden;border:1px solid rgba(148,163,184,.14);border-radius:15px;background:rgba(5,10,24,.5);-webkit-mask-image:linear-gradient(to bottom,transparent,#000 14px,#000 calc(100% - 14px),transparent);mask-image:linear-gradient(to bottom,transparent,#000 14px,#000 calc(100% - 14px),transparent)}
+.scroller{position:relative;flex:1;min-height:420px;max-height:560px;margin-top:13px;overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;border:1px solid rgba(148,163,184,.14);border-radius:15px;background:rgba(5,10,24,.5);-webkit-mask-image:linear-gradient(to bottom,transparent,#000 14px,#000 calc(100% - 14px),transparent);mask-image:linear-gradient(to bottom,transparent,#000 14px,#000 calc(100% - 14px),transparent);scrollbar-width:thin;scrollbar-color:rgba(80,230,255,.5) rgba(120,140,170,.12);cursor:grab}
+.scroller.dragging{cursor:grabbing}
+.scroller.dragging .news-list{user-select:none;-webkit-user-select:none}
+.scroller::-webkit-scrollbar{width:12px}
+.scroller::-webkit-scrollbar-track{background:rgba(120,140,170,.08);border-radius:999px;margin:14px 0}
+.scroller::-webkit-scrollbar-thumb{background:linear-gradient(180deg,rgba(80,230,255,.7),rgba(80,230,255,.42));border:3px solid transparent;background-clip:padding-box;border-radius:999px}
+.scroller::-webkit-scrollbar-thumb:hover{background:linear-gradient(180deg,rgba(80,230,255,.98),rgba(80,230,255,.72));background-clip:padding-box}
 .news-list{padding:14px 14px 6px}
 .news-item{display:block;padding:13px 14px;margin-bottom:10px;border:1px solid rgba(148,163,184,.13);border-radius:14px;background:rgba(18,28,53,.62);transition:.15s}
 .news-item:hover{border-color:rgba(80,230,255,.35);background:rgba(24,40,72,.7)}
@@ -98,9 +104,8 @@ body:before{content:"";position:fixed;inset:0;background:radial-gradient(circle 
 .ni-lnk{margin-top:7px;font-size:clamp(9.5px,.7vw,12px)}
 .ni-lnk a{color:var(--cyan);text-decoration:none;font-weight:700;border-bottom:1px dashed rgba(80,230,255,.3)}
 .ni-lnk a.nolink{color:#5f6b85;border-bottom:none;pointer-events:none}
-@keyframes newsScrollUp{from{transform:translateY(0)}to{transform:translateY(-50%)}}
-.news-list.scrolling{animation:newsScrollUp linear infinite}
-.scroller:hover .news-list.scrolling{animation-play-state:paused}
+/* 资讯流滚动：由 JS 滚动引擎驱动（支持手动拖动/滚轮/原生滚动条，2026-09-16 改造） */
+.scroller.paused .news-list{opacity:.98}
 .empty{padding:40px 20px;text-align:center;color:var(--muted);font-size:13px}
 .meta{margin-top:10px;color:#7e8ca8;font-size:clamp(9.5px,.7vw,11.5px);letter-spacing:.03em}
 
@@ -183,7 +188,7 @@ select.form-input{cursor:pointer}
 
 @media(max-width:1080px){.main-grid{grid-template-columns:1fr}.scroller{min-height:380px;max-height:480px}.thesis{text-align:left}.alert-zone{grid-template-columns:repeat(3,minmax(0,1fr))}.p2-grid{grid-template-columns:1fr}}
 @media(max-width:700px){.top-side{width:100%}.stat-boxes{margin-left:auto}.stat-box{min-width:58px}.alert-zone{grid-template-columns:repeat(2,minmax(0,1fr))}.alert-card .sum{-webkit-line-clamp:3}.src-item{gap:8px}.src-idx{flex-basis:20px}.src-name{max-width:34vw}}
-@media(prefers-reduced-motion:reduce){.news-list.scrolling{animation:none}}
+@media(prefers-reduced-motion:reduce){.scroller{cursor:default}}
 
 /* ── 卡片阅读优化：摘要≤100字、超长折叠展开（延续最初卡片基调，链接弱化样式） ── */
 .alert-card .sum,.news-item .ni-sum{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;margin-top:6px}
@@ -856,21 +861,81 @@ function alertsHtml(list){
     +"</div></article>"
   )).join("");
 }
+/* ── 资讯流滚动引擎（2026-09-16）：自动滚动 + 手动拖动/滚轮/原生滚动条 ── */
+const SCROLL_PX_PER_SEC=36;      // 自动滚动速度（像素/秒）
+const SCROLL_IDLE_RESUME=8000;   // 手动操作后无悬停时的自动恢复延时(ms)
+const scrollCtl={};
+function wrapPointOf(list){const c=list.children;return c.length>1?c[1].offsetTop:0;}
+function markManualScroll(s){s.user=true;s.userUntil=Date.now()+SCROLL_IDLE_RESUME;}
+function startAutoScroll(key,scroller,list){
+  const s=scrollCtl[key]||(scrollCtl[key]={});
+  if(s.raf){cancelAnimationFrame(s.raf);s.raf=0;}
+  s.hover=false;s.drag=false;s.user=false;s.last=0;
+  if(!scroller||!list)return;
+  const reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+  scroller.classList.toggle("paused",reduce);
+  if(!reduce){
+    const step=ts=>{
+      if(!s.last)s.last=ts;
+      const dt=Math.min(120,ts-s.last);s.last=ts;
+      s.raf=requestAnimationFrame(step);
+      if(s.hover||s.drag)return;
+      if(s.user){if(Date.now()<s.userUntil)return;s.user=false;scroller.classList.remove("paused");}
+      const max=scroller.scrollHeight-scroller.clientHeight;
+      if(max<=1)return;
+      const wp=wrapPointOf(list);
+      let top=scroller.scrollTop+SCROLL_PX_PER_SEC*dt/1000;
+      if(wp>0){while(top>=wp)top-=wp;}
+      else if(top>=max){scroller.scrollTop=max;s.user=true;s.userUntil=Date.now()+SCROLL_IDLE_RESUME;return;}
+      scroller.scrollTop=top;
+    };
+    s.raf=requestAnimationFrame(step);
+  }
+  if(!s.bound){
+    s.bound=true;
+    scroller.addEventListener('mouseenter',()=>{s.hover=true;scroller.classList.add("paused");});
+    scroller.addEventListener('mouseleave',()=>{s.hover=false;s.user=false;scroller.classList.remove("paused");});
+    scroller.addEventListener('wheel',()=>{markManualScroll(s);scroller.classList.add("paused");},{passive:true});
+    scroller.addEventListener('touchstart',()=>markManualScroll(s),{passive:true});
+    scroller.addEventListener('keydown',()=>markManualScroll(s));
+    let dragging=false,startY=0,startTop=0,moved=false;
+    scroller.addEventListener('pointerdown',e=>{
+      if(e.target&&e.target.closest&&e.target.closest('a'))return;
+      if(e.pointerType==='mouse'&&e.clientX-scroller.getBoundingClientRect().left>=scroller.clientWidth)return; // 落在原生滚动条上，交给浏览器
+      dragging=true;s.drag=true;moved=false;startY=e.clientY;startTop=scroller.scrollTop;
+      scroller.classList.add('dragging');
+      if(scroller.setPointerCapture){try{scroller.setPointerCapture(e.pointerId);}catch(_){}}
+    });
+    scroller.addEventListener('pointermove',e=>{
+      if(!dragging)return;
+      const dy=e.clientY-startY;
+      if(Math.abs(dy)>3)moved=true;
+      scroller.scrollTop=startTop-dy;
+      if(moved)markManualScroll(s);
+    });
+    const endDrag=()=>{
+      if(!dragging)return;
+      dragging=false;s.drag=false;scroller.classList.remove('dragging');
+      if(moved){markManualScroll(s);scroller.classList.add("paused");}
+      else scroller.classList.remove("paused");
+    };
+    scroller.addEventListener('pointerup',endDrag);
+    scroller.addEventListener('pointercancel',endDrag);
+    scroller.addEventListener('pointerleave',endDrag);
+  }
+}
 function renderBoard(b){
   const cfg=CFG[b],list=filteredOf(b),sorted=sortedOf(b);
   const panel=$(cfg.list);
-  panel.classList.remove("scrolling");
-  panel.style.animationDuration="";
+  const scrollerEl=$(cfg.scroller);
   if(!list.length){panel.innerHTML="<div class=\"empty\">该板块暂无匹配条目。</div>";}
   else{
     const one="<div class=\"news-round\">"+list.map(itemHtml).join("")+"</div>";
-    if(list.length>=5){
-      panel.innerHTML=one+one;
-      panel.style.animationDuration=Math.max(26,list.length*7)+"s";
-      requestAnimationFrame(()=>requestAnimationFrame(()=>panel.classList.add("scrolling")));
-    }else{panel.innerHTML=one;}
+    panel.innerHTML=list.length>=5?(one+one):one;
   }
-  $(cfg.meta).textContent="显示 "+list.length+" / "+itemsOf(b).length+" 条（"+cfg.title+"）· 数据快照 "+SNAPSHOT.updatedAt+" · 来源："+SNAPSHOT.source;
+  if(scrollerEl)scrollerEl.scrollTop=0;
+  startAutoScroll(b,scrollerEl,panel);
+  $(cfg.meta).textContent="显示 "+list.length+" / "+itemsOf(b).length+" 条（"+cfg.title+"）· 数据快照 "+SNAPSHOT.updatedAt+" · 来源："+SNAPSHOT.source+" · 可用鼠标拖动、滚轮或右侧滚动条手动浏览（悬停暂停）";
   $(cfg.alert).innerHTML=alertsHtml(sorted);
 
   const lvDefs=[["全部",""],["A","red"],["B",""],["C",""]];
