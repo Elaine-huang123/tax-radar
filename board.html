@@ -89,6 +89,13 @@ body:before{content:"";position:fixed;inset:0;background:radial-gradient(circle 
 .scroller::-webkit-scrollbar-track{background:rgba(120,140,170,.08);border-radius:999px;margin:14px 0}
 .scroller::-webkit-scrollbar-thumb{background:linear-gradient(180deg,rgba(80,230,255,.7),rgba(80,230,255,.42));border:3px solid transparent;background-clip:padding-box;border-radius:999px}
 .scroller::-webkit-scrollbar-thumb:hover{background:linear-gradient(180deg,rgba(80,230,255,.98),rgba(80,230,255,.72));background-clip:padding-box}
+.scroll-ctl{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:10px 2px 0}
+.scroll-ctl .sc-btn{cursor:pointer;font-family:inherit;font-weight:800;font-size:clamp(10px,.7vw,12px);color:#dff0ff;background:rgba(18,28,53,.75);border:1px solid rgba(80,230,255,.42);border-radius:999px;padding:5px 13px;transition:.15s}
+.scroll-ctl .sc-btn:hover{background:rgba(28,48,86,.9);border-color:rgba(80,230,255,.75)}
+.scroll-ctl .sc-st{display:inline-flex;align-items:center;gap:6px;color:#8fa2c0;font-size:clamp(9.5px,.68vw,11.5px)}
+.scroll-ctl .sc-st i{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 8px rgba(63,233,151,.7);display:inline-block}
+.scroll-ctl .sc-st.pause i{background:var(--amber);box-shadow:0 0 8px rgba(255,193,74,.7)}
+.scroll-ctl .sc-hint{color:#6f7d99;font-size:clamp(9px,.66vw,11px)}
 .news-list{padding:14px 14px 6px}
 .news-item{display:block;padding:13px 14px;margin-bottom:10px;border:1px solid rgba(148,163,184,.13);border-radius:14px;background:rgba(18,28,53,.62);transition:.15s}
 .news-item:hover{border-color:rgba(80,230,255,.35);background:rgba(24,40,72,.7)}
@@ -104,8 +111,7 @@ body:before{content:"";position:fixed;inset:0;background:radial-gradient(circle 
 .ni-lnk{margin-top:7px;font-size:clamp(9.5px,.7vw,12px)}
 .ni-lnk a{color:var(--cyan);text-decoration:none;font-weight:700;border-bottom:1px dashed rgba(80,230,255,.3)}
 .ni-lnk a.nolink{color:#5f6b85;border-bottom:none;pointer-events:none}
-/* 资讯流滚动：由 JS 滚动引擎驱动（支持手动拖动/滚轮/原生滚动条，2026-09-16 改造） */
-.scroller.paused .news-list{opacity:.98}
+/* 资讯流滚动：由 JS 滚动引擎驱动（自动滚动 + 手动拖动/滚轮/原生滚动条 + 显式暂停按钮，2026-09-16 改造） */
 .empty{padding:40px 20px;text-align:center;color:var(--muted);font-size:13px}
 .meta{margin-top:10px;color:#7e8ca8;font-size:clamp(9.5px,.7vw,11.5px);letter-spacing:.03em}
 
@@ -867,20 +873,42 @@ const SCROLL_IDLE_RESUME=8000;   // 手动操作后无悬停时的自动恢复�
 const scrollCtl={};
 function wrapPointOf(list){const c=list.children;return c.length>1?c[1].offsetTop:0;}
 function markManualScroll(s){s.user=true;s.userUntil=Date.now()+SCROLL_IDLE_RESUME;}
+const SCROLL_STATUS={run:["自动滚动中",""],hover:["已暂停 · 鼠标移入列表","pause"],manual:["已暂停 · 手动操作后待恢复","pause"],stop:["已暂停 · 手动关闭自动滚动","pause"],off:["未启用 · 系统偏好为减少动态效果","pause"]};
+function injectScrollCtl(scroller){
+  let bar=scroller.previousElementSibling;
+  if(bar&&bar.classList&&bar.classList.contains("scroll-ctl"))return bar;
+  bar=document.createElement("div");
+  bar.className="scroll-ctl";
+  bar.innerHTML="<button class=\"sc-btn\" type=\"button\">⏸ 暂停自动滚动</button><span class=\"sc-st\"><i></i><span class=\"sc-txt\">自动滚动中</span></span><span class=\"sc-hint\">可拖动画面 / 滚轮 / 拖右侧滚动条手动浏览</span>";
+  scroller.parentNode.insertBefore(bar,scroller);
+  return bar;
+}
+function updateScrollCtl(s,st){
+  if(!s.ctl)return;
+  if(s.ctlState===st)return;
+  s.ctlState=st;
+  const def=SCROLL_STATUS[st]||SCROLL_STATUS.run;
+  s.ctl.st.classList.toggle("pause",!!def[1]);
+  s.ctl.txt.textContent=def[0];
+  s.ctl.btn.textContent=s.stop?"▶ 恢复自动滚动":"⏸ 暂停自动滚动";
+}
 function startAutoScroll(key,scroller,list){
   const s=scrollCtl[key]||(scrollCtl[key]={});
   if(s.raf){cancelAnimationFrame(s.raf);s.raf=0;}
   s.hover=false;s.drag=false;s.user=false;s.last=0;
   if(!scroller||!list)return;
   const reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion:reduce)').matches;
-  scroller.classList.toggle("paused",reduce);
+  s.reduce=reduce;
+  updateScrollCtl(s,reduce?"off":(s.stop?"stop":"run"));
   if(!reduce){
     const step=ts=>{
       if(!s.last)s.last=ts;
       const dt=Math.min(120,ts-s.last);s.last=ts;
       s.raf=requestAnimationFrame(step);
-      if(s.hover||s.drag)return;
-      if(s.user){if(Date.now()<s.userUntil)return;s.user=false;scroller.classList.remove("paused");}
+      if(s.stop){updateScrollCtl(s,"stop");return;}
+      if(s.hover||s.drag){updateScrollCtl(s,"hover");return;}
+      if(s.user){if(Date.now()<s.userUntil){updateScrollCtl(s,"manual");return;}s.user=false;}
+      updateScrollCtl(s,"run");
       const max=scroller.scrollHeight-scroller.clientHeight;
       if(max<=1)return;
       const wp=wrapPointOf(list);
@@ -893,31 +921,45 @@ function startAutoScroll(key,scroller,list){
   }
   if(!s.bound){
     s.bound=true;
-    scroller.addEventListener('mouseenter',()=>{s.hover=true;scroller.classList.add("paused");});
-    scroller.addEventListener('mouseleave',()=>{s.hover=false;s.user=false;scroller.classList.remove("paused");});
-    scroller.addEventListener('wheel',()=>{markManualScroll(s);scroller.classList.add("paused");},{passive:true});
+    const bar=injectScrollCtl(scroller);
+    s.ctl={btn:bar.querySelector(".sc-btn"),st:bar.querySelector(".sc-st"),txt:bar.querySelector(".sc-txt")};
+    s.ctl.btn.addEventListener("click",()=>{
+      s.stop=!s.stop;s.ctlState="";
+      scroller.scrollTop=scroller.scrollTop;   // 保持当前位置
+      updateScrollCtl(s,s.stop?"stop":(s.reduce?"off":"run"));
+    });
+    scroller.addEventListener('mouseenter',()=>{s.hover=true;});
+    scroller.addEventListener('mouseleave',()=>{s.hover=false;s.user=false;});
+    scroller.addEventListener('wheel',()=>markManualScroll(s),{passive:true});
     scroller.addEventListener('touchstart',()=>markManualScroll(s),{passive:true});
     scroller.addEventListener('keydown',()=>markManualScroll(s));
-    let dragging=false,startY=0,startTop=0,moved=false;
+    let dragging=false,startY=0,startTop=0,moved=false,suppressClick=false,captured=false;
+    scroller.addEventListener('click',e=>{
+      if(suppressClick){e.preventDefault();e.stopPropagation();suppressClick=false;}
+    },true);
+    scroller.addEventListener('dragstart',e=>e.preventDefault());   // 阻止浏览器原生"拖拽链接"抢占拖动
     scroller.addEventListener('pointerdown',e=>{
-      if(e.target&&e.target.closest&&e.target.closest('a'))return;
       if(e.pointerType==='mouse'&&e.clientX-scroller.getBoundingClientRect().left>=scroller.clientWidth)return; // 落在原生滚动条上，交给浏览器
-      dragging=true;s.drag=true;moved=false;startY=e.clientY;startTop=scroller.scrollTop;
-      scroller.classList.add('dragging');
-      if(scroller.setPointerCapture){try{scroller.setPointerCapture(e.pointerId);}catch(_){}}
+      dragging=true;s.drag=true;moved=false;captured=false;suppressClick=false;
+      startY=e.clientY;startTop=scroller.scrollTop;
     });
     scroller.addEventListener('pointermove',e=>{
       if(!dragging)return;
       const dy=e.clientY-startY;
-      if(Math.abs(dy)>3)moved=true;
+      if(!moved&&Math.abs(dy)>3){
+        moved=true;suppressClick=true;
+        scroller.classList.add('dragging');
+        if(scroller.setPointerCapture){try{scroller.setPointerCapture(e.pointerId);captured=true;}catch(_){}}
+      }
+      if(!moved)return;
       scroller.scrollTop=startTop-dy;
-      if(moved)markManualScroll(s);
+      markManualScroll(s);
     });
     const endDrag=()=>{
       if(!dragging)return;
       dragging=false;s.drag=false;scroller.classList.remove('dragging');
-      if(moved){markManualScroll(s);scroller.classList.add("paused");}
-      else scroller.classList.remove("paused");
+      if(moved)markManualScroll(s);
+      moved=false;captured=false;
     };
     scroller.addEventListener('pointerup',endDrag);
     scroller.addEventListener('pointercancel',endDrag);
@@ -935,7 +977,7 @@ function renderBoard(b){
   }
   if(scrollerEl)scrollerEl.scrollTop=0;
   startAutoScroll(b,scrollerEl,panel);
-  $(cfg.meta).textContent="显示 "+list.length+" / "+itemsOf(b).length+" 条（"+cfg.title+"）· 数据快照 "+SNAPSHOT.updatedAt+" · 来源："+SNAPSHOT.source+" · 可用鼠标拖动、滚轮或右侧滚动条手动浏览（悬停暂停）";
+  $(cfg.meta).textContent="显示 "+list.length+" / "+itemsOf(b).length+" 条（"+cfg.title+"）· 数据快照 "+SNAPSHOT.updatedAt+" · 来源："+SNAPSHOT.source;
   $(cfg.alert).innerHTML=alertsHtml(sorted);
 
   const lvDefs=[["全部",""],["A","red"],["B",""],["C",""]];
