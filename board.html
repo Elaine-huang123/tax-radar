@@ -95,6 +95,10 @@ body:before{content:"";position:fixed;inset:0;background:radial-gradient(circle 
 .scroll-ctl .sc-st{display:inline-flex;align-items:center;gap:6px;color:#8fa2c0;font-size:clamp(9.5px,.68vw,11.5px)}
 .scroll-ctl .sc-st i{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 8px rgba(63,233,151,.7);display:inline-block}
 .scroll-ctl .sc-st.pause i{background:var(--amber);box-shadow:0 0 8px rgba(255,193,74,.7)}
+/* 暂停/未启用状态高亮：让自动滚动的运行状态一眼可见（2026-09-20） */
+.scroll-ctl .sc-st.pause{color:#ffd595;font-weight:800}
+.scroll-ctl .sc-st.off{color:#ffb8bc;font-weight:800}
+.scroll-ctl .sc-st.off i{background:var(--red);box-shadow:0 0 8px rgba(255,107,114,.7)}
 .scroll-ctl .sc-hint{color:#6f7d99;font-size:clamp(9px,.66vw,11px)}
 .news-list{padding:14px 14px 6px}
 .news-item{display:block;padding:13px 14px;margin-bottom:10px;border:1px solid rgba(148,163,184,.13);border-radius:14px;background:rgba(18,28,53,.62);transition:.15s}
@@ -900,7 +904,7 @@ const SCROLL_STATUS={
   hover: ["已暂停 · 鼠标移入列表，移开鼠标即自动恢复","pause"],
   manual:["已暂停 · 手动操作后待恢复（约 8 秒后自动恢复）","pause"],
   stop:  ["已暂停 · 已手动关闭自动滚动，点左侧按钮恢复","pause"],
-  off:   ["未启用 · 系统开启了「减少动态效果」，点左侧按钮可强制开启","pause"]
+  off:   ["未启用 · 系统开启了「减少动态效果」，点左侧按钮可强制开启","off"]
 };
 function injectScrollCtl(scroller){
   let bar=scroller.previousElementSibling;
@@ -919,7 +923,8 @@ function updateScrollCtl(s,st){
   if(s.ctlState===st)return;
   s.ctlState=st;
   const def=SCROLL_STATUS[st]||SCROLL_STATUS.run;
-  s.ctl.st.classList.toggle("pause",!!def[1]);
+  s.ctl.st.classList.toggle("pause",def[1]==="pause");
+  s.ctl.st.classList.toggle("off",def[1]==="off");
   s.ctl.txt.textContent=def[0];
 }
 function startAutoScroll(key,scroller,list){
