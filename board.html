@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>税务政策雷达看板 · 跨境电商税务合规</title>
+<title>税务政策雷达看板 · 跨境电商税务合规与外汇监控</title>
 <style>
 :root{--bg:#070b18;--text:#f6f8ff;--muted:#98a6c5;--line:rgba(148,163,184,.17);--panel:linear-gradient(155deg,rgba(19,29,57,.88),rgba(8,13,28,.89));--blue:#55a7ff;--cyan:#50e6ff;--purple:#a78bfa;--amber:#ffbd59;--green:#43e6a3;--red:#ff6b72}
 *{box-sizing:border-box}
@@ -176,6 +176,7 @@ body:before{content:"";position:fixed;inset:0;background:radial-gradient(circle 
 .src-cat.industry{color:#b8fce4;background:rgba(11,55,40,.5);border:1px solid rgba(67,230,163,.3)}
 .src-cat.listed{color:#c4b5fd;background:rgba(48,33,89,.5);border:1px solid rgba(167,139,250,.35)}
 .src-cat.recalls{color:#c8f8ff;background:rgba(11,45,64,.5);border:1px solid rgba(80,230,255,.3)}
+.src-cat.forex{color:#d7e4ff;background:rgba(24,44,92,.6);border:1px solid rgba(85,167,255,.42)}
 
 /* toggle switch */
 .toggle{position:relative;width:38px;height:20px;cursor:pointer;flex:0 0 auto}
@@ -221,6 +222,7 @@ details.more .sum-full{margin-top:8px;padding-top:8px;border-top:1px dashed rgba
 .src-board.b-tax{background:rgba(80,230,255,.12);color:var(--cyan)}
 .src-board.b-cus{background:rgba(255,189,89,.12);color:var(--amber)}
 .src-board.b-pla{background:rgba(129,214,160,.14);color:#81d6a0}
+.src-board.b-forex{background:rgba(85,167,255,.16);color:#8cc4ff}
 .src-board.b-none{background:rgba(148,163,184,.1);color:#5f6b85}
 
 .stat-box.green{border:1px solid rgba(67,230,163,.55);cursor:pointer;background:rgba(67,230,163,.07)}
@@ -246,15 +248,15 @@ details.more .sum-full{margin-top:8px;padding-top:8px;border-top:1px dashed rgba
     <div class="kicker">TAX POLICY RADAR · CROSS-BORDER E-COMMERCE</div>
     <h1 class="headline">税务合规<em>政策雷达看板</em></h1>
     <div class="badges">
-      <span class="badge">四站官方源</span>
+      <span class="badge">四站官方源 + 央行/美联储/欧央行/日央行</span>
       <span class="badge">跨境电商关键词评分</span>
       <span class="badge">A / B / C 分级</span>
       <span class="badge">每日 10:05 自动更新</span>
     </div>
   </div>
   <div class="top-side">
-    <div class="thesis">扫描税务总局法规库 / 出口退税网 / shui5 / 海关总署，<br>按跨境电商关键词权重评分，<b>A级政策实时预警</b></div>
-    <div class="build-stamp" title="用于确认看板是否为最新版本">构建 v2026-09-20.2〔滚动引擎修复〕</div>
+    <div class="thesis">扫描税务总局法规库 / 出口退税网 / shui5 / 海关总署 / 央行·美联储·欧央行·日央行，<br>按跨境电商关键词权重评分，<b>A级政策实时预警</b></div>
+    <div class="build-stamp" title="用于确认看板是否为最新版本">构建 v2026-09-20.3〔新增 P4 外汇汇率板块〕</div>
     <div class="stat-boxes">
       <div class="stat-box red"><b id="statA">-</b><span>A级预警</span></div>
       <div class="stat-box"><b id="statTotal">-</b><span>收录政策</span></div>
@@ -269,7 +271,8 @@ details.more .sum-full{margin-top:8px;padding-top:8px;border-top:1px dashed rgba
   <button class="tab-btn active" data-tab="tax">📗 P1 · 税务政策<span class="tab-new" id="TabNewTax"></span></button>
   <button class="tab-btn" data-tab="cus">📘 P2 · 海关清关<span class="tab-new" id="TabNewCus"></span></button>
   <button class="tab-btn" data-tab="pla">📙 P3 · 平台与合规<span class="tab-new" id="TabNewPla"></span></button>
-  <button class="tab-btn" data-tab="p4">⚙️ P4 · 规则与信息源</button>
+  <button class="tab-btn" data-tab="forex">💱 P4 · 外汇汇率<span class="tab-new" id="TabNewForex"></span></button>
+  <button class="tab-btn" data-tab="p5">⚙️ P5 · 规则与信息源</button>
 </div>
 
 <!-- ====== P1: Tax Policy ====== -->
@@ -389,9 +392,48 @@ details.more .sum-full{margin-top:8px;padding-top:8px;border-top:1px dashed rgba
   </aside>
 </section>
 </div>
+<!-- ====== P4: Forex & Exchange Rates ====== -->
+<div class="tab-page" id="tab-forex">
+<section class="alert-zone" id="alertZoneForex"></section>
+<section class="main-grid">
+  <article class="card stream-card">
+    <div class="stream-head">
+      <div>
+        <h2>外汇汇率资讯流</h2>
+        <p class="sub">央行/美联储/欧央行/日央行 · 美元/欧元/英镑/日元汇率走势 · <b style="color:var(--red)">A=主要货币汇率重点</b>（美元·欧元·英镑·日元汇率波动）</p>
+      </div>
+      <div class="actions">
+        <button class="btn" id="btnRefreshForex" type="button">重置筛选并刷新</button>
+        <button class="btn ai" id="btnAIForex" type="button">复制 AI 简报提示词</button>
+      </div>
+    </div>
+    <div class="chips" id="lvChipsForex"></div>
+    <div class="chips" id="catChipsForex"></div>
+    <div class="scroller" id="scrollerForex"><div class="news-list" id="newsListForex"></div></div>
+    <div class="meta" id="streamMetaForex"></div>
+  </article>
 
-<!-- ====== P4: Rules & Sources（默认最后一页） ====== -->
-<div class="tab-page" id="tab-p4">
+  <aside class="side">
+    <article class="card">
+      <h2>分级分布</h2>
+      <p class="sub">A=主要货币汇率重点（美元/欧元/英镑/日元）· B/C 按评分参考</p>
+      <div id="lvBarsForex"></div>
+    </article>
+    <article class="card">
+      <h2>币种 × 信息源</h2>
+      <p class="sub">按收录条数统计</p>
+      <div class="kv-list" id="kvStatsForex"></div>
+    </article>
+    <article class="card">
+      <h2>数据快照</h2>
+      <div class="kv-list" id="snapStatsForex"></div>
+    </article>
+  </aside>
+</section>
+</div>
+
+<!-- ====== P5: Rules & Sources（默认最后一页） ====== -->
+<div class="tab-page" id="tab-p5">
 <section class="p2-grid">
   <!-- Left: Rules -->
   <article class="card">
@@ -436,6 +478,22 @@ details.more .sum-full{margin-top:8px;padding-top:8px;border-top:1px dashed rgba
         <tr><td style="color:#c8f8ff;font-weight:900">C 一般</td><td>评分&lt;10 或低影响（如小众厨具召回 Cuisinart 烧烤刷 7 分）</td></tr>
       </table>
       <div class="board-src" id="bsrcPla"></div>
+    </div>
+
+        <div class="rule-section" style="margin-top:10px;border:1px solid rgba(85,167,255,.16);border-radius:11px;padding:10px 12px">
+      <h3 style="color:var(--blue)">💱 P4 · 外汇汇率 — 规则与信息源</h3>
+      <ul>
+        <li>收录：中国央行 / 美联储 / 欧洲央行 / 日本央行等官方货币政策，以及美元/欧元/英镑/日元等主要货币汇率走势。</li>
+        <li>判级：<b>A = 主要货币汇率重点</b>（美元·欧元·英镑·日元汇率波动、央行重大政策变动）；其他外汇相关按评分参考。</li>
+        <li>来源：官方机构（央行/美联储/欧央行/日央行）优先，辅以新浪财经等权威外汇财经媒体。</li>
+      </ul>
+      <table class="rule-table" style="margin-top:8px">
+        <tr><th style="width:52px">页内级</th><th>P4 判级依据</th></tr>
+        <tr><td style="color:#ff9da1;font-weight:900">A 重点</td><td>标题含美元/欧元/英镑/日元且含汇率/走势/升/贬/波动/破/关口/新高/新低等关键词；或评分≥15</td></tr>
+        <tr><td style="color:#ffe3b5;font-weight:900">B 关注</td><td>评分 8–14 且不满足 A；或其他央行政策、外汇监管动态</td></tr>
+        <tr><td style="color:#c8f8ff;font-weight:900">C 一般</td><td>评分&lt;8 或低影响（如历史回顾性分析、非主要货币）</td></tr>
+      </table>
+      <div class="board-src" id="bsrcForex"></div>
     </div>
 
     <div class="rule-section" style="margin-top:16px">
@@ -523,10 +581,11 @@ details.more .sum-full{margin-top:8px;padding-top:8px;border-top:1px dashed rgba
       <h3>五、数据流</h3>
       <ul>
         <li>每日 10:00 WorkBuddy 自动化任务启动</li>
-        <li>读取 SOURCES_CONFIG（仅 enabled=true 的信息源）→ 执行检索</li>
-        <li>筛选 5-10 条 → AI 解读 → 写入飞书多维表格</li>
+        <li>读取 SOURCES_CONFIG（仅 enabled=true 的信息源，当前 23 源）→ 执行检索</li>
+        <li>筛选 5-10 条 → 按 6 维评分分级（P4 外汇板块按币种汇率规则定级）→ 写入飞书多维表格</li>
         <li>拉取飞书表全量 → 生成 TAX_NEWS + SNAPSHOT → 更新本 HTML</li>
-        <li>推送摘要至微信 + 飞书</li>
+        <li>板块归属自动判定：P1 税务 / P2 海关 / P3 平台合规 / <b>P4 外汇汇率</b>（HINT_FOR 专有词命中）</li>
+        <li>推送摘要至微信 + 飞书，并同步线上脱敏看板（GitHub Pages）</li>
       </ul>
     </div>
   </article>
@@ -561,6 +620,7 @@ details.more .sum-full{margin-top:8px;padding-top:8px;border-top:1px dashed rgba
           <option value="行业资讯">行业资讯（三方网站/公众号）</option>
           <option value="上市公司">上市公司披露</option>
           <option value="产品召回">产品召回（CPSC等）</option>
+          <option value="外汇资讯">外汇资讯（央行/美联储/汇率）</option>
         </select>
       </div>
       <div class="form-row">
@@ -604,7 +664,7 @@ details.more .sum-full{margin-top:8px;padding-top:8px;border-top:1px dashed rgba
 
 <script>
 /* ===DATA-BEGIN=== */
-const SNAPSHOT = { updatedAt: "2026-09-20 19:25", lastScan: 1789868460000, source: "飞书税务政策表 tblo8d6cv3YPiz9w（116条）" };
+const SNAPSHOT = { updatedAt: "2026-09-20 19:42", lastScan: 1789868460000, source: "飞书税务政策表 tblo8d6cv3YPiz9w（116条）" };
 const TAX_NEWS = [
  {"id": "p11", "lv": "A", "score": 20.4, "cat": "出口退税", "title": "关于出口业务增值税和消费税政策的公告", "no": "财政部 税务总局公告2026年第11号", "organ": "财政部+税务总局", "taxes": ["增值税", "消费税", "出口退税"], "lines": ["全品线", "出口业务"], "countries": ["中国"], "eff": 1767196800000, "site": "fgk法规库", "url": "https://fgk.chinatax.gov.cn/zcfgk/c102416/c5247437/content.html", "doc": "https://my.feishu.cn/docx/XIuMd0Y2foSS72x9IWzc0x9HnNb", "at": 1785676800000, "sum": "跨境电商出口核心法规，影响所有出口业务税负计算；外贸企业免征出口环节增值税并退还进项，生产企业适用免抵退；申报期限次年4月30日前"},
  {"id": "p5", "lv": "A", "score": 20.4, "cat": "出口退税", "title": "关于发布《出口业务增值税和消费税退（免）税管理办法》的公告", "no": "国家税务总局公告2026年第5号", "organ": "税务总局", "taxes": ["增值税", "消费税", "出口退税"], "lines": ["全品线", "出口业务"], "countries": ["中国"], "eff": 1767196800000, "site": "fgk法规库", "url": "https://fgk.chinatax.gov.cn/zcfgk/c100012/c5247423/content.html", "doc": "https://my.feishu.cn/docx/J8kddfA5FoM83xxn6hfcjaMYn0g", "at": 1785676800000, "sum": "归并整合历史出口退税管理规定，形成统一管理办法（5章+9类证明事项）；备案表单精简、申报流程调整，直接影响日常退税操作"},
@@ -676,7 +736,7 @@ const TAX_NEWS = [
  {"id": "n68", "lv": "B", "score": 10.0, "cat": "其他", "title": "9月14日起多平台低价引流SKU专项治理：配件/低配小样异常低价链接将被下架扣分", "no": "-", "organ": "其他", "taxes": ["其他"], "lines": ["跨境零售"], "countries": ["其他"], "eff": 1789315200000, "site": "其他媒体", "url": "https://www.52by.com/article/234828", "doc": "https://my.feishu.cn/docx/LzIkd9QNqoZ9w8xZxTQcAOFinJb", "at": 1789094100000, "sum": "事件概述：亚马逊等多平台9月14日起启动低价引流SKU专项排查，利用配件、低配小样设置异常低价诱导点击、实际成交为主商品的链接将被下架、扣分。多平台同步核验前台标价与真实成交价一致性。\n对卖家影响：依靠低价配件SKU做引流的运营方式不再可行；变体结构中存在“配件引流+主品成交”模式的链接面临批量下架风险。\n行动建议：9月14日前完成全店变体结构排查，保证前台展示商品与低价SKU实物一致；移除“配件/小样引流”变体设置；核对各平台前台标价与真实成交价一致性。"},
  {"id": "n69", "lv": "B", "score": 10.0, "cat": "其他", "title": "亚马逊印度站9月7日起Closing Fee上调：低价商品+1卢比、高价值+3卢比", "no": "-", "organ": "其他", "taxes": ["其他"], "lines": ["跨境零售"], "countries": ["其他"], "eff": 1788710400000, "site": "其他媒体", "url": "https://www.ormguru.com/blog/amazon-closing-fee-increase-from-7-september-2026-complete-seller-cost-breakdown", "doc": "", "at": 1789094100000, "sum": "事件概述：亚马逊印度站自9月7日起上调Closing Fee，定价≤500卢比的订单每单+1卢比，>500卢比的+3卢比。适用于FBA、Easy Ship和Seller Flex三种履约模式。\n对卖家影响：印度站卖家每单成本小幅上升，旺季大促（Diwali）期间订单量激增时影响累积明显。\n行动建议：核算印度站SKU利润率，调整定价模型吸收新增费用；关注Festive Season备货窗口；如公司未在印度站经营可作信息储备。"},
  {"id": "n70", "lv": "B", "score": 13.0, "cat": "其他", "title": "亚马逊2026秋季Prime Day/黑五备货关键截止节点：Deal提报9/8关闭，FBA最少拆分9/9截止，优化拆分9/16截止，黑五提报10/20截止", "no": "-", "organ": "其他", "taxes": ["其他"], "lines": ["跨境零售"], "countries": ["美国"], "eff": 1788883200000, "site": "其他媒体", "url": "https://www.52by.com/article/234828", "doc": "", "at": 1789094100000, "sum": "事件概述：亚马逊2026秋季会员日Deal提报9月8日关闭，FBA最少拆分入仓9月9日截止，优化拆分9月16日截止；黑五网一提报窗口至10月20日。秋促活动价不计入黑五价格回溯门槛。\n对卖家影响：错过入仓截止日将无法参与秋促；黑五备货窗口收窄，FBA入仓压力集中在9月中下旬。\n行动建议：确认秋促备货已入仓（9/9最少拆分截止前）；规划黑五备货时间线（10/20前提报+11月入仓）；利用秋促参考数据优化黑五选品与定价策略。"},
- {"id": "n71", "lv": "B", "score": 18.0, "cat": "其他", "title": "跨国公司本外币跨境资金集中运营新规9月14日全国推广", "no": "-", "organ": "其他", "taxes": ["其他"], "lines": ["跨境零售"], "countries": ["中国"], "eff": null, "site": "其他媒体", "url": "https://www.pbc.gov.cn/goutongjiaoliu/113456/113469/5171270/index.html", "doc": "", "at": 1789353060000, "sum": "事件概述：人民银行、外汇局联合发布《关于跨国公司本外币跨境资金集中运营业务有关事宜的通知》，9月14日起全国推广，不再限于试点。核心红利：①降低建池门槛（自贸区可进一步下调）；②本外币一体化（集中外债与境外放款额度，允许自主归集比例）；③简化备案（一个窗口对外）。\n对卖家影响：多主体（多国子公司、本地法人）跨境资金归集与轧差净额结算成本下降，备货现金流压力缓解，可与仓单质押/库存融资组合成金融增值服务。\n行动建议：集团型跨境卖家启动资金池备案，统筹境内外资金调配，优先本币结算降低汇兑成本。"},
+ {"id": "n71", "lv": "B", "score": 18.0, "cat": "其他", "title": "跨国公司本外币跨境资金集中运营新规9月14日全国推广", "no": "-", "organ": "其他", "taxes": ["其他"], "lines": ["跨境零售"], "countries": ["中国"], "eff": null, "site": "中国人民银行", "url": "https://www.pbc.gov.cn/goutongjiaoliu/113456/113469/5171270/index.html", "doc": "", "at": 1789353060000, "sum": "事件概述：人民银行、外汇局联合发布《关于跨国公司本外币跨境资金集中运营业务有关事宜的通知》，9月14日起全国推广，不再限于试点。核心红利：①降低建池门槛（自贸区可进一步下调）；②本外币一体化（集中外债与境外放款额度，允许自主归集比例）；③简化备案（一个窗口对外）。\n对卖家影响：多主体（多国子公司、本地法人）跨境资金归集与轧差净额结算成本下降，备货现金流压力缓解，可与仓单质押/库存融资组合成金融增值服务。\n行动建议：集团型跨境卖家启动资金池备案，统筹境内外资金调配，优先本币结算降低汇兑成本。"},
  {"id": "n72", "lv": "B", "score": 14.0, "cat": "其他", "title": "亚马逊FBM单个Offer可被单独停用新规（8/31起生效）", "no": "-", "organ": "其他", "taxes": ["其他"], "lines": ["跨境零售"], "countries": ["美国"], "eff": null, "site": "其他媒体", "url": "https://sellercentral.amazon.com", "doc": "", "at": 1789353060000, "sum": "事件概述：自2026年8月31日起，若某个FBM（卖家自配送）Offer危及账户健康，亚马逊可临时停用该Offer，而账户其余Listing与整体账户健康可能不受影响。评估四项指标：取消率、迟发率、订单缺陷率、准时送达率。停用前平台先发警告邮件。\n对卖家影响：单个高营收Offer停用会立即断销量、掉排名、浪费广告预算；Q4旺季前夕该风险放大。\n行动建议：Q4前做SKU级FBM目录自查，留存订单号、承运商扫描记录、买家沟通、A-to-z记录等证据。"},
  {"id": "n73", "lv": "B", "score": 13.0, "cat": "其他", "title": "CMA CGM宣布10/1起旺季附加费：远东→美西$4000/美东$10000/40ft", "no": "-", "organ": "其他", "taxes": ["其他"], "lines": ["跨境零售"], "countries": ["美国"], "eff": null, "site": "其他媒体", "url": "https://www.cma-cgm.com", "doc": "", "at": 1789353060000, "sum": "事件概述：达飞轮船（CMA CGM）宣布自2026年10月1日起实施旺季附加费（PSS）：远东及印巴→美西4,000美元/40ft；印巴→美东10,000美元/40ft。若其他船司跟进，跨太平洋现货价可能进一步跳涨。\n对卖家影响：Q4旺季海运成本攀升，大件/重货影响最大；叠加巴拿马运河枯水导致美东船期延误，运价上行压力加大。\n行动建议：旺季备货本月中旬前完成订舱锁舱，避免最后一周挤兑；中小批量秋冬家居/汽配小件可考虑中欧班列替代方案。"},
  {"id": "n74", "lv": "B", "score": 15.0, "cat": "其他", "title": "CPSC 9月10日批量召回：SHEIN熊形磁铁/指灯/电吹风等多品类（电池吞食/起火/电击）", "no": "-", "organ": "其他", "taxes": ["其他"], "lines": ["3C"], "countries": ["美国"], "eff": null, "site": "CPSC", "url": "https://www.cpsc.gov/Recalls", "doc": "", "at": 1789353060000, "sum": "事件概述：CPSC于9月10日通报多起召回：ZMC Group发光玩具（纽扣电池吞食风险，违反Reese's Law）、Cade California指灯（电池吞食）、SHEIN熊形冰箱磁铁（磁铁吞食）、广州电吹风刷（电击/灼伤）、Triumph摩托车（气门故障）等。多起为亚马逊渠道销售。\n对卖家影响：CPSC持续严格执行Reese's Law（纽扣/硬币电池安全标准），含锂电池部件产品需确保电池仓不可被儿童轻易打开、包装须有警示标签。\n行动建议：含电池产品核查电池仓安全设计、儿童防护包装及警示标签合规；亚马逊渠道产品关注CPSC eFiling要求。"},
@@ -717,7 +777,7 @@ const TAX_NEWS = [
  {"id": "n109", "lv": "C", "score": 8.0, "cat": "其他", "title": "CPSC扩大召回ZMC Group发光玩具245,124件：纽扣电池可致儿童吞咽伤亡", "no": "26-766", "organ": "其他", "taxes": ["其他"], "lines": ["其他"], "countries": ["美国"], "eff": null, "site": "CPSC", "url": "https://www.cpsc.gov/Recalls/2026/ZMC-Group-Expands-Recall-of-Light-Up-Childrens-Toys", "doc": "", "at": 1789719900000, "sum": "事件：美国CPSC 9月10日通报ZMC Group扩大召回约245,124件电池驱动发光玩具（含墨西哥国旗泡沫棒、独角兽头饰、果冻戒指、心形气球花），纽扣电池可被儿童轻易取出并吞咽，存在严重内伤、化学灼伤和死亡风险。\n对卖家影响：玩具类卖家需立即排查库存；我司品线（汽车工具+小家电）无直接关联，但含锂电池产品的安全标准审查趋势值得关注。\n行动建议：非玩具品类卖家无需立即行动；建议关注CPSC对含电池消费品的安全审查动态，确保在售锂电产品符合强制性安全标准。"},
  {"id": "n110", "lv": "B", "score": 18.0, "cat": "其他", "title": "商务部等5部门印发《关于更好服务实体经济推进电子商务高质量发展的指导意见》", "no": "商电函〔2026〕49号", "organ": "商务部", "taxes": ["其他"], "lines": ["跨境零售"], "countries": ["中国"], "eff": null, "site": "其他媒体", "url": "https://weibo.com/2458565150/5345148277098255", "doc": "", "at": 1789868460000, "sum": "事件概述：商务部等5部门9月20日印发指导意见，提出5方面16条举措推进电子商务高质量发展，明确推进跨境电商、拓展'丝路电商'、加快制度型开放等方向。｜对卖家影响：中央级政策定调电商服务实体经济，跨境电商进出口额占货物进出口比重已超6%，政策红利持续释放；平台责任压实、合规出海指导、数据要素激活等方向将推动行业规范化，中小卖家数字化转型成本有望降低。｜行动建议：关注属地商务部门后续配套措施（如广州已率先推出海外仓专项政策）；评估'产业电商'与'数实融合'趋势下的供应链升级机会；保持合规经营以享受政策红利。"},
  {"id": "n111", "lv": "B", "score": 18.0, "cat": "其他", "title": "欧盟官方确认11月1日起对跨境小包加征统一处理费每件2欧元", "no": "-", "organ": "其他", "taxes": ["关税"], "lines": ["跨境零售"], "countries": ["欧盟"], "eff": 1793462400000, "site": "其他媒体", "url": "https://www.163.com/dy/article/L6D56NH70556MUQA.html", "doc": "https://my.feishu.cn/docx/XTAMd8Y8qofubtx4KseczFaUnDe", "at": 1789868460000, "sum": "事件概述：欧盟在立法条例(EU)2026/382中正式确认，自2026年11月1日起对非欧盟国家直邮至欧盟消费者的B2C包裹统一征收海关行政处理费每件2欧元，与7月1日已生效的150欧元以下小包每件3欧元临时定额关税独立叠加。｜对卖家影响：一件低价小包仅税费与处理费就要增加约5欧元，且无渠道豁免（FBM自发货、邮政小包、专线、FBA头程入仓全部覆盖），低客单价直邮铺货模式利润空间被严重挤压；非欧盟平台被认定为'事实进口商'，承担清关、缴税与商品合规责任。｜行动建议：11月前完成欧盟含税售价重算；确定欧盟境内进口主体或合规海关代理；评估欧盟海外仓批量清关摊薄单件成本的可行性；低客单价SKU需重新评估欧洲市场存续价值。"},
- {"id": "n112", "lv": "B", "score": 15.0, "cat": "其他", "title": "人民币对美元汇率升破6.70关口，创2023年1月以来新高", "no": "-", "organ": "其他", "taxes": ["其他"], "lines": ["出口业务"], "countries": ["中国"], "eff": null, "site": "其他媒体", "url": "https://finance.sina.com.cn/roll/2026-09-18/doc-inisfiic3447092.shtml", "doc": "", "at": 1789868460000, "sum": "事件概述：9月18日离岸、在岸人民币对美元汇率双双升破6.70，中间价报6.7521，为连续第八个交易日调强，创2023年1月以来新高；同期日本央行加息25个基点至1.25%。｜对卖家影响：人民币升值直接压缩出口结汇后的本币收入，以美元计价、成本以人民币计价的卖家毛利被侵蚀；机构预计年底前人民币核心波动区间在6.7—6.9。｜行动建议：评估远期锁汇或分批结汇策略；新订单报价时将汇率区间纳入测算，避免按静态汇率定价；关注美联储与日本央行后续货币政策动向对汇率的进一步影响。"},
+ {"id": "n112", "lv": "B", "score": 15.0, "cat": "外汇汇率", "title": "人民币对美元汇率升破6.70关口，创2023年1月以来新高", "no": "-", "organ": "其他", "taxes": ["其他"], "lines": ["出口业务"], "countries": ["中国"], "eff": null, "site": "新浪财经", "url": "https://finance.sina.com.cn/roll/2026-09-18/doc-inisfiic3447092.shtml", "doc": "", "at": 1789868460000, "sum": "事件概述：9月18日离岸、在岸人民币对美元汇率双双升破6.70，中间价报6.7521，为连续第八个交易日调强，创2023年1月以来新高；同期日本央行加息25个基点至1.25%。｜对卖家影响：人民币升值直接压缩出口结汇后的本币收入，以美元计价、成本以人民币计价的卖家毛利被侵蚀；机构预计年底前人民币核心波动区间在6.7—6.9。｜行动建议：评估远期锁汇或分批结汇策略；新订单报价时将汇率区间纳入测算，避免按静态汇率定价；关注美联储与日本央行后续货币政策动向对汇率的进一步影响。"},
  {"id": "n113", "lv": "B", "score": 13.0, "cat": "其他", "title": "亚马逊全站点灰度关闭差评'联系买家'按钮，品牌备案无豁免", "no": "-", "organ": "其他", "taxes": ["其他"], "lines": ["全品线"], "countries": ["美国"], "eff": null, "site": "其他媒体", "url": "https://www.chwang.com/news/209973762771", "doc": "", "at": 1789868460000, "sum": "事件概述：亚马逊9月15日起全站点灰度推进，下架卖家后台评论板块中1-3星差评对应的'Contact Buyer'功能按钮，不设品牌备案豁免，美欧日澳等主流站点分批落地。｜对卖家影响：卖家失去主动触达差评买家的官方通道，过去依赖补发、退款安抚争取改评的低成本评分维护打法彻底失效；差评对Listing转化率的影响力被进一步放大，一条近期真实差评往往能抵消多条早期好评。｜行动建议：运营重心从'事后补救'转向'事前预防'——立即导出过去12-24个月差评逐条归类，找出高频抱怨点并整改产品与Listing；善用'Request a Review'官方索评、Vine计划、公开回复差评等合规路径；严控品控与物流履约，从源头减少差评产生。"},
  {"id": "n114", "lv": "B", "score": 14.0, "cat": "其他", "title": "美国国会通过对俄新制裁法案，授权对采购俄油气国家最高加征100%关税", "no": "-", "organ": "其他", "taxes": ["关税"], "lines": ["出口业务"], "countries": ["美国"], "eff": null, "site": "其他媒体", "url": "https://www.sohu.com/a/1076684701_120236376", "doc": "", "at": 1789868460000, "sum": "事件概述：美国众议院9月16日以262:159通过对俄全面制裁新法案并提交总统签署，法案授权总统对继续大量采购俄油气的国家（含中国、印度）加征最高100%关税；特朗普表态将批准。｜对卖家影响：对中印加税是'授权'而非立即落地，需总统签署后方生效，暂不宜据此调整对美备货；但制裁升级可能外溢影响中俄物流结算通道，对依赖俄线路或俄原料供应链的卖家构成潜在风险。｜行动建议：持续监控法案签署进度及后续实施细则；评估供应链中俄原料/组件占比及替代方案；对俄业务占比较高的卖家做好多通道物流与结算预案。"},
  {"id": "n115", "lv": "B", "score": 16.0, "cat": "出口退税", "title": "广州发布推动海外仓全球布局专项政策，9810出口'离境即退税'率先落地", "no": "-", "organ": "其他", "taxes": ["出口退税"], "lines": ["出口业务"], "countries": ["中国"], "eff": null, "site": "其他媒体", "url": "https://www.sohu.com/a/1076684701_120236376", "doc": "", "at": 1789868460000, "sum": "事件概述：广州市9月15日发布推动海外仓全球布局专项政策，覆盖31国、面积破130万㎡，率先落地9810出口'离境即退税'，年内将开展不少于20场仓储资源对接。｜对卖家影响：9810海外仓出口'离境即退税'可大幅缩短退税周期、改善现金流；广州作为全国跨境电商重镇，其政策具有示范效应，其他城市可能跟进类似措施。｜行动建议：有海外仓布局计划的卖家关注广州及属地商务部门对接活动；评估9810模式下'离境即退税'对现金流改善的具体效益；已运营海外仓的卖家核查是否符合退税申报条件并准备相关单证。"},
@@ -743,7 +803,12 @@ const SOURCES_CONFIG = [
   {id:"zhio",name:"致欧科技(301376)",url:"https://www.cninfo.com.cn",type:"上市公司",keywords:"致欧科技 出海 家居 财报",enabled:true,note:"跨境电商家居品类标的"},
   {id:"huakai",name:"华凯易佰(300592)",url:"https://www.cninfo.com.cn",type:"上市公司",keywords:"华凯易佰 跨境 财报",enabled:true,note:"跨境电商标的"},
   {id:"saiwei",name:"赛维时代(301381)",url:"https://www.cninfo.com.cn",type:"上市公司",keywords:"赛维时代 服装 出海 财报",enabled:true,note:"跨境电商服装品类标的"},
-  {id:"santai",name:"三态股份(301158)",url:"https://www.cninfo.com.cn",type:"上市公司",keywords:"三态股份 跨境 财报",enabled:true,note:"跨境电商标的"}
+  {id:"santai",name:"三态股份(301158)",url:"https://www.cninfo.com.cn",type:"上市公司",keywords:"三态股份 跨境 财报",enabled:true,note:"跨境电商标的"},
+  {id:"pbc",name:"中国人民银行",url:"http://www.pbc.gov.cn",type:"外汇资讯",keywords:"汇率 人民币 中间价 货币政策 外汇市场",enabled:true,note:"中国央行官网，人民币汇率与货币政策核心来源"},
+  {id:"fed",name:"美联储 Federal Reserve",url:"https://www.federalreserve.gov",type:"外汇资讯",keywords:"Fed FOMC interest rate dot plot policy statement",enabled:true,note:"美联储官网，利率决议、点阵图与政策声明原文"},
+  {id:"ecb",name:"欧洲央行 ECB",url:"https://www.ecb.europa.eu",type:"外汇资讯",keywords:"ECB interest rate euro monetary policy",enabled:true,note:"欧洲央行货币政策与欧元汇率动态"},
+  {id:"boj",name:"日本央行 BOJ",url:"https://www.boj.or.jp",type:"外汇资讯",keywords:"BOJ interest rate yen monetary policy",enabled:true,note:"日本央行货币政策与日元汇率动态"},
+  {id:"sina_fx",name:"新浪财经外汇",url:"https://finance.sina.com.cn/forex",type:"外汇资讯",keywords:"美元 欧元 英镑 日元 人民币 汇率 在岸 离岸",enabled:true,note:"新浪财经外汇频道，主要货币汇率走势与即时行情"}
 ];
 /* ===SOURCES-END=== */
 /* ===DATA-END=== */
@@ -752,27 +817,34 @@ const $=id=>document.getElementById(id);
 const esc=s=>String(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#39;");
 const fd=ms=>{if(!ms)return"—";const d=new Date(ms);return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")};
 const LV_NAME={A:"A级 预警",B:"B级 关注",C:"C级 一般"};
-const CATS=["出口退税","增值税","消费税","关务海关","国际税收","其他"];
+const CATS=["出口退税","增值税","消费税","关务海关","国际税收","外汇汇率","央行政策","美联储","其他"];
 
-/* ===== 板块归属：P1税务 / P2海关 / P3平台合规 ===== */
+/* ===== 板块归属：P1税务 / P2海关 / P3平台合规 / P4外汇汇率 ===== */
 /* BOARD_MAP = 存量条目人工确认（标题→板块）；新增条目按关键词规则兜底 */
-const BOARD_MAP={"关于出口业务增值税和消费税政策的公告": "tax", "关于发布《出口业务增值税和消费税退（免）税管理办法》的公告": "tax", "国家税务总局关于调整消费税纳税申报表有关事项的公告": "tax", "财政部 税务总局关于调整铁路和航空运输企业汇总缴纳增值税分支机构名单的通知": "tax", "商务部等6部门关于加力优化离境退税措施扩大入境消费的通知": "tax", "国家税务总局关于修订部分税务执法文书的公告": "tax", "促进和规范电子单证应用规定": "cus", "关于调整部分能源资源行业企业城镇土地使用税政策的公告": "tax", "国家税务总局关于离岸信托个人所得税有关征管事项的公告": "tax", "财政部 税务总局关于离岸信托个人所得税有关事项的公告": "tax", "个税重回第三大税种原因揭晓": "tax", "为社保费征管“深化用数”提供支撑": "tax", "强化户源管理：做好“开机9件事”": "tax", "研发加码，电子信息制造业加速升级": "tax", "推动财税政策深度嵌入美丽中国建设": "tax", "关于调整部分电池消费税政策的公告": "tax", "财政部 税务总局关于调整平潭综合实验区有关增值税和消费税退税货物范围的通知": "tax", "国家税务总局关于企业重组业务所得税处理有关征管问题的公告": "tax", "国家税务总局关于调整增值税纳税申报有关事项的公告": "tax", "财政部 税务总局关于明确非应税交易等增值税有关事项的公告": "tax", "财政部 税务总局 中国证监会关于规范转让上市公司限售股个人所得税政策的公告": "tax", "商务部关于公布对原产于美国、欧盟、台湾地区和日本的进口共聚聚甲醛反倾销措施相关企业税率继承决定的通知": "cus", "海关总署关于公布有关电池产品对应海关商品编号的公告": "cus", "亚马逊欧洲站强制税务合规：9月1日起泛欧货件入欧盟仓须提供MRN和EORI": "cus", "亚马逊泛欧FBA强制扩容：9月3日起须同步荷兰站可售，否则退出Pan-EU": "pla", "CPSC召回150万只OCOOPA充电暖手宝：1480起过热、1人死亡，涉亚马逊/沃尔玛": "pla", "CPSC扩大召回Cuisinart金属丝烧烤刷至360万只：54起金属丝脱落致伤，沃尔玛/亚马逊有售": "pla", "财政部 海关总署 税务总局关于跨境电子商务出口退运商品税收优惠政策的公告": "tax", "国家税务总局浙江省税务局关于开展增值税及附加税费申报试点的公告": "tax", "福建'阳光跨境服务平台'落地：9610出口无票免征增值税+企业所得税0.2%核定征收": "tax", "美客多9月起调整卖家信誉计算规则：墨西哥60天门槛提至101单，多国切换365天考核周期": "pla", "亚马逊对香港主体卖家发起两轮'主要营业地址'验证：限期未完成将扣留欧盟及英国站点付款": "pla", "安克创新披露2026年半年报：Q2净利同比+83%，IEEPA关税退回约10.5亿元增厚毛利": "pla", "美国FCC将'外国产先进机器人'列入受限清单：扫地机器人等新品无法获授权进入美国": "pla", "美国CBP 9月18日起强化进口商记录(IOR)核验：信息不符将作废IOR号码影响清关": "cus", "外媒：美拟在9月24日中美峰会前依301条款对华商品再加征7.5%\"产能过剩\"关税（叠加后替代性关税逼近20%上限）": "cus", "美国无人机Section 232关税9月3日正式生效：>25kg/热成像/停机舱100%、消费级25%，与301叠加": "cus", "巴西50美元以下跨境小包零关税临时政策9月8日到期：国会本周表决，未通过则9月9日自动恢复20%进口税": "cus", "CPSC于9月3日通报召回Truststone XO Poppy磁吸无线充电宝3.24万台：锂电过热起火风险（TJX/Marshalls渠道）": "pla", "eBay 9月24日起全球禁售独立安全气囊/充气装置/方向盘气囊盖（新品二手修复件均禁，约30天合规缓冲）": "pla", "欧洲港口罢工潮：德国汉堡等港9月2日起48小时罢工，荷兰鹿特丹/阿姆斯特丹/泽兰9月4日停装近8小时": "pla", "Victoria's Secret披露Q2获超1.4亿美元IEEPA关税退款（占已缴95%以上）并上调全年指引": "pla"};
+const BOARD_MAP={"关于出口业务增值税和消费税政策的公告": "tax", "关于发布《出口业务增值税和消费税退（免）税管理办法》的公告": "tax", "国家税务总局关于调整消费税纳税申报表有关事项的公告": "tax", "财政部 税务总局关于调整铁路和航空运输企业汇总缴纳增值税分支机构名单的通知": "tax", "商务部等6部门关于加力优化离境退税措施扩大入境消费的通知": "tax", "国家税务总局关于修订部分税务执法文书的公告": "tax", "促进和规范电子单证应用规定": "cus", "关于调整部分能源资源行业企业城镇土地使用税政策的公告": "tax", "国家税务总局关于离岸信托个人所得税有关征管事项的公告": "tax", "财政部 税务总局关于离岸信托个人所得税有关事项的公告": "tax", "个税重回第三大税种原因揭晓": "tax", "为社保费征管“深化用数”提供支撑": "tax", "强化户源管理：做好“开机9件事”": "tax", "研发加码，电子信息制造业加速升级": "tax", "推动财税政策深度嵌入美丽中国建设": "tax", "关于调整部分电池消费税政策的公告": "tax", "财政部 税务总局关于调整平潭综合实验区有关增值税和消费税退税货物范围的通知": "tax", "国家税务总局关于企业重组业务所得税处理有关征管问题的公告": "tax", "国家税务总局关于调整增值税纳税申报有关事项的公告": "tax", "财政部 税务总局关于明确非应税交易等增值税有关事项的公告": "tax", "财政部 税务总局 中国证监会关于规范转让上市公司限售股个人所得税政策的公告": "tax", "商务部关于公布对原产于美国、欧盟、台湾地区和日本的进口共聚聚甲醛反倾销措施相关企业税率继承决定的通知": "cus", "海关总署关于公布有关电池产品对应海关商品编号的公告": "cus", "亚马逊欧洲站强制税务合规：9月1日起泛欧货件入欧盟仓须提供MRN和EORI": "cus", "亚马逊泛欧FBA强制扩容：9月3日起须同步荷兰站可售，否则退出Pan-EU": "pla", "CPSC召回150万只OCOOPA充电暖手宝：1480起过热、1人死亡，涉亚马逊/沃尔玛": "pla", "CPSC扩大召回Cuisinart金属丝烧烤刷至360万只：54起金属丝脱落致伤，沃尔玛/亚马逊有售": "pla", "财政部 海关总署 税务总局关于跨境电子商务出口退运商品税收优惠政策的公告": "tax", "国家税务总局浙江省税务局关于开展增值税及附加税费申报试点的公告": "tax", "福建'阳光跨境服务平台'落地：9610出口无票免征增值税+企业所得税0.2%核定征收": "tax", "美客多9月起调整卖家信誉计算规则：墨西哥60天门槛提至101单，多国切换365天考核周期": "pla", "亚马逊对香港主体卖家发起两轮'主要营业地址'验证：限期未完成将扣留欧盟及英国站点付款": "pla", "安克创新披露2026年半年报：Q2净利同比+83%，IEEPA关税退回约10.5亿元增厚毛利": "pla", "美国FCC将'外国产先进机器人'列入受限清单：扫地机器人等新品无法获授权进入美国": "pla", "美国CBP 9月18日起强化进口商记录(IOR)核验：信息不符将作废IOR号码影响清关": "cus", "外媒：美拟在9月24日中美峰会前依301条款对华商品再加征7.5%\"产能过剩\"关税（叠加后替代性关税逼近20%上限）": "cus", "美国无人机Section 232关税9月3日正式生效：>25kg/热成像/停机舱100%、消费级25%，与301叠加": "cus", "巴西50美元以下跨境小包零关税临时政策9月8日到期：国会本周表决，未通过则9月9日自动恢复20%进口税": "cus", "CPSC于9月3日通报召回Truststone XO Poppy磁吸无线充电宝3.24万台：锂电过热起火风险（TJX/Marshalls渠道）": "pla", "eBay 9月24日起全球禁售独立安全气囊/充气装置/方向盘气囊盖（新品二手修复件均禁，约30天合规缓冲）": "pla", "欧洲港口罢工潮：德国汉堡等港9月2日起48小时罢工，荷兰鹿特丹/阿姆斯特丹/泽兰9月4日停装近8小时": "pla", "Victoria's Secret披露Q2获超1.4亿美元IEEPA关税退款（占已缴95%以上）并上调全年指引": "pla",
+"人民币对美元汇率升破6.70关口，创2023年1月以来新高": "forex",
+"跨国公司本外币跨境资金集中运营新规9月14日全国推广": "forex"};
 const HINT_CUS=["海关","关税","反倾销","反补贴","CBP","IOR","MRN","EORI","清关","商品编号","单证","进境","报关","税率继承","进口商","清关"];
 const HINT_TAX=["增值税","消费税","企业所得税","个人所得税","出口退税","印花税","环保税","土地使用税","区域退税","离岸","信托","财税","退税","申报表","申报试点","非应税","社保费","税种"];
 const HINT_PLA=["亚马逊","沃尔玛","美客多","eBay","Temu","Shein","CPSC","FCC","卖家","平台","店铺","召回","Anker","安克","财报","物流","港口","罢工","Victoria's Secret","维密"];
+/* HINT_FOR 必须"精确"：货币名（美元/欧元/英镑/日元）在价格/费用语境中极常见，
+   仅用它们会把关税/附加费类资讯误判为外汇。故只保留外汇/货币政策专有词。 */
+const HINT_FOR=["汇率","外汇","结汇","售汇","购汇","结售汇","中间价","在岸","美元指数","外汇储备","本外币","锁汇","套期保值","货币互换","美联储","FOMC","点阵图","加息","降息","欧央行","欧洲央行","日本央行","央行","MLF","LPR","逆回购","货币政策","人民币升值","人民币贬值"];
 function boardOf(it){
   if(it&&BOARD_MAP[it.title])return BOARD_MAP[it.title];
   const t=(it&&(it.title+" "+(it.no||"")+" "+(it.organ||"")+" "+((it.taxes||[]).join(" "))+" "+((it.sum||""))))||"";
   if(HINT_CUS.some(k=>t.indexOf(k)>=0))return "cus";
+  if(HINT_FOR.some(k=>t.indexOf(k)>=0))return "forex";
   if(HINT_TAX.some(k=>t.indexOf(k)>=0))return "tax";
   return "pla";
 }
 const CFG={
   tax:{alert:"alertZoneTax",lv:"lvChipsTax",cat:"catChipsTax",list:"newsListTax",scroller:"scrollerTax",meta:"streamMetaTax",bars:"lvBarsTax",kv:"kvStatsTax",snap:"snapStatsTax",btnR:"btnRefreshTax",btnA:"btnAITax",title:"税务政策"},
   cus:{alert:"alertZoneCus",lv:"lvChipsCus",cat:"catChipsCus",list:"newsListCus",scroller:"scrollerCus",meta:"streamMetaCus",bars:"lvBarsCus",kv:"kvStatsCus",snap:"snapStatsCus",btnR:"btnRefreshCus",btnA:"btnAICus",title:"海关清关"},
-  pla:{alert:"alertZonePla",lv:"lvChipsPla",cat:"catChipsPla",list:"newsListPla",scroller:"scrollerPla",meta:"streamMetaPla",bars:"lvBarsPla",kv:"kvStatsPla",snap:"snapStatsPla",btnR:"btnRefreshPla",btnA:"btnAIPla",title:"平台与合规"}
+  pla:{alert:"alertZonePla",lv:"lvChipsPla",cat:"catChipsPla",list:"newsListPla",scroller:"scrollerPla",meta:"streamMetaPla",bars:"lvBarsPla",kv:"kvStatsPla",snap:"snapStatsPla",btnR:"btnRefreshPla",btnA:"btnAIPla",title:"平台与合规"},
+  forex:{alert:"alertZoneForex",lv:"lvChipsForex",cat:"catChipsForex",list:"newsListForex",scroller:"scrollerForex",meta:"streamMetaForex",bars:"lvBarsForex",kv:"kvStatsForex",snap:"snapStatsForex",btnR:"btnRefreshForex",btnA:"btnAIForex",title:"外汇汇率"}
 };
-const st={tax:{lv:"全部",cat:"全部"},cus:{lv:"全部",cat:"全部"},pla:{lv:"全部",cat:"全部"}};
+const st={tax:{lv:"全部",cat:"全部"},cus:{lv:"全部",cat:"全部"},pla:{lv:"全部",cat:"全部"},forex:{lv:"全部",cat:"全部"}};
 const itemsOf=b=>TAX_NEWS.filter(i=>boardOf(i)===b);
 /* ===== 新增未读标识（绿色 NEW）：72h 窗口 + 本机已读记录 ===== */
 const NEW_WINDOW_MS=3*24*3600*1000;
@@ -794,7 +866,7 @@ function newBadge(it){return isNewItem(it)?'<span class="new-badge" data-k="'+en
 function unreadCount(){let n=0;try{TAX_NEWS.forEach(it=>{if(isNewItem(it))n++;});}catch(e){}return n;}
 /* 页签上的「新」计数：让用户一眼看出新条目落在哪个板块 */
 function updateTabNew(){
-  [["tax","TabNewTax"],["cus","TabNewCus"],["pla","TabNewPla"]].forEach(function(p){
+  [["tax","TabNewTax"],["cus","TabNewCus"],["pla","TabNewPla"],["forex","TabNewForex"]].forEach(function(p){
     const el=$(p[1]); if(!el)return;
     let n=0; try{n=itemsOf(p[0]).filter(isNewItem).length;}catch(e){}
     el.textContent=n?String(n):"";
@@ -821,7 +893,9 @@ document.addEventListener("click",ev=>{
 });
 const _unreadEl=$("statUnread");if(_unreadEl)_unreadEl.onclick=markAllRead;
 /* ===== 页内重点分级：P1沿用税务评分；P2/P3按板块语义（存量人工锁定+新条目规则） ===== */
-const FOCUS_MAP={"促进和规范电子单证应用规定": "C", "商务部关于公布对原产于美国、欧盟、台湾地区和日本的进口共聚聚甲醛反倾销措施相关企业税率继承决定的通知": "B", "海关总署关于公布有关电池产品对应海关商品编号的公告": "A", "亚马逊欧洲站强制税务合规：9月1日起泛欧货件入欧盟仓须提供MRN和EORI": "A", "美国CBP 9月18日起强化进口商记录(IOR)核验：信息不符将作废IOR号码影响清关": "A", "外媒：美拟在9月24日中美峰会前依301条款对华商品再加征7.5%“产能过剩”关税（叠加后替代性关税逼近20%上限）": "A", "美国无人机Section 232关税9月3日正式生效：>25kg/热成像/停机舱100%、消费级25%，与301叠加": "B", "巴西50美元以下跨境小包零关税临时政策9月8日到期：国会本周表决，未通过则9月9日自动恢复20%进口税": "A", "亚马逊泛欧FBA强制扩容：9月3日起须同步荷兰站可售，否则退出Pan-EU": "A", "CPSC召回150万只OCOOPA充电暖手宝：1480起过热、1人死亡，涉亚马逊/沃尔玛": "B", "CPSC扩大召回Cuisinart金属丝烧烤刷至360万只：54起金属丝脱落致伤，沃尔玛/亚马逊有售": "C", "美客多9月起调整卖家信誉计算规则：墨西哥60天门槛提至101单，多国切换365天考核周期": "B", "亚马逊对香港主体卖家发起两轮'主要营业地址'验证：限期未完成将扣留欧盟及英国站点付款": "A", "安克创新披露2026年半年报：Q2净利同比+83%，IEEPA关税退回约10.5亿元增厚毛利": "B", "美国FCC将'外国产先进机器人'列入受限清单：扫地机器人等新品无法获授权进入美国": "B", "CPSC于9月3日通报召回Truststone XO Poppy磁吸无线充电宝3.24万台：锂电过热起火风险（TJX/Marshalls渠道）": "B", "eBay 9月24日起全球禁售独立安全气囊/充气装置/方向盘气囊盖（新品二手修复件均禁，约30天合规缓冲）": "B", "欧洲港口罢工潮：德国汉堡等港9月2日起48小时罢工，荷兰鹿特丹/阿姆斯特丹/泽兰9月4日停装近8小时": "B", "Victoria's Secret披露Q2获超1.4亿美元IEEPA关税退款（占已缴95%以上）并上调全年指引": "B", "财政部 税务总局关于调整平潭综合实验区有关增值税和消费税退税货物范围的通知": "B", "21世纪经济报道9月7日：12家跨境电商上市公司半年考——IEEPA关税退税与海外仓切换成利润主线，直邮红利消退": "B", "春风动力9月7日公告：子公司收到美国IEEPA关税及利息退回5403.24万美元（约3.66亿元），预计影响2026年净利约2.56亿元": "B", "CPSC 9月10日批量召回：SHEIN熊形磁铁/指灯/电吹风等多品类（电池吞食/起火/电击）": "B", "亚马逊含逼真AI生成人物图片须加元数据标记（6/6起已强制，存量需回补）": "B", "美国调整对加拿大50%额外关税适用范围并新增进口禁令（Section 338, 9/15生效+9/29禁令）": "B", "墨西哥对华儿童自行车反倾销期中复审终裁：税率由13.12美元/辆大幅上调至57.19美元/辆（9月9日起生效）": "B", "美国国会通过对俄新制裁法案，授权对采购俄油气国家最高加征100%关税": "B"};
+const FOCUS_MAP={"促进和规范电子单证应用规定": "C", "商务部关于公布对原产于美国、欧盟、台湾地区和日本的进口共聚聚甲醛反倾销措施相关企业税率继承决定的通知": "B", "海关总署关于公布有关电池产品对应海关商品编号的公告": "A", "亚马逊欧洲站强制税务合规：9月1日起泛欧货件入欧盟仓须提供MRN和EORI": "A", "美国CBP 9月18日起强化进口商记录(IOR)核验：信息不符将作废IOR号码影响清关": "A", "外媒：美拟在9月24日中美峰会前依301条款对华商品再加征7.5%“产能过剩”关税（叠加后替代性关税逼近20%上限）": "A", "美国无人机Section 232关税9月3日正式生效：>25kg/热成像/停机舱100%、消费级25%，与301叠加": "B", "巴西50美元以下跨境小包零关税临时政策9月8日到期：国会本周表决，未通过则9月9日自动恢复20%进口税": "A", "亚马逊泛欧FBA强制扩容：9月3日起须同步荷兰站可售，否则退出Pan-EU": "A", "CPSC召回150万只OCOOPA充电暖手宝：1480起过热、1人死亡，涉亚马逊/沃尔玛": "B", "CPSC扩大召回Cuisinart金属丝烧烤刷至360万只：54起金属丝脱落致伤，沃尔玛/亚马逊有售": "C", "美客多9月起调整卖家信誉计算规则：墨西哥60天门槛提至101单，多国切换365天考核周期": "B", "亚马逊对香港主体卖家发起两轮'主要营业地址'验证：限期未完成将扣留欧盟及英国站点付款": "A", "安克创新披露2026年半年报：Q2净利同比+83%，IEEPA关税退回约10.5亿元增厚毛利": "B", "美国FCC将'外国产先进机器人'列入受限清单：扫地机器人等新品无法获授权进入美国": "B", "CPSC于9月3日通报召回Truststone XO Poppy磁吸无线充电宝3.24万台：锂电过热起火风险（TJX/Marshalls渠道）": "B", "eBay 9月24日起全球禁售独立安全气囊/充气装置/方向盘气囊盖（新品二手修复件均禁，约30天合规缓冲）": "B", "欧洲港口罢工潮：德国汉堡等港9月2日起48小时罢工，荷兰鹿特丹/阿姆斯特丹/泽兰9月4日停装近8小时": "B", "Victoria's Secret披露Q2获超1.4亿美元IEEPA关税退款（占已缴95%以上）并上调全年指引": "B", "财政部 税务总局关于调整平潭综合实验区有关增值税和消费税退税货物范围的通知": "B", "21世纪经济报道9月7日：12家跨境电商上市公司半年考——IEEPA关税退税与海外仓切换成利润主线，直邮红利消退": "B", "春风动力9月7日公告：子公司收到美国IEEPA关税及利息退回5403.24万美元（约3.66亿元），预计影响2026年净利约2.56亿元": "B", "CPSC 9月10日批量召回：SHEIN熊形磁铁/指灯/电吹风等多品类（电池吞食/起火/电击）": "B", "亚马逊含逼真AI生成人物图片须加元数据标记（6/6起已强制，存量需回补）": "B", "美国调整对加拿大50%额外关税适用范围并新增进口禁令（Section 338, 9/15生效+9/29禁令）": "B", "墨西哥对华儿童自行车反倾销期中复审终裁：税率由13.12美元/辆大幅上调至57.19美元/辆（9月9日起生效）": "B", "美国国会通过对俄新制裁法案，授权对采购俄油气国家最高加征100%关税": "B",
+"人民币对美元汇率升破6.70关口，创2023年1月以来新高": "A",
+"跨国公司本外币跨境资金集中运营新规9月14日全国推广": "B"};
 const boardLvOf=(it,b)=>{
   if(b==="tax"){const k=FOCUS_MAP[it.title];return k?k:it.lv;}
   const k=FOCUS_MAP[it.title]; if(k)return k;
@@ -842,6 +916,12 @@ const boardLvOf=(it,b)=>{
       return "A";
     }
     return (it.score||0)>=10?"B":"C";
+  }
+  if(b==="forex"){
+    const tf=(it.title||"")+" "+(it.sum||"");
+    if(/美元|欧元|英镑|日元/.test(tf)&&/汇率|走势|升|贬|波动|破|关口|新高|新低/.test(tf))return "A";
+    if((it.score||0)>=15)return "A";
+    return (it.score||0)>=8?"B":"C";
   }
   return it.lv;
 };
@@ -1058,8 +1138,19 @@ function renderBoard(b){
   const A=cnt("A"),B=cnt("B"),C=cnt("C"),mx=Math.max(A,B,C,1);
   const bar=(nm,v,cls)=>"<div class=\"bar-row\"><span class=\"nm\">"+nm+"</span><span class=\"bar\"><i class=\""+cls+"\" style=\"width:"+Math.round(v/mx*100)+"%\"></i></span><span class=\"cnt\">"+v+"</span></div>";
   $(cfg.bars).innerHTML=bar("A 级预警",A,"")+bar("B 级关注",B,"b")+bar("C 级一般",C,"c");
+  /* P4 外汇板块：按币种派生归组（飞书表「税种」为 select 不可新增，故从标题/摘要/标签提取币种） */
+  const _curOf=it=>{
+    const s=(it.title||"")+" "+(it.sum||"")+" "+((it.taxes||[]).join(" "));
+    const out=[];
+    ["美元","欧元","英镑","日元","人民币"].forEach(k=>{if(s.indexOf(k)>=0)out.push(k);});
+    return out.length?out:["其他"];
+  };
   const taxMap={},siteMap={};
-  itemsOf(b).forEach(i=>{i.taxes.forEach(t=>taxMap[t]=(taxMap[t]||0)+1);siteMap[i.site]=(siteMap[i.site]||0)+1;});
+  itemsOf(b).forEach(i=>{
+    const keys=(b==="forex")?_curOf(i):i.taxes;
+    keys.forEach(t=>taxMap[t]=(taxMap[t]||0)+1);
+    siteMap[i.site]=(siteMap[i.site]||0)+1;
+  });
   const topTax=Object.entries(taxMap).sort((a,b)=>b[1]-a[1]).slice(0,4);
   $(cfg.kv).innerHTML=topTax.map(([t,n])=>"<div class=\"kv\"><b>"+esc(t)+"</b><span><span class=\"hl\">"+n+"</span> 条</span></div>").join("")
     +"<div class=\"kv\"><b>信息源</b><span>"+Object.entries(siteMap).sort((a,b)=>b[1]-a[1]).map(([s,n])=>esc(s)+" "+n).join(" · ")+"</span></div>";
@@ -1074,10 +1165,12 @@ function toast(msg){const t=$("toast");t.textContent=msg;t.classList.add("show")
 
 function buildPrompt(b){
   const cfg=CFG[b],items=filteredOf(b).slice(0,8);
-  if(!items.length)return "请从跨境电商"+cfg.title+"合规视角归纳近期值得关注的动态并给出行动建议。";
-  return "请基于以下政策雷达线索做跨境电商"+cfg.title+"周简报：\n"
+  const scope=(b==="forex")?"外汇汇率与跨境资金管理":"跨境电商"+cfg.title+"合规";
+  const tail=(b==="forex")?"①A级预警行动项 ②B级跟踪项 ③汇率敞口与套保/锁汇建议 ④对定价与结算币种的影响":"①A级预警行动项 ②B级跟踪项 ③申报口径变化提示 ④业务管理启示";
+  if(!items.length)return "请从"+scope+"视角归纳近期值得关注的动态并给出行动建议。";
+  return "请基于以下政策雷达线索做"+scope+"周简报：\n"
     +items.map((it,i)=>(i+1)+". ["+LV_NAME[it.lv]+"|"+it.cat+"] "+it.title+"（"+it.no+"，生效"+fd(it.eff)+"）"+(it.url?" "+it.url:"")).join("\n")
-    +"\n要求：分为 ①A级预警行动项 ②B级跟踪项 ③申报口径变化提示 ④业务管理启示；非官方线索不得当成最终依据，条款适用以官方正式文件为准。";
+    +"\n要求：分为 "+tail+"；非官方线索不得当成最终依据，条款适用以官方正式文件为准。";
 }
 function copyText(txt){
   if(navigator.clipboard&&window.isSecureContext){return navigator.clipboard.writeText(txt);}
@@ -1092,7 +1185,7 @@ function activeBoard(){const b=document.querySelector(".tab-btn.active");return 
 function refreshHeader(){
   const tab=activeBoard();
   let arr;
-  if(tab==="tax"||tab==="cus"||tab==="pla"){arr=sortedOf(tab);}
+  if(tab==="tax"||tab==="cus"||tab==="pla"||tab==="forex"){arr=sortedOf(tab);}
   else{arr=TAX_NEWS;}
   const A=arr.filter(i=>i.lv==="A").length;
   const news=todayNewCount(TAX_NEWS);
@@ -1111,32 +1204,32 @@ document.querySelectorAll(".tab-btn").forEach(btn=>{
     btn.classList.add("active");
     const pg=$("tab-"+btn.dataset.tab);
     if(pg)pg.classList.add("active");
-    if(["tax","cus","pla"].indexOf(btn.dataset.tab)>=0)renderBoard(btn.dataset.tab);
+    if(["tax","cus","pla","forex"].indexOf(btn.dataset.tab)>=0)renderBoard(btn.dataset.tab);
     refreshHeader();
   };
 });
-["tax","cus","pla"].forEach(renderBoard);
+["tax","cus","pla","forex"].forEach(renderBoard);
 updateUnreadUI();
 /* 重置已读：清除本机已读记录并重渲染，恢复全部「新」角标 */
 const _resetReadEl=$("statResetRead");
 if(_resetReadEl)_resetReadEl.onclick=()=>{
   try{readSet().clear();saveRead();}catch(e){}
-  ["tax","cus","pla"].forEach(renderBoard);
+  ["tax","cus","pla","forex"].forEach(renderBoard);
   updateUnreadUI();refreshHeader();
   toast("已重置本机已读记录，「新」角标已全部恢复");
 };
 /* 注：原「打开 90 秒后自动全部已读」定时器已移除——改由用户点击角标 /「新增未读」/「重置已读」自主控制 */
 
 /* ── P2: Source Management ── */
-const CAT_CLS={政策法规:"policy",平台动态:"platform",行业资讯:"industry",上市公司:"listed",产品召回:"recalls"};
-const SRC_BOARD={chinatax_fgk:"tax",mof:"tax",chinatax_sh:"tax",shui5:"tax",taxrefund:"tax",customs:"cus",fedreg:"cus",cifnews:"pla",cpsc:"pla",amazon_sc:"pla",amazon_vc:"pla",walmart:"pla",mercadolibre:"pla",anke:"pla",zhio:"pla",huakai:"pla",saiwei:"pla",santai:"pla"};
-const BOARD_CN={tax:"P1",cus:"P2",pla:"P3"};
+const CAT_CLS={政策法规:"policy",平台动态:"platform",行业资讯:"industry",上市公司:"listed",产品召回:"recalls",外汇资讯:"forex"};
+const SRC_BOARD={chinatax_fgk:"tax",mof:"tax",chinatax_sh:"tax",shui5:"tax",taxrefund:"tax",customs:"cus",fedreg:"cus",cifnews:"pla",cpsc:"pla",amazon_sc:"pla",amazon_vc:"pla",walmart:"pla",mercadolibre:"pla",anke:"pla",zhio:"pla",huakai:"pla",saiwei:"pla",santai:"pla",pbc:"forex",fed:"forex",ecb:"forex",boj:"forex",sina_fx:"forex"};
+const BOARD_CN={tax:"P1",cus:"P2",pla:"P3",forex:"P4"};
 function boardChip(id){
   const b=SRC_BOARD[id]; return "<span class=\"src-board b-"+(b||"none")+"\">"+(b?BOARD_CN[b]:"—")+"</span>";
 }
 function renderBoardSrc(){
-  const box={tax:"bsrcTax",cus:"bsrcCus",pla:"bsrcPla"};
-  ["tax","cus","pla"].forEach(b=>{
+  const box={tax:"bsrcTax",cus:"bsrcCus",pla:"bsrcPla",forex:"bsrcForex"};
+  ["tax","cus","pla","forex"].forEach(b=>{
     const el=$(box[b]); if(!el)return;
     const items=SOURCES_CONFIG.filter(s=>SRC_BOARD[s.id]===b);
     el.innerHTML=items.map(s=>"<span class=\"src-chip"+(s.enabled?"":" off")+"\"><span class=\"dot\">●</span> "+esc(s.name)+(s.enabled?"":"（已禁用）")+"</span>").join("");
