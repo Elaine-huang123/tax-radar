@@ -55,8 +55,13 @@ body:before{content:"";position:fixed;inset:0;background:radial-gradient(circle 
 .alert-side-scroll::-webkit-scrollbar-track{background:rgba(255,255,255,.05);border-radius:8px}
 .alert-side-scroll::-webkit-scrollbar-thumb{background:linear-gradient(180deg,rgba(80,230,255,.7),rgba(80,230,255,.35));border-radius:8px;border:1px solid rgba(10,13,28,.6)}
 .alert-side-scroll::-webkit-scrollbar-thumb:hover{background:rgba(80,230,255,.85)}
-.aside-item{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:start;gap:7px;padding:6px 7px;border:1px solid rgba(148,163,184,.14);border-radius:9px;background:rgba(255,255,255,.025);text-decoration:none;transition:.15s}
+.aside-item{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:start;gap:7px;padding:6px 7px;border:1px solid rgba(148,163,184,.14);border-radius:9px;background:rgba(255,255,255,.025);text-decoration:none;transition:.15s;cursor:pointer}
 .aside-item:hover{background:rgba(255,107,114,.1);border-color:rgba(255,107,114,.42)}
+.aside-item:focus-visible{outline:none;background:rgba(255,107,114,.13);border-color:rgba(255,107,114,.6);box-shadow:0 0 0 2px rgba(255,107,114,.3)}
+.aside-item.jumping{background:rgba(80,230,255,.14);border-color:rgba(80,230,255,.6)}
+.aside-item .jump-hint{grid-column:1/-1;margin-top:3px;color:#8fd9ea;font-size:clamp(8px,.58vw,9.5px);letter-spacing:.02em;opacity:.78;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.aside-item:hover .jump-hint{opacity:1;color:#c9faff}
+.aside-item .jump-hint i{font-style:normal;color:#ff9da1}
 .as-date{color:#9fe8ff;font-size:clamp(8.5px,.6vw,10px);font-weight:900;letter-spacing:.02em;white-space:nowrap;padding-top:1px}
 .as-title{color:#dbe4f5;font-size:clamp(9.5px,.66vw,11px);line-height:1.45;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .aside-item:hover .as-title{color:#fff}
@@ -256,6 +261,12 @@ details.more .sum-full{margin-top:8px;padding-top:8px;border-top:1px dashed rgba
 .tab-new.on{display:inline-block}
 .build-stamp{margin-top:5px;font-size:clamp(9px,.6vw,11px);color:#6f7f9c;letter-spacing:.03em;text-align:right}
 .news-item{position:relative}
+/* 定位跳转高亮（2026-10-10 新增）：从 A 级侧栏点击后，资讯流对应条目脉冲高亮，便于在长列表中一眼找到 */
+.news-item.locate-hit{border-color:rgba(80,230,255,.75);background:rgba(24,52,86,.82);box-shadow:0 0 0 2px rgba(80,230,255,.28),0 0 26px rgba(80,230,255,.22);animation:_locPulse 1.05s ease-out 3}
+@keyframes _locPulse{0%{box-shadow:0 0 0 3px rgba(80,230,255,.55),0 0 30px rgba(80,230,255,.35)}100%{box-shadow:0 0 0 2px rgba(80,230,255,.22),0 0 18px rgba(80,230,255,.16)}}
+@media(prefers-reduced-motion:reduce){.news-item.locate-hit{animation:none}}
+.tab-new2{display:none;margin-left:6px;padding:1px 6px;border-radius:9px;background:linear-gradient(135deg,#ff6b72,#ff9d5c);color:#200507;font-size:clamp(8px,.58vw,9.5px);font-weight:900;vertical-align:middle;line-height:1.5;letter-spacing:.02em}
+.tab-new2.on{display:inline-block}
 .new-badge{position:absolute;top:6px;right:6px;z-index:5;background:linear-gradient(135deg,#1fbf7f,#43e6a3);color:#04231a;font-size:clamp(8.5px,.6vw,10px);font-weight:900;letter-spacing:.5px;line-height:1.5;padding:1px 7px;border-radius:9px;box-shadow:0 0 8px rgba(67,230,163,.55);cursor:pointer;user-select:none}
 .alert-card .new-badge{top:10px;right:10px}
 .new-badge:hover{filter:brightness(1.12)}
@@ -1044,7 +1055,9 @@ function itemHtml(it){
   const ln=[];
   ln.push(it.url?"<a href=\""+esc(it.url)+"\" target=\"_blank\" rel=\"noopener\">原文</a>":"<a class=\"nolink\">原文缺</a>");
   ln.push(it.doc?"<a href=\""+esc(it.doc)+"\" target=\"_blank\" rel=\"noopener\">飞书解读</a>":"<a class=\"nolink\">解读待生成</a>");
-  return "<div class=\"news-item lv"+it.lv+"\">"+newBadge(it)
+  /* data-key/data-at/data-title 供 A 级侧栏定位跳转使用（与 itemKey() 口径一致）；
+     注意：资讯流内容会复制两份做无缝回绕，故此处不得使用 id（会造成 DOM id 重复） */
+  return "<div class=\"news-item lv"+it.lv+"\" data-key=\""+esc(itemKey(it))+"\" data-at=\""+(it.at||0)+"\" data-title=\""+esc(it.title)+"\">"+newBadge(it)
     +"<div class=\"ni-tags\"><span class=\"lv lv-"+it.lv+"\">"+LV_NAME[it.lv]+" "+it.score+"</span>"
     +"<span class=\"mini-tag\">"+esc(it.cat)+"</span>"
     +"<span class=\"mini-tag\">"+esc(it.site)+"</span>"
@@ -1056,6 +1069,8 @@ function itemHtml(it){
     +"</div>";
 }
 /* ── A级区布局（2026-10-09 改造）：主区固定两行展示最新 A 级，其余移入右侧列队滚动 ── */
+/* 2026-10-10 改造：侧栏条目不再直接打开原文，改为定位跳转到左下角资讯流对应条目，
+   在流内可查看「原文 / 飞书解读 / 摘要简报（展开全文）」，避免"只看到链接内容" */
 const ALERT_ROWS=2;
 function fdAt(ms){if(!ms)return "—";try{const d=new Date(ms);const p=n=>String(n).padStart(2,"0");return p(d.getMonth()+1)+"-"+p(d.getDate());}catch(e){return "—";}}
 function fdAtFull(ms){if(!ms)return "—";try{const d=new Date(ms);const p=n=>String(n).padStart(2,"0");return d.getFullYear()+"-"+p(d.getMonth()+1)+"-"+p(d.getDate());}catch(e){return "—";}}
@@ -1089,10 +1104,10 @@ function alertCardHtml(it){
 function asideItemHtml(it){
   const inner="<span class=\"as-date\" title=\"信息收集日期 "+fdAtFull(it.at)+"\">"+fdAt(it.at)+"</span>"
     +"<span class=\"as-title\" title=\""+esc(it.title)+"\">"+esc(it.title)+newBadge(it)+"</span>"
-    +"<span class=\"as-score\">"+it.score+"</span>";
-  return it.url
-    ?"<a class=\"aside-item\" href=\""+esc(it.url)+"\" target=\"_blank\" rel=\"noopener\">"+inner+"</a>"
-    :"<span class=\"aside-item\">"+inner+"</span>";
+    +"<span class=\"as-score\">"+it.score+"</span>"
+    +"<span class=\"jump-hint\">⤵ 点击定位到下方资讯流"+(it.doc?" · 含飞书解读":" · 解读待生成")+"</span>";
+  /* 2026-10-10：改为定位按钮（无 href），点击跳转到资讯流对应条目而非直接开新窗口 */
+  return "<div class=\"aside-item\" role=\"button\" tabindex=\"0\" data-target=\""+esc(itemKey(it))+"\" title=\"点击定位到左下角资讯流 · 在原条目查看原文/解读/简报\">"+inner+"</div>";
 }
 function alertsHtml(list){
   const A=alertsOf(list),cap=alertCap();
@@ -1101,11 +1116,57 @@ function alertsHtml(list){
   if(!rest.length)return mainHtml;
   return mainHtml
     +"<aside class=\"alert-side\">"
-    +"<div class=\"alert-side-head\"><span class=\"ash-t\">其余 A 级 · <b>"+rest.length+"</b> 条</span><span class=\"ash-hint\">按收集日期 近 → 远 · 可滚动</span></div>"
+    +"<div class=\"alert-side-head\"><span class=\"ash-t\">其余 A 级 · <b>"+rest.length+"</b> 条</span><span class=\"ash-hint\">点击定位到下方资讯流 · 可滚动</span></div>"
     +"<div class=\"alert-side-scroll\">"+rest.map(asideItemHtml).join("")+"</div>"
     +"</aside>";
 }
-/* 侧栏与主区等高（仅宽屏右侧列队时生效），保证滚动条区域可用 */
+/* ── A 级侧栏 → 资讯流定位跳转（2026-10-10 新增）──
+   点击侧栏「其余 A 级」条目：滚动资讯流到对应条目、脉冲高亮并聚焦，
+   用户即可在原条目上查看「原文 / 飞书解读 / 摘要简报（展开全文）」 */
+let _pendingLocate=null;
+function boardWrapPoint(b){
+  const s=scrollCtl[b];
+  if(s&&typeof s.wrapPoint==="function"&&s.scroller&&s.scroller.clientHeight>0)return s.wrapPoint();
+  const list=$(CFG[b].list);
+  return list?wrapPointOf(list):0;
+}
+function jumpToItem(b,key){
+  const sc=$(CFG[b].scroller),list=$(CFG[b].list);
+  if(!sc||!list){toast("资讯流尚未就绪，请稍后重试");return;}
+  const pad=8, wp=boardWrapPoint(b);
+  // 资讯流内容可能被 .news-round 包裹（且复制两份），故用后代选择器而非 children 直接过滤
+  const nodes=Array.prototype.slice.call(list.querySelectorAll(".news-item"));
+  let hit=null;
+  for(let i=0;i<nodes.length;i++){
+    if(itemKey({at:+nodes[i].getAttribute("data-at")||0,title:nodes[i].getAttribute("data-title")||""})===key){hit=nodes[i];break;}
+  }
+  const clearHit=()=>list.querySelectorAll(".locate-hit").forEach(el=>el.classList.remove("locate-hit"));
+  if(!hit){
+    // 该条目被「级别 / 类别」筛选隐藏：清筛选重渲染后再定位
+    st[b].lv="全部";st[b].cat="全部";
+    _pendingLocate={b:b,key:key};renderBoard(b);
+    toast("已清除筛选，正在定位该条资讯…");
+    return;
+  }
+  clearHit();
+  let top=hit.offsetTop-pad;
+  if(wp>0){while(top>=wp)top-=wp;if(top<0)top+=wp;}   // 资讯流内容复制两份，回绕到第一份对应位置
+  sc.scrollTop=top;                                    // 直接赋值：不触发 wheel/pointer 手动滚动，自动滚动不中断
+  hit.classList.add("locate-hit");
+  const _s=scrollCtl[b];
+  if(_s&&typeof _s.setAutoStop==="function")_s.setAutoStop(true);   // 临时停住自动滚动，便于阅读
+  clearTimeout(jumpToItem._t);
+  jumpToItem._t=setTimeout(()=>{hit.classList.remove("locate-hit");},4400);
+  try{sc.scrollIntoView({behavior:"smooth",block:"nearest"});}catch(e){}
+  const docA=hit.querySelector('a[href*="feishu"]');
+  toast("已定位到资讯流对应条目 · 可查看原文 / "+(docA?"飞书解读 / ":"")+"展开全文简报");
+}
+function _applyPendingLocate(){
+  if(!_pendingLocate)return;
+  const p=_pendingLocate;_pendingLocate=null;
+  requestAnimationFrame(()=>{requestAnimationFrame(()=>jumpToItem(p.b,p.key));});
+}
+
 function syncAlertAside(){
   document.querySelectorAll(".alert-zone.with-side").forEach(z=>{
     const main=z.querySelector(".alert-main"),side=z.querySelector(".alert-side");
@@ -1154,6 +1215,13 @@ function startAutoScroll(key,scroller,list){
   s.hover=false;s.drag=false;s.user=false;s.last=0;
   if(!scroller||!list)return;
   s.scroller=scroller;s.list=list;
+  // 供「A级侧栏 → 资讯流定位跳转」复用：回绕点 / 瞬时暂停自动滚动（2026-10-10）
+  s.wrapPoint=function(){return wrapPointOf(list);};
+  s.setAutoStop=function(on){
+    if(s.stop)return;                       // 用户已显式关闭自动滚动，勿覆盖其选择
+    if(on){s.user=true;s.userUntil=Date.now()+SCROLL_IDLE_RESUME;}
+    else{s.user=false;}
+  };
   const reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion:reduce)').matches;
   // 系统「减少动态效果」只在首次进入时作为默认值；内部 手动点过「开始自动滚动」后永久尊重手动选择
   if(!reduce)s.ignoreReduce=false;
@@ -1263,7 +1331,14 @@ function renderBoard(b){
     alertEl.innerHTML=alertsHtml(sorted);
     alertEl.classList.toggle("with-side",!!alertEl.querySelector(".alert-side"));
     syncAlertAside();
+    // A 级侧栏条目 → 资讯流定位跳转（2026-10-10）
+    alertEl.querySelectorAll(".aside-item").forEach(el=>{
+      const go=e=>{e.preventDefault();e.stopPropagation();jumpToItem(b,el.getAttribute("data-target"));};
+      el.onclick=go;
+      el.onkeydown=e=>{if(e.key==="Enter"||e.key===" "||e.key==="Spacebar")go(e);};
+    });
   }
+  _applyPendingLocate();
 
   const lvDefs=[["全部",""],["A","red"],["B",""],["C",""]];
   const _viewLv=sortedOf(b);
