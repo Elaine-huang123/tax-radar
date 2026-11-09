@@ -270,6 +270,26 @@ details.more .sum-full{margin-top:8px;padding-top:8px;border-top:1px dashed rgba
 .new-badge{position:absolute;top:6px;right:6px;z-index:5;background:linear-gradient(135deg,#1fbf7f,#43e6a3);color:#04231a;font-size:clamp(8.5px,.6vw,10px);font-weight:900;letter-spacing:.5px;line-height:1.5;padding:1px 7px;border-radius:9px;box-shadow:0 0 8px rgba(67,230,163,.55);cursor:pointer;user-select:none}
 .alert-card .new-badge{top:10px;right:10px}
 .new-badge:hover{filter:brightness(1.12)}
+/* ===== P6 部门视图（2026-11-09 新增）：税务组/资金组/分析组归集 + 事件线归并 ===== */
+.team-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(12px,1.2vw,18px);align-items:start}
+@media(max-width:1100px){.team-grid{grid-template-columns:minmax(0,1fr)}}
+.team-card{min-width:0}
+.team-cnt{font-size:clamp(10px,.7vw,12px);color:#8fa3c0;font-weight:600;margin-left:6px}
+.team-points{border:1px solid rgba(80,230,255,.22);background:rgba(24,52,86,.35);border-radius:11px;padding:9px 12px;margin:8px 0 10px}
+.tp-head{color:#5ee6ff;font-weight:800;font-size:clamp(11px,.8vw,13px);margin-bottom:5px}
+.team-points ul{margin:0;padding-left:16px}
+.team-points li{font-size:clamp(10px,.75vw,12px);color:#c9d6ec;line-height:1.55;margin:3px 0}
+.team-ev{display:flex;justify-content:space-between;align-items:center;margin:10px 0 4px;padding:4px 9px;border-left:3px solid #5ee6ff;background:rgba(24,52,86,.28);border-radius:6px}
+.tev-name{color:#aee9ff;font-weight:800;font-size:clamp(11px,.8vw,12.5px)}
+.tev-cnt{color:#8fa3c0;font-size:clamp(9.5px,.7vw,11px)}
+.team-item{display:flex;gap:8px;align-items:flex-start;padding:7px 8px;border:1px solid rgba(148,163,184,.13);border-radius:9px;margin:5px 0;background:rgba(18,28,53,.5)}
+.ti-date{color:#8fa3c0;font-size:clamp(9.5px,.7vw,11px);flex:none;padding-top:1px}
+.ti-title{flex:1;min-width:0;font-size:clamp(11px,.8vw,13px);line-height:1.45}
+.ti-title a{color:#eef3ff;text-decoration:none}
+.ti-title a:hover{color:#aee9ff}
+.ti-meta{color:#8fa3c0;font-size:clamp(9px,.65vw,10.5px);flex:none;text-align:right}
+.team-more{color:#6f7f9c;font-size:clamp(9.5px,.7vw,11px);padding:4px 6px}
+.team-lead{padding:6px 4px;color:#8fa3c0}
 </style>
 </head>
 <body>
@@ -305,6 +325,7 @@ details.more .sum-full{margin-top:8px;padding-top:8px;border-top:1px dashed rgba
   <button class="tab-btn" data-tab="pla">📙 P3 · 平台与合规<span class="tab-new" id="TabNewPla"></span></button>
   <button class="tab-btn" data-tab="forex">💱 P4 · 外汇汇率<span class="tab-new" id="TabNewForex"></span></button>
   <button class="tab-btn" data-tab="p5">⚙️ P5 · 规则与信息源</button>
+  <button class="tab-btn" data-tab="team">👥 P6 · 部门视图<span class="tab-new" id="TabNewTeam"></span></button>
 </div>
 
 <!-- ====== P1: Tax Policy ====== -->
@@ -462,6 +483,11 @@ details.more .sum-full{margin-top:8px;padding-top:8px;border-top:1px dashed rgba
     </article>
   </aside>
 </section>
+</div>
+
+<!-- ====== P6: 部门视图（税务组/资金组/分析组归集，2026-11-09 新增） ====== -->
+<div class="tab-page" id="tab-team">
+<section id="teamView"></section>
 </div>
 
 <!-- ====== P5: Rules & Sources（默认最后一页） ====== -->
@@ -1120,9 +1146,14 @@ function newBadge(it){return isNewItem(it)?'<span class="new-badge" data-k="'+en
 function unreadCount(){let n=0;try{TAX_NEWS.forEach(it=>{if(isNewItem(it))n++;});}catch(e){}return n;}
 /* 页签上的「新」计数：让用户一眼看出新条目落在哪个板块 */
 function updateTabNew(){
-  [["tax","TabNewTax"],["cus","TabNewCus"],["pla","TabNewPla"],["forex","TabNewForex"]].forEach(function(p){
+  [["tax","TabNewTax"],["cus","TabNewCus"],["pla","TabNewPla"],["forex","TabNewForex"],["team","TabNewTeam"]].forEach(function(p){
     const el=$(p[1]); if(!el)return;
-    let n=0; try{n=itemsOf(p[0]).filter(isNewItem).length;}catch(e){}
+    let n=0;
+    try{
+      n=(p[0]==="team")
+        ?TAX_NEWS.filter(function(it){return isNewItem(it)&&teamOf(it).length>0;}).length   /* 部门视图：与任一组相关的未读新增 */
+        :itemsOf(p[0]).filter(isNewItem).length;
+    }catch(e){}
     el.textContent=n?String(n):"";
     el.className="tab-new"+(n?" on":"");
   });
@@ -1192,6 +1223,108 @@ const hitOff=t=>OFF_LINES.some(x=>t.indexOf(x)>=0);
 const rawSortedOf=b=>itemsOf(b).slice().sort((a,b)=>(b.score-a.score)||((b.eff||0)-(a.eff||0)));
 const sortedOf=b=>rawSortedOf(b).map(i=>({...i,lv:boardLvOf(i,b)}));
 const filteredOf=b=>sortedOf(b).filter(it=>(st[b].lv==="全部"||it.lv===st[b].lv)&&(st[b].cat==="全部"||it.cat===st[b].cat));
+
+/* ===== P6 部门视图（2026-11-09 新增，内部 提出）：按税务组/资金组/分析组归集 + 事件线归并 =====
+   归集口径（内部 2026-11-09 确认）：
+   · 税务组 = P1 税务 + P2 海关（税政/退税/征管/关税/反倾销）
+   · 资金组 = P4 外汇汇率 + P3 平台合规中的费用/结算/涨价类（附加费、费率、运费等直接影响资金安排）
+   · 分析组 = P3 平台合规全量（公告/规则/海运物流/费用涨价等），与资金组存在费用类交叉，交叉条目两侧均显示 */
+const TEAM_MONEY_HINT=["费用","涨价","附加费","结算","费率","收费","上调","加收","提价","支付","收款","回款","运费","仓储费","库存费","低价件","汇率"];
+const TEAM_DEFS=[
+ {id:"taxteam",name:"税务组",icon:"🧾",desc:"P1 税务 + P2 海关 · 税政/退税/征管/关税/反倾销"},
+ {id:"finteam",name:"资金组",icon:"💱",desc:"P4 外汇汇率 + 平台费用/结算/涨价类"},
+ {id:"anateam",name:"分析组",icon:"📊",desc:"平台公告/规则/海运物流/费用涨价等全量平台动态"}
+];
+const EVENT_RULES=[
+ {name:"美国301关税与豁免",any:[["301"]]},
+ {name:"IEEPA关税退款",any:[["IEEPA"]]},
+ {name:"CPSC召回与产品合规",any:[["CPSC","消费品安全"]]},
+ {name:"墨西哥海关MVE电子价值申报",any:[["MVE","电子价值申报"]]},
+ {name:"人民币中间价",any:[["中间价"]]},
+ {name:"外汇储备",any:[["外汇储备"]]},
+ {name:"港口与海运动态",any:[["罢工","劳资","港口","海运","航运"]]},
+ {name:"沃尔玛退货规则",any:[["沃尔玛"],["退货率"]]},
+ {name:"美国Section 232",any:[["232"]]},
+ {name:"欧盟数字产品护照DPP",any:[["DPP","数字产品护照"]]},
+ {name:"小额包裹免税门槛",any:[["小额包裹","de minimis","小包免税"]]}
+];
+function eventOf(it){
+  const t=((it.title||"")+" "+(it.no||"")+" "+(it.sum||""));
+  for(let i=0;i<EVENT_RULES.length;i++){
+    const r=EVENT_RULES[i];
+    if(r.any.every(g=>g.some(k=>t.indexOf(k)>=0)))return r.name;
+  }
+  return "";
+}
+function teamOf(it){
+  const b=boardOf(it);
+  const t=((it.title||"")+" "+(it.sum||""));
+  const teams=[];
+  if(b==="tax"||b==="cus")teams.push("taxteam");
+  if(b==="forex")teams.push("finteam");
+  if(b==="pla"){
+    if(TEAM_MONEY_HINT.some(k=>t.indexOf(k)>=0))teams.push("finteam");
+    teams.push("anateam");
+  }
+  return teams;
+}
+function teamItemsOf(teamId){
+  return TAX_NEWS.filter(it=>teamOf(it).indexOf(teamId)>=0)
+    .map(it=>{const o=Object.assign({},it);o.lv=boardLvOf(it,boardOf(it));o._ev=eventOf(it);return o;})
+    .sort((a,b)=>("ABC".indexOf(a.lv)-"ABC".indexOf(b.lv))||((b.at||0)-(a.at||0)));
+}
+const TEAM_MAX_ROWS=60;
+function teamRowHtml(it){
+  const link=it.url?"<a href=\""+esc(it.url)+"\" target=\"_blank\" rel=\"noopener\">"+esc(it.title)+"</a>":"<span>"+esc(it.title)+"</span>";
+  const doc=it.doc?"<a href=\""+esc(it.doc)+"\" target=\"_blank\" rel=\"noopener\">解读 ↗</a>":"<span class=\"nolink\">解读待生成</span>";
+  return "<div class=\"team-item\">"
+    +"<span class=\"lv lv-"+it.lv+"\">"+it.lv+"</span>"
+    +"<span class=\"ti-date\">"+fdAt(it.at)+"</span>"
+    +"<span class=\"ti-title\">"+link+newBadge(it)+"</span>"
+    +"<span class=\"ti-meta\">"+esc(it.cat)+" · "+it.score+"分<br>"+doc+"</span>"
+    +"</div>";
+}
+function teamBlock(teamId){
+  const def=TEAM_DEFS.filter(d=>d.id===teamId)[0];
+  const items=teamItemsOf(teamId);
+  const t0=todayStartMs();
+  const news=items.filter(it=>(it.at||0)>=t0);
+  const nA=items.filter(it=>it.lv==="A").length;
+  /* 今日要点：优先当日新增（评分降序，至多4条）；当日无新增则取最近 A 级 */
+  const pts=(news.length?news:items.filter(it=>it.lv==="A")).slice(0,4);
+  const ptHtml=pts.length?pts.map(it=>{
+    const brief=(it.sum||"").replace(/\s+/g,"");
+    const one=brief?brief.slice(0,50)+(brief.length>50?"…":""):it.title.slice(0,46)+(it.title.length>46?"…":"");
+    return "<li><b>["+it.lv+"]</b> "+esc(it.title.slice(0,44))+(it.title.length>44?"…":"")+" — "+esc(one)+"</li>";
+  }).join(""):"<li>暂无要点</li>";
+  /* 事件线归并：同一事件多条 → 组头折叠展示，组内至多 3 条明细 */
+  const evMap={},plain=[];
+  items.forEach(it=>{if(it._ev){(evMap[it._ev]=evMap[it._ev]||[]).push(it);}else{plain.push(it);}});
+  const evKeys=Object.keys(evMap).sort((a,b)=>evMap[b].length-evMap[a].length);
+  let rows=0,html="";
+  evKeys.forEach(k=>{
+    if(rows>=TEAM_MAX_ROWS)return;
+    const arr=evMap[k];
+    const span=fdAt(arr[arr.length-1].at)+" ~ "+fdAt(arr[0].at);
+    html+="<div class=\"team-ev\"><span class=\"tev-name\">🔗 "+esc(k)+"</span><span class=\"tev-cnt\">"+arr.length+" 条 · "+span+"</span></div>";
+    arr.slice(0,3).forEach(it=>{if(rows<TEAM_MAX_ROWS){html+=teamRowHtml(it);rows++;}});
+    if(arr.length>3&&rows<TEAM_MAX_ROWS)html+="<div class=\"team-more\">… 事件线共 "+arr.length+" 条，完整时间轴见对应板块页签</div>";
+  });
+  plain.forEach(it=>{if(rows<TEAM_MAX_ROWS){html+=teamRowHtml(it);rows++;}});
+  if(rows<items.length)html+="<div class=\"team-more\">… 其余 "+(items.length-rows)+" 条按级别/日期截断，完整列表见对应板块页签</div>";
+  return "<article class=\"card team-card\">"
+    +"<h2>"+def.icon+" "+def.name+" <span class=\"team-cnt\">"+items.length+" 条相关 · A级 "+nA+"</span></h2>"
+    +"<p class=\"sub\">"+def.desc+(news.length?" · 今日新增 "+news.length+" 条":" · 今日无新增")+"</p>"
+    +"<div class=\"team-points\"><div class=\"tp-head\">今日要点</div><ul>"+ptHtml+"</ul></div>"
+    +"<div class=\"team-list\">"+html+"</div>"
+    +"</article>";
+}
+function renderTeam(){
+  const el=$("teamView"); if(!el)return;
+  el.innerHTML="<p class=\"team-lead\">按部门归集视角（税务组 / 资金组 / 分析组）· 同一事件多源多日自动归并为事件线 · 条目可点开原文与飞书解读 · 完整筛选请用 P1-P4 板块页签</p>"
+    +"<div class=\"team-grid\">"+TEAM_DEFS.map(d=>teamBlock(d.id)).join("")+"</div>";
+}
+
 
 function briefSum(t,cls){
   if(!t)return "";
@@ -1576,6 +1709,7 @@ document.querySelectorAll(".tab-btn").forEach(btn=>{
     const pg=$("tab-"+btn.dataset.tab);
     if(pg)pg.classList.add("active");
     if(["tax","cus","pla","forex"].indexOf(btn.dataset.tab)>=0)renderBoard(btn.dataset.tab);
+    else if(btn.dataset.tab==="team")renderTeam();
     refreshHeader();
   };
 });
@@ -1593,6 +1727,7 @@ document.querySelectorAll(".tab-btn").forEach(btn=>{
   });
 })();
 updateUnreadUI();
+renderTeam();
 /* 重置已读：清除本机已读记录并重渲染，恢复全部「新」角标 */
 const _resetReadEl=$("statResetRead");
 if(_resetReadEl)_resetReadEl.onclick=()=>{
