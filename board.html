@@ -290,46 +290,125 @@ details.more .sum-full{margin-top:8px;padding-top:8px;border-top:1px dashed rgba
 .ti-meta{color:#8fa3c0;font-size:clamp(9px,.65vw,10.5px);flex:none;text-align:right}
 .team-more{color:#6f7f9c;font-size:clamp(9.5px,.7vw,11px);padding:4px 6px}
 .team-lead{padding:6px 4px;color:#8fa3c0}
-/* ===== P7 跟踪闭环（2026-11-09 新增）：预警判定→执行跟踪→结项评分→经验沉淀 ===== */
-.loop-stats{display:flex;gap:10px;flex-wrap:wrap;margin:10px 0 14px}
-.loop-stat{flex:1;min-width:120px;border:1px solid rgba(148,163,184,.16);border-radius:11px;padding:10px 14px;background:rgba(18,28,53,.55);text-align:center}
-.loop-stat b{display:block;font-size:clamp(16px,1.4vw,22px);color:#eef3ff}
-.loop-stat span{color:#8fa3c0;font-size:clamp(9.5px,.7vw,11px)}
-.loop-stat.warn b{color:#ffb45c}.loop-stat.go b{color:#5ee6ff}.loop-stat.done b{color:#43e6a3}.loop-stat.avg b{color:#c9a6ff}
-.loop-sec{margin:14px 0 8px;display:flex;align-items:center;gap:8px}
-.loop-sec h3{margin:0;color:#aee9ff;font-size:clamp(12px,.9vw,15px)}
-.loop-sec .ls-cnt{color:#8fa3c0;font-size:clamp(9.5px,.7vw,11px)}
-.loop-card{border:1px solid rgba(148,163,184,.15);border-radius:12px;padding:11px 13px;margin:9px 0;background:rgba(18,28,53,.5)}
-.loop-card.r-high{border-left:3px solid #ff6b72}
-.loop-card.r-mid{border-left:3px solid #ffb45c}
-.loop-card.r-low{border-left:3px solid #5ee6ff}
-.loop-head{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
-.loop-no{color:#5ee6ff;font-weight:800;font-size:clamp(11px,.8vw,12.5px);font-family:ui-monospace,Consolas,monospace}
-.loop-team,.loop-risk,.loop-status{font-size:clamp(9px,.62vw,10.5px);padding:1px 8px;border-radius:9px;font-weight:800;letter-spacing:.03em}
-.loop-team{background:rgba(94,230,255,.14);color:#aee9ff;border:1px solid rgba(94,230,255,.25)}
-.loop-risk-high{background:rgba(255,107,114,.16);color:#ff9da3;border:1px solid rgba(255,107,114,.3)}
-.loop-risk-mid{background:rgba(255,180,92,.14);color:#ffcf9e;border:1px solid rgba(255,180,92,.28)}
-.loop-risk-low{background:rgba(94,230,255,.12);color:#aee9ff;border:1px solid rgba(94,230,255,.22)}
-.loop-status-pending{background:rgba(255,180,92,.16);color:#ffcf9e}
-.loop-status-active{background:rgba(94,230,255,.14);color:#aee9ff}
-.loop-status-done{background:rgba(67,230,163,.14);color:#7defbd}
-.loop-item-title{margin:7px 0 2px;font-size:clamp(11.5px,.85vw,13.5px);line-height:1.5;color:#eef3ff}
-.loop-item-title a{color:#eef3ff;text-decoration:none}
-.loop-item-title a:hover{color:#aee9ff}
-.loop-plan{color:#b9c6de;font-size:clamp(10px,.75vw,12px);line-height:1.6;margin:6px 0;white-space:pre-wrap}
-.loop-meta{display:flex;gap:14px;flex-wrap:wrap;color:#8fa3c0;font-size:clamp(9.5px,.7vw,11px);margin:4px 0}
-.loop-log{margin:8px 0 0;border-top:1px dashed rgba(148,163,184,.18);padding-top:7px}
-.loop-log-item{color:#9fb2cf;font-size:clamp(10px,.75vw,11.5px);line-height:1.55;margin:3px 0;white-space:pre-wrap}
-.loop-score{display:inline-flex;align-items:center;gap:6px;margin-left:auto}
-.loop-score b{color:#c9a6ff;font-size:clamp(13px,1vw,16px)}
-.loop-grade{font-size:clamp(9px,.62vw,10.5px);padding:1px 8px;border-radius:9px;background:rgba(201,166,255,.14);color:#d9c6ff;border:1px solid rgba(201,166,255,.28);font-weight:800}
-.loop-links{display:flex;gap:12px;margin-top:6px;font-size:clamp(9.5px,.7vw,11px)}
-.loop-links a{color:#5ee6ff;text-decoration:none}
-.loop-links a:hover{color:#aee9ff}
-.loop-empty{border:1px dashed rgba(148,163,184,.3);border-radius:12px;padding:26px;text-align:center;color:#8fa3c0}
-.lesson-box{border:1px solid rgba(201,166,255,.2);background:rgba(48,32,80,.35);border-radius:11px;padding:10px 13px;margin:8px 0}
-.lesson-box .ls-title{color:#d9c6ff;font-weight:800;font-size:clamp(11px,.8vw,13px);margin-bottom:4px}
-.lesson-box p{color:#c9d6ec;font-size:clamp(10px,.75vw,12px);line-height:1.6;margin:3px 0;white-space:pre-wrap}
+/* ===== P7 闭环操作台（2026-11-09 v2）：六模块流程化 ===== */
+.lp-shell{display:flex;gap:0;border:1px solid rgba(148,163,184,.16);border-radius:14px;overflow:hidden;background:rgba(14,22,42,.55);min-height:520px}
+.lp-nav{width:186px;flex:none;border-right:1px solid rgba(148,163,184,.14);background:rgba(18,28,53,.6);padding:12px 0 10px;display:flex;flex-direction:column}
+.lp-nav-title{font-size:clamp(9px,.62vw,10.5px);color:#6f7f9c;letter-spacing:.08em;padding:0 14px 9px;text-transform:uppercase}
+.lp-nav-item{display:flex;align-items:center;gap:7px;padding:9px 12px;cursor:pointer;border-left:2px solid transparent;transition:background .15s}
+.lp-nav-item:hover{background:rgba(94,230,255,.06)}
+.lp-nav-item.on{background:rgba(94,230,255,.1);border-left-color:#5ee6ff}
+.lp-nav-icon{font-size:clamp(11px,.8vw,13px);flex:none}
+.lp-nav-name{flex:1;min-width:0;font-size:clamp(11px,.78vw,12.5px);color:#c9d6ec;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lp-nav-item.on .lp-nav-name{color:#eef3ff;font-weight:700}
+.lp-nav-n{font-size:clamp(9px,.6vw,10px);padding:1px 6px;border-radius:8px;background:rgba(148,163,184,.14);color:#8fa3c0;font-weight:800;flex:none}
+.lp-nav-n.hot{background:rgba(255,107,114,.18);color:#ff9da3}
+.lp-nav-foot{margin-top:auto;padding:10px 14px 0;border-top:1px solid rgba(148,163,184,.12);font-size:clamp(9px,.65vw,10.5px);color:#8fa3c0;line-height:1.75}
+.lp-nav-foot b{color:#eef3ff}
+.lp-work{flex:1;min-width:0;display:flex;flex-direction:column}
+.lp-work-head{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;padding:13px 16px;border-bottom:1px solid rgba(148,163,184,.12);flex-wrap:wrap}
+.lp-work-title{margin:0;font-size:clamp(12px,.9vw,14.5px);color:#eef3ff}
+.lp-work-desc{font-size:clamp(9.5px,.68vw,11px);color:#8fa3c0;margin-top:3px}
+.lp-exit{font-size:clamp(9px,.62vw,10.5px);color:#5ee6ff;background:rgba(94,230,255,.08);border:1px solid rgba(94,230,255,.2);border-radius:9px;padding:3px 9px;white-space:nowrap}
+.lp-body{padding:13px 16px;overflow-y:auto;max-height:calc(100vh - 300px);min-height:300px}
+.lp-empty{border:1px dashed rgba(148,163,184,.25);border-radius:11px;padding:26px;text-align:center;color:#8fa3c0;font-size:clamp(10px,.72vw,12px)}
+.lp-bar{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:11px}
+.lp-bar-label{font-size:clamp(9px,.62vw,10.5px);color:#6f7f9c}
+.lp-chip{font-size:clamp(9.5px,.66vw,11px);padding:2px 9px;border-radius:10px;border:1px solid rgba(148,163,184,.2);color:#9fb2cf;cursor:pointer;transition:.15s}
+.lp-chip:hover{border-color:rgba(94,230,255,.4);color:#aee9ff}
+.lp-chip.on{background:rgba(94,230,255,.14);border-color:rgba(94,230,255,.45);color:#aee9ff;font-weight:700}
+.lp-list{display:flex;flex-direction:column;gap:8px}
+.lp-item{display:flex;gap:12px;justify-content:space-between;border:1px solid rgba(148,163,184,.14);border-radius:11px;padding:10px 12px;background:rgba(18,28,53,.42)}
+.lp-item:hover{border-color:rgba(94,230,255,.25)}
+.lp-item-main{min-width:0;flex:1}
+.lp-item-title{font-size:clamp(11px,.82vw,13px);line-height:1.5;color:#eef3ff;display:flex;gap:7px;align-items:baseline;flex-wrap:wrap}
+.lp-open{color:#eef3ff;text-decoration:none;cursor:pointer;border-bottom:1px dashed rgba(148,163,184,.35)}
+.lp-open:hover{color:#aee9ff;border-bottom-color:#aee9ff}
+.lp-no{font-family:ui-monospace,Consolas,monospace;font-size:clamp(9px,.62vw,10.5px);color:#5ee6ff;font-weight:800;flex:none}
+.lp-item-meta{display:flex;gap:9px;flex-wrap:wrap;align-items:center;margin-top:5px;font-size:clamp(9px,.64vw,10.5px);color:#8fa3c0}
+.lp-risk,.lp-badge{font-size:clamp(8.5px,.6vw,10px);padding:1px 7px;border-radius:8px;font-weight:800;white-space:nowrap}
+.risk-high{background:rgba(255,107,114,.16);color:#ff9da3;border:1px solid rgba(255,107,114,.3)}
+.risk-mid{background:rgba(255,180,92,.14);color:#ffcf9e;border:1px solid rgba(255,180,92,.28)}
+.risk-low{background:rgba(94,230,255,.1);color:#aee9ff;border:1px solid rgba(94,230,255,.2)}
+.r-high{background:rgba(255,107,114,.16);color:#ff9da3}
+.r-mid{background:rgba(255,180,92,.14);color:#ffcf9e}
+.r-low{background:rgba(94,230,255,.1);color:#aee9ff}
+.u-over{color:#ff6b72;font-weight:800}
+.u-urgent{color:#ffb45c;font-weight:800}
+.u-soon{color:#ffd98a}
+.u-ok{color:#8fa3c0}
+.lp-cons{color:#b9c6de}
+.lp-scope{margin-top:4px;font-size:clamp(9px,.64vw,10.5px);color:#8fa3c0;line-height:1.5}
+.lp-hint{margin-top:5px;font-size:clamp(9px,.64vw,10.5px);color:#7f95b5}
+.lp-hint b{color:#5ee6ff}
+.lp-acts{display:flex;flex-direction:column;gap:5px;flex:none;width:96px}
+.lp-btn{font-size:clamp(9.5px,.66vw,11px);padding:4px 9px;border-radius:8px;border:1px solid rgba(148,163,184,.24);color:#c9d6ec;text-align:center;text-decoration:none;background:rgba(18,28,53,.5);transition:.15s;display:inline-block}
+.lp-btn:hover{border-color:rgba(94,230,255,.45);color:#aee9ff}
+.lp-btn.primary{background:rgba(255,107,114,.14);border-color:rgba(255,107,114,.36);color:#ff9da3;font-weight:700}
+.lp-btn.primary:hover{background:rgba(255,107,114,.22)}
+.lp-card{border:1px solid rgba(148,163,184,.15);border-radius:12px;padding:11px 13px;margin-bottom:10px;background:rgba(18,28,53,.45)}
+.lp-card-head{display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+.lp-spacer{flex:1}
+.lp-card-title{margin:7px 0 5px;font-size:clamp(11px,.82vw,13px);color:#eef3ff;line-height:1.5}
+.lp-badge.st-plan{background:rgba(201,166,255,.14);color:#d9c6ff;border:1px solid rgba(201,166,255,.28)}
+.lp-badge.st-appr{background:rgba(255,180,92,.16);color:#ffcf9e;border:1px solid rgba(255,180,92,.3)}
+.lp-badge.st-track{background:rgba(94,230,255,.14);color:#aee9ff;border:1px solid rgba(94,230,255,.26)}
+.lp-badge.st-rev{background:rgba(67,230,163,.14);color:#7defbd;border:1px solid rgba(67,230,163,.26)}
+.lp-link{font-size:clamp(9px,.64vw,10.5px);color:#5ee6ff;text-decoration:none}
+.lp-link:hover{color:#aee9ff}
+.lp-plan{font-size:clamp(10px,.7vw,11.5px);color:#b9c6de;line-height:1.6;margin:6px 0;white-space:pre-wrap}
+.lp-kv{display:flex;gap:14px;flex-wrap:wrap;font-size:clamp(9px,.64vw,10.5px);color:#8fa3c0;margin:5px 0}
+.lp-miss{color:#ffb45c}
+.lp-sub{font-size:clamp(9.5px,.66vw,11px);color:#8fa3c0;padding:7px 0;line-height:1.6}
+.lp-tip{font-size:clamp(9px,.62vw,10.5px);color:#6f7f9c;line-height:1.6;margin-top:7px;padding-top:6px;border-top:1px dashed rgba(148,163,184,.14)}
+.lp-reject{margin-top:7px;padding:6px 10px;border-radius:8px;background:rgba(255,107,114,.1);border-left:2px solid #ff6b72;font-size:clamp(9.5px,.66vw,11px);color:#ff9da3}
+.lp-prog{font-size:clamp(9.5px,.68vw,11px);color:#8fa3c0}
+.lp-prog b{color:#5ee6ff;font-size:clamp(11px,.8vw,13px)}
+.lp-steps{width:100%;border-collapse:collapse;margin-top:8px;font-size:clamp(9px,.64vw,10.5px);table-layout:fixed}
+.lp-steps th{text-align:left;color:#6f7f9c;font-weight:600;padding:4px 5px;border-bottom:1px solid rgba(148,163,184,.16);white-space:nowrap}
+.lp-steps td{padding:5px;color:#c9d6ec;border-bottom:1px solid rgba(148,163,184,.08);vertical-align:top;word-break:break-word}
+.lp-steps td:first-child{color:#5ee6ff;font-weight:800;width:22px}
+.lp-gantt-wrap{overflow-x:auto;margin:8px 0;border:1px solid rgba(148,163,184,.12);border-radius:9px;background:rgba(10,17,34,.5);padding:6px}
+.lp-gantt{width:100%;height:auto;display:block}
+.lp-review-stat{font-size:clamp(9.5px,.68vw,11px);color:#8fa3c0;margin-bottom:10px;padding:8px 11px;border-radius:9px;background:rgba(201,166,255,.06);border:1px solid rgba(201,166,255,.16)}
+.lp-review-stat b{color:#d9c6ff;font-size:clamp(11px,.8vw,13px)}
+.lp-sec{display:flex;align-items:center;gap:8px;margin:14px 0 7px}
+.lp-sec h3{margin:0;font-size:clamp(11px,.8vw,12.5px);color:#d9c6ff}
+.lp-sec-cnt{font-size:clamp(9px,.62vw,10.5px);color:#8fa3c0}
+.lp-case{border:1px solid rgba(201,166,255,.16);background:rgba(48,32,80,.28);border-radius:10px;padding:8px 11px;margin-bottom:7px}
+.lp-case-head{display:flex;gap:8px;align-items:baseline;flex-wrap:wrap;font-size:clamp(10px,.72vw,11.5px);color:#eef3ff}
+.lp-grade{font-size:clamp(9px,.6vw,10px);padding:1px 7px;border-radius:8px;background:rgba(201,166,255,.16);color:#d9c6ff;font-weight:800}
+.lp-case-body{margin-top:4px;font-size:clamp(9.5px,.66vw,11px);color:#b9c6de;line-height:1.6;white-space:pre-wrap}
+.lp-report{}
+.lp-stat-row{display:flex;gap:9px;flex-wrap:wrap;margin-bottom:12px}
+.lp-stat{flex:1;min-width:96px;border:1px solid rgba(148,163,184,.14);border-radius:10px;padding:9px 12px;background:rgba(18,28,53,.5);text-align:center}
+.lp-stat b{display:block;font-size:clamp(15px,1.3vw,20px);color:#eef3ff}
+.lp-stat span{font-size:clamp(9px,.62vw,10.5px);color:#8fa3c0}
+.lp-stat.warn b{color:#ffb45c}.lp-stat.go b{color:#5ee6ff}.lp-stat.done b{color:#43e6a3}.lp-stat.avg b{color:#c9a6ff}
+.lp-two{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+@media(max-width:860px){.lp-two{grid-template-columns:1fr}.lp-nav{width:150px}.lp-acts{width:80px}}
+.lp-panel{border:1px solid rgba(148,163,184,.14);border-radius:11px;padding:10px 12px;background:rgba(18,28,53,.4)}
+.lp-panel h3{margin:0 0 8px;font-size:clamp(10.5px,.76vw,12px);color:#aee9ff}
+.lp-funnel-row{display:flex;align-items:center;gap:8px;margin:5px 0;font-size:clamp(9px,.64vw,10.5px)}
+.lp-funnel-name{width:58px;flex:none;color:#8fa3c0}
+.lp-funnel-bar{flex:1;height:9px;border-radius:5px;background:rgba(148,163,184,.12);overflow:hidden}
+.lp-funnel-bar i{display:block;height:100%;background:linear-gradient(90deg,#5ee6ff,#43e6a3);border-radius:5px}
+.lp-funnel-n{width:20px;text-align:right;color:#eef3ff;font-weight:800}
+.lp-mini{width:100%;border-collapse:collapse;font-size:clamp(9px,.64vw,10.5px)}
+.lp-mini th{text-align:left;color:#6f7f9c;font-weight:600;padding:4px 5px;border-bottom:1px solid rgba(148,163,184,.14)}
+.lp-mini td{padding:5px;color:#c9d6ec;border-bottom:1px solid rgba(148,163,184,.07)}
+.lp-mini td:first-child{color:#9fb2cf}
+.lp-actions{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+.lp-drawer-host{position:relative}
+.lp-drawer-mask{position:fixed;inset:0;background:rgba(4,8,18,.62);z-index:60}
+.lp-drawer{position:fixed;top:0;right:0;bottom:0;width:min(520px,92vw);background:#0d1628;border-left:1px solid rgba(94,230,255,.22);z-index:61;overflow-y:auto;padding:16px 18px;box-shadow:-16px 0 40px rgba(0,0,0,.5)}
+.lp-drawer-head{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.lp-drawer-x{margin-left:auto;background:none;border:none;color:#8fa3c0;font-size:20px;cursor:pointer;line-height:1}
+.lp-drawer h4{margin:0 0 10px;font-size:clamp(12px,.92vw,15px);color:#eef3ff;line-height:1.5}
+.lp-drawer-sec{margin:9px 0;padding-bottom:8px;border-bottom:1px solid rgba(148,163,184,.1)}
+.lp-drawer-sec b{display:block;font-size:clamp(9.5px,.66vw,11px);color:#5ee6ff;margin-bottom:3px}
+.lp-drawer-sec p{margin:0;font-size:clamp(10px,.7vw,11.5px);color:#c9d6ec;line-height:1.65;white-space:pre-wrap}
+.lp-logline{font-size:clamp(9.5px,.66vw,11px)!important;color:#9fb2cf!important;margin:3px 0!important}
+.lp-drawer-acts{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
 </style>
 </head>
 <body>
@@ -344,11 +423,12 @@ details.more .sum-full{margin-top:8px;padding-top:8px;border-top:1px dashed rgba
       <span class="badge">跨境电商关键词评分</span>
       <span class="badge">A / B / C 分级</span>
       <span class="badge">每日 10:05 自动更新</span>
+      <span class="badge">P7 闭环操作台 · 判定→方案→审批→甘特→复盘</span>
     </div>
   </div>
   <div class="top-side">
     <div class="thesis">扫描税务总局法规库 / 出口退税网 / shui5 / 海关总署 / 央行·美联储·欧央行·日央行，<br>按跨境电商关键词权重评分，<b>A级政策实时预警</b></div>
-    <div class="build-stamp" title="用于确认看板是否为最新版本">构建 v2026-09-20.3〔新增 P4 外汇汇率板块〕</div>
+    <div class="build-stamp" title="用于确认看板是否为最新版本">构建 v2026-11-09.5〔P7 升级为六模块闭环操作台〕</div>
     <div class="stat-boxes">
       <div class="stat-box red"><b id="statA">-</b><span>A级预警</span></div>
       <div class="stat-box"><b id="statTotal">-</b><span>收录政策</span></div>
@@ -768,7 +848,7 @@ details.more .sum-full{margin-top:8px;padding-top:8px;border-top:1px dashed rgba
 
 <script>
 /* ===DATA-BEGIN=== */
-const SNAPSHOT = { updatedAt: "2026-11-09 18:25", lastScan: 1794215700000, source: "飞书税务政策表 tblo8d6cv3YPiz9w（339条）" };
+const SNAPSHOT = { updatedAt: "2026-11-09 18:58", lastScan: 1794215700000, source: "飞书税务政策表 tblo8d6cv3YPiz9w（339条）" };
 const TAX_NEWS = [
  {"id": "p11", "lv": "A", "score": 20.4, "cat": "出口退税", "title": "关于出口业务增值税和消费税政策的公告", "no": "财政部 税务总局公告2026年第11号", "organ": "财政部+税务总局", "taxes": ["增值税", "消费税", "出口退税"], "lines": ["全品线", "出口业务"], "countries": ["中国"], "eff": 1767196800000, "site": "fgk法规库", "url": "https://fgk.chinatax.gov.cn/zcfgk/c102416/c5247437/content.html", "doc": "https://my.feishu.cn/docx/XIuMd0Y2foSS72x9IWzc0x9HnNb", "at": 1785676800000, "sum": "跨境电商出口核心法规，影响所有出口业务税负计算；外贸企业免征出口环节增值税并退还进项，生产企业适用免抵退；申报期限次年4月30日前"},
  {"id": "p5", "lv": "A", "score": 20.4, "cat": "出口退税", "title": "关于发布《出口业务增值税和消费税退（免）税管理办法》的公告", "no": "国家税务总局公告2026年第5号", "organ": "税务总局", "taxes": ["增值税", "消费税", "出口退税"], "lines": ["全品线", "出口业务"], "countries": ["中国"], "eff": 1767196800000, "site": "fgk法规库", "url": "https://fgk.chinatax.gov.cn/zcfgk/c100012/c5247423/content.html", "doc": "https://my.feishu.cn/docx/J8kddfA5FoM83xxn6hfcjaMYn0g", "at": 1785676800000, "sum": "归并整合历史出口退税管理规定，形成统一管理办法（5章+9类证明事项）；备案表单精简、申报流程调整，直接影响日常退税操作"},
@@ -1142,14 +1222,24 @@ const SOURCES_CONFIG = [
 
 /* ===LOOP-BEGIN=== */
 const LOOP_DATA = [
- {"rid": "reczz28XWx4DKdCG", "no": "LOOP-20261109-01", "item": "美国CBP外国登记进口商(IOR)强化要求临时最终规则：2027年1月5日生效（FR Doc. 2026-22735，评分28·A级）", "team": "税务组", "risk": "高", "status": "待判定", "judge": "", "plan": "系统建议：①盘点对美出货清关IOR主体性质清单（自营美国公司/货代代报/双清包税）；②2026-12-15前完成CVCB报关行签约与POA验证；③严禁挂名股东凑51%受益所有权；④关注11-30 EO 180天节点后续规则。请税务组判定是否采纳/补充。", "owner": "待指定", "due": 1797264000000, "log": "[2026-11-09 17:35] 雷达自动创建闭环（来源：11-09 A级推送·评分28），等待税务组判定是否需预警/前置动作。", "patrol": 1794216900000, "score": null, "grade": "", "lesson": "", "created": 1794216900000, "board": "https://elaine-huang123.github.io/tax-radar/board.html", "doc": "https://my.feishu.cn/docx/IqqFdXBqfoNWKpxrj3KcE680nUe"},
- {"rid": "reczz28XXqjSQ2NL", "no": "LOOP-20261109-02", "item": "USTR将178项对华301关税豁免延长至2027年1月9日，11月10日12:01起生效（评分20·A级）", "team": "税务组", "risk": "中", "status": "待判定", "judge": "", "plan": "系统建议：①核对近12个月美国申报单中9903.88.69/9903.88.70税号料件，确认是否仍在豁免内；②在途与在库批次按「入境放行日」重排，取消抢窗口的加急成本；③报价与长协保留「豁免到期即恢复加征」弹性条款，锚定2027-01-09；④12月起跟踪USTR是否再公告，评估2027-01-10中美整体安排到期叠加影响。请税务组判定是否采纳/补充。", "owner": "待指定", "due": 1795968000000, "log": "[2026-11-09 18:30] 雷达自动创建闭环（来源：11-09 A级推送·评分20），已推送税务组判定。", "patrol": 1794220200000, "score": null, "grade": "", "lesson": "", "created": 1794220200000, "board": "https://elaine-huang123.github.io/tax-radar/board.html", "doc": "https://my.feishu.cn/docx/VAcidf9zqoyV1HxGyYqcIv4inYg"},
- {"rid": "reczz28XXqjSQqm7", "no": "LOOP-20261109-03", "item": "墨西哥海关11月起分阶段强制MVE电子价值申报，11月15日覆盖战略保税场所（评分16·A级）", "team": "税务组", "risk": "中", "status": "待判定", "judge": "", "plan": "系统建议：①按监管制度（保税加工/战略保税/过境/保税仓储/临时进口/正式进口）对照时间表确认首个受影响节点；②核对发票、付款、数量与运保费一致性，建立价值证据链；③发货前确认报关方式与MVE资料提交责任方；④多SKU与高货值补货提前备齐合同凭证。请税务组判定是否采纳/补充。", "owner": "待指定", "due": 1794672000000, "log": "[2026-11-09 18:30] 雷达自动创建闭环（来源：11-09 A级推送·评分16），已推送税务组判定。", "patrol": 1794220200000, "score": null, "grade": "", "lesson": "", "created": 1794220200000, "board": "https://elaine-huang123.github.io/tax-radar/board.html", "doc": "https://my.feishu.cn/docx/VqeEdHsKZo6deIxBu6KcVMoQn8e"},
- {"rid": "reczz28XXqjSR1wa", "no": "LOOP-20261109-04", "item": "10月末外汇储备34052亿美元环比增49亿，黄金连续24个月增持至7830万盎司（评分17·A级）", "team": "资金组", "risk": "低", "status": "待判定", "judge": "", "plan": "系统建议：①按季跟踪储备与结售汇数据作为汇率中枢辅助指标，不与单日中间价混用；②跨境双向资金池与境外放款额度按最新宏观数据重估期限结构；③黄金储备变动不直接影响结汇价，仅作趋势参考。请资金组判定是否需要锁汇/资金安排调整。", "owner": "待指定", "due": 1795968000000, "log": "[2026-11-09 18:30] 雷达自动创建闭环（来源：11-09 A级推送·评分17），已推送资金组判定。", "patrol": 1794220200000, "score": null, "grade": "", "lesson": "", "created": 1794220200000, "board": "https://elaine-huang123.github.io/tax-radar/board.html", "doc": "https://my.feishu.cn/docx/P9VCdRMhvoYmvixuppIczmg7nBh"},
- {"rid": "reczz28XXqjSQVcz", "no": "LOOP-20261109-05", "item": "人民币对美元中间价11月9日报6.7188，调贬20个基点（评分16·A级）", "team": "资金组", "risk": "低", "status": "待判定", "judge": "", "plan": "系统建议：①按当日中间价复核在手美元应收折算与锁价，30天内到期远期评估展期成本；②出口退税折算率保持口径一致勿中途切换；③关注美国通胀与12月议息对人民币二次冲击，报价单预留2%缓冲。请资金组判定是否调整锁汇比例。", "owner": "待指定", "due": 1794758400000, "log": "[2026-11-09 18:30] 雷达自动创建闭环（来源：11-09 A级推送·评分16），已推送资金组判定。", "patrol": 1794220200000, "score": null, "grade": "", "lesson": "", "created": 1794220200000, "board": "https://elaine-huang123.github.io/tax-radar/board.html", "doc": "https://my.feishu.cn/docx/MFFKdMC3roDed4ximACcc8JsnRg"},
- {"rid": "reczz28XXqjSSEmQ", "no": "LOOP-20261109-06", "item": "CPSC要求立即停用HAIARA W5 PRO移动电源约21万台，累计约600起起火爆炸（评分16·A级）", "team": "分析组", "risk": "中", "status": "待判定", "judge": "", "plan": "系统建议：①在售移动电源核对品牌/型号/日期码，命中W5 PRO且无日期码一律下架停投；②向供应商索取UN38.3、IEC62133报告及批次追溯，缺件不补货；③准备退换与召回预案并留存记录；④跟踪是否升级为强制召回。请分析组判定是否需通知运营/采购联动。", "owner": "待指定", "due": 1794758400000, "log": "[2026-11-09 18:30] 雷达自动创建闭环（来源：11-09 A级推送·评分16），已推送分析组判定。", "patrol": 1794220200000, "score": null, "grade": "", "lesson": "", "created": 1794220200000, "board": "https://elaine-huang123.github.io/tax-radar/board.html", "doc": "https://my.feishu.cn/docx/KbdndpkwMohVakxefK5cwkIHnoT"}
+ {"rid": "reczz28XWx4DKdCG", "no": "LOOP-20261109-01", "item": "美国CBP外国登记进口商(IOR)强化要求临时最终规则：2027年1月5日生效（FR Doc. 2026-22735，评分28·A级）", "team": "税务组", "risk": "高", "status": "已批准·实施中", "judge": "出预警方案", "plan": "系统建议：①盘点对美出货清关IOR主体性质清单（自营美国公司/货代代报/双清包税）；②2026-12-15前完成CVCB报关行签约与POA验证；③严禁挂名股东凑51%受益所有权；④关注11-30 EO 180天节点后续规则。请税务组判定是否采纳/补充。", "owner": "待指定", "due": 1797264000000, "log": "[2026-11-09 18:30] 雷达自动创建闭环（来源：11-09 A级推送·评分28）。\n[2026-11-09 19:05] 判定：出预警方案（风险等级=高）。\n[2026-11-09 19:10] 内部 终审批准，进入实施；步骤1 已启动。", "patrol": 1794216900000, "score": null, "grade": "", "lesson": "", "created": 1794216900000, "board": "https://elaine-huang123.github.io/tax-radar/board.html", "doc": "https://my.feishu.cn/docx/IqqFdXBqfoNWKpxrj3KcE680nUe", "hard": 1799078400000, "consequence": "2027-01-05 起非 CVCB 报关行不得为外国 IOR 报关，借壳/双清包税模式直接失效→货物到港无报关渠道，滞港费与弃货损失，最坏情形整批退运", "scope": "美国线全品线（汽车工具/小家电），凡以货代代报或双清包税方式出口的全部受影响", "reason": "", "coor": ["税务组", "物流", "法务", "运营"], "approveStatus": "已批准", "approver": "内部", "approveNote": "方案同意。CVCB 签约须锁定 12-10 前完成，避免与春节前出货高峰冲突。", "approveAt": 1794240000000, "progress": 20.0, "plannedStart": 1794240000000, "plannedEnd": 1797264000000, "effect": "", "goalRate": "", "tags": ""},
+ {"rid": "reczz28XXqjSQ2NL", "no": "LOOP-20261109-02", "item": "USTR将178项对华301关税豁免延长至2027年1月9日，11月10日12:01起生效（评分20·A级）", "team": "税务组", "risk": "中", "status": "待研判", "judge": "", "plan": "系统建议：①核对近12个月美国申报单中9903.88.69/9903.88.70税号料件，确认是否仍在豁免内；②在途与在库批次按「入境放行日」重排，取消抢窗口的加急成本；③报价与长协保留「豁免到期即恢复加征」弹性条款，锚定2027-01-09；④12月起跟踪USTR是否再公告，评估2027-01-10中美整体安排到期叠加影响。请税务组判定是否采纳/补充。", "owner": "待指定", "due": 1795968000000, "log": "[2026-11-09 18:30] 雷达自动创建闭环（来源：11-09 A级推送·评分20），已推送税务组判定。", "patrol": 1794220200000, "score": null, "grade": "", "lesson": "", "created": 1794220200000, "board": "https://elaine-huang123.github.io/tax-radar/board.html", "doc": "https://my.feishu.cn/docx/VAcidf9zqoyV1HxGyYqcIv4inYg", "hard": 1799424000000, "consequence": "豁免到期即恢复 7.5%–25% 加征，未在报价中预留则毛利被直接侵蚀；2027-01-10 中美整体安排同期到期，叠加不确定性", "scope": "申报 9903.88.69/.70 税号的 164 项工业/医疗中间品 + 14 项光伏设备；消费电子整机不在内", "reason": "", "coor": ["税务组", "采购"], "approveStatus": "未提交", "approver": "", "approveNote": "", "approveAt": null, "progress": 0.0, "plannedStart": 1794240000000, "plannedEnd": 1795795200000, "effect": "", "goalRate": "", "tags": ""},
+ {"rid": "reczz28XXqjSQqm7", "no": "LOOP-20261109-03", "item": "墨西哥海关11月起分阶段强制MVE电子价值申报，11月15日覆盖战略保税场所（评分16·A级）", "team": "税务组", "risk": "中", "status": "待研判", "judge": "", "plan": "系统建议：①按监管制度（保税加工/战略保税/过境/保税仓储/临时进口/正式进口）对照时间表确认首个受影响节点；②核对发票、付款、数量与运保费一致性，建立价值证据链；③发货前确认报关方式与MVE资料提交责任方；④多SKU与高货值补货提前备齐合同凭证。请税务组判定是否采纳/补充。", "owner": "待指定", "due": 1794672000000, "log": "[2026-11-09 18:30] 雷达自动创建闭环（来源：11-09 A级推送·评分16），已推送税务组判定。", "patrol": 1794220200000, "score": null, "grade": "", "lesson": "", "created": 1794220200000, "board": "https://elaine-huang123.github.io/tax-radar/board.html", "doc": "https://my.feishu.cn/docx/VqeEdHsKZo6deIxBu6KcVMoQn8e", "hard": 1794672000000, "consequence": "11-15 起战略保税场所货物无法完成 MVE 申报即无法清关；低报货值将触发估值核查、补税与滞港", "scope": "墨西哥线，经保税仓/战略保税/转关方式操作的全部批次；T1 简化且货值低于 2500 美元快递包裹除外", "reason": "", "coor": ["税务组", "物流"], "approveStatus": "未提交", "approver": "", "approveNote": "", "approveAt": null, "progress": 0.0, "plannedStart": 1794240000000, "plannedEnd": 1794585600000, "effect": "", "goalRate": "", "tags": ""},
+ {"rid": "reczz28XXqjSR1wa", "no": "LOOP-20261109-04", "item": "10月末外汇储备34052亿美元环比增49亿，黄金连续24个月增持至7830万盎司（评分17·A级）", "team": "资金组", "risk": "低", "status": "待研判", "judge": "", "plan": "系统建议：①按季跟踪储备与结售汇数据作为汇率中枢辅助指标，不与单日中间价混用；②跨境双向资金池与境外放款额度按最新宏观数据重估期限结构；③黄金储备变动不直接影响结汇价，仅作趋势参考。请资金组判定是否需要锁汇/资金安排调整。", "owner": "待指定", "due": 1795968000000, "log": "[2026-11-09 18:30] 雷达自动创建闭环（来源：11-09 A级推送·评分17），已推送资金组判定。", "patrol": 1794220200000, "score": null, "grade": "", "lesson": "", "created": 1794220200000, "board": "https://elaine-huang123.github.io/tax-radar/board.html", "doc": "https://my.feishu.cn/docx/P9VCdRMhvoYmvixuppIczmg7nBh", "hard": null, "consequence": "无直接合规风险；若误读为汇率走势信号而调整锁汇比例，可能反向增加成本", "scope": "美元应收折算、跨境资金池额度安排", "reason": "", "coor": ["资金组"], "approveStatus": "未提交", "approver": "", "approveNote": "", "approveAt": null, "progress": 0.0, "plannedStart": 1794240000000, "plannedEnd": 1795968000000, "effect": "", "goalRate": "", "tags": ""},
+ {"rid": "reczz28XXqjSQVcz", "no": "LOOP-20261109-05", "item": "人民币对美元中间价11月9日报6.7188，调贬20个基点（评分16·A级）", "team": "资金组", "risk": "低", "status": "待研判", "judge": "", "plan": "系统建议：①按当日中间价复核在手美元应收折算与锁价，30天内到期远期评估展期成本；②出口退税折算率保持口径一致勿中途切换；③关注美国通胀与12月议息对人民币二次冲击，报价单预留2%缓冲。请资金组判定是否调整锁汇比例。", "owner": "待指定", "due": 1794758400000, "log": "[2026-11-09 18:30] 雷达自动创建闭环（来源：11-09 A级推送·评分16），已推送资金组判定。", "patrol": 1794220200000, "score": null, "grade": "", "lesson": "", "created": 1794220200000, "board": "https://elaine-huang123.github.io/tax-radar/board.html", "doc": "https://my.feishu.cn/docx/MFFKdMC3roDed4ximACcc8JsnRg", "hard": null, "consequence": "单日调贬 20 基点不构成实质冲击；但若延续单边走势，未锁汇的 30 天内美元应收折算收益下降、远期展期成本上升", "scope": "在手美元应收、30 天内到期远期合约、出口退税折算", "reason": "", "coor": ["资金组"], "approveStatus": "未提交", "approver": "", "approveNote": "", "approveAt": null, "progress": 0.0, "plannedStart": 1794240000000, "plannedEnd": 1794758400000, "effect": "", "goalRate": "", "tags": ""},
+ {"rid": "reczz28XXqjSSEmQ", "no": "LOOP-20261109-06", "item": "CPSC要求立即停用HAIARA W5 PRO移动电源约21万台，累计约600起起火爆炸（评分16·A级）", "team": "分析组", "risk": "中", "status": "待研判", "judge": "", "plan": "系统建议：①在售移动电源核对品牌/型号/日期码，命中W5 PRO且无日期码一律下架停投；②向供应商索取UN38.3、IEC62133报告及批次追溯，缺件不补货；③准备退换与召回预案并留存记录；④跟踪是否升级为强制召回。请分析组判定是否需通知运营/采购联动。", "owner": "待指定", "due": 1794758400000, "log": "[2026-11-09 18:30] 雷达自动创建闭环（来源：11-09 A级推送·评分16），已推送分析组判定。", "patrol": 1794220200000, "score": null, "grade": "", "lesson": "", "created": 1794220200000, "board": "https://elaine-huang123.github.io/tax-radar/board.html", "doc": "https://my.feishu.cn/docx/KbdndpkwMohVakxefK5cwkIHnoT", "hard": 1793808000000, "consequence": "同款或同电芯批次在售将被平台强制下架并停投广告；已售订单面临退换与召回成本，严重时账户受限", "scope": "移动电源/含锂电池小家电品线；需核对 W5 PRO 型号及无日期码批次", "reason": "", "coor": ["分析组", "运营", "采购"], "approveStatus": "未提交", "approver": "", "approveNote": "", "approveAt": null, "progress": 0.0, "plannedStart": 1794240000000, "plannedEnd": 1794758400000, "effect": "", "goalRate": "", "tags": ""}
 ];
 /* ===LOOP-END=== */
+
+/* ===STEP-BEGIN=== */
+const STEP_DATA = [
+ {"rid": "reczz28XYJeSRgCo", "loop": "LOOP-20261109-01", "idx": 1, "name": "盘点对美出货 IOR 主体清单", "dept": "税务组", "owner": "黄金凤", "start": 1794240000000, "end": 1794844800000, "actual": null, "progress": 40.0, "status": "进行中", "out": "《对美清关主体清单》：自营美国公司/货代代报/双清包税分类，含各模式的出货量与SKU数", "note": ""},
+ {"rid": "reczz28XYJeSRDXb", "loop": "LOOP-20261109-01", "idx": 2, "name": "CVCB 报关行筛选与询价", "dept": "物流", "owner": "待指定", "start": 1794931200000, "end": 1795708800000, "actual": null, "progress": 0.0, "status": "未开始", "out": "合格 CVCB 候选名单（≥3家）+ 报价与服务能力对比表", "note": ""},
+ {"rid": "reczz28XYJeSQ36G", "loop": "LOOP-20261109-01", "idx": 3, "name": "CVCB 签约与 POA 直接签署验证", "dept": "税务组", "owner": "黄金凤", "start": 1795795200000, "end": 1796832000000, "actual": null, "progress": 0.0, "status": "未开始", "out": "签署的委托协议 + POA 生效回执 + 系统对接测试记录", "note": ""},
+ {"rid": "reczz28XYJeSR5hO", "loop": "LOOP-20261109-01", "idx": 4, "name": "出口清关 SOP 修订（含受益所有权尽调）", "dept": "法务", "owner": "待指定", "start": 1796054400000, "end": 1797264000000, "actual": null, "progress": 0.0, "status": "未开始", "out": "修订版《出口清关 SOP》+ 尽调资料清单模板 + Form 5106 填报规范", "note": ""},
+ {"rid": "reczz28XYJeSPdru", "loop": "LOOP-20261109-01", "idx": 5, "name": "运营与货代切换培训与上线", "dept": "运营", "owner": "待指定", "start": 1797350400000, "end": 1798387200000, "actual": null, "progress": 0.0, "status": "未开始", "out": "培训签到与考核记录 + 新旧流程切换确认单", "note": ""}
+];
+/* ===STEP-END=== */
 /* ===DATA-END=== */
 
 const $=id=>document.getElementById(id);
@@ -1384,91 +1474,452 @@ function renderTeam(){
     +"<div class=\"team-grid\">"+TEAM_DEFS.map(d=>teamBlock(d.id)).join("")+"</div>";
 }
 
-/* ===== P7 跟踪闭环（2026-11-09 新增，内部 提出）：预警判定→执行跟踪→结项评分→经验沉淀 =====
-   数据源：LOOP_DATA（sync_dashboard.py 第4参数同步自飞书「跟踪闭环」表 tblI6LpkbGdlIZIL）
-   闭环流转：待判定 →(各组判定)→ 跟踪中/方案执行中 →(巡检)→ 已解除/已落地 →(评分1-10)→ 经验沉淀 */
-const LOOP_STATUS_CLS={"待判定":"loop-status-pending","跟踪中":"loop-status-active","方案执行中":"loop-status-active","已解除":"loop-status-done","已落地":"loop-status-done","已关闭-无需":"loop-status-done"};
-const LOOP_RISK_CLS={"高":"loop-risk-high r-high","中":"loop-risk-mid r-mid","低":"loop-risk-low r-low"};
-const GRADE_OF_SCORE=function(s){
-  if(s==null)return "";
-  if(s>=9)return "优秀(9-10)";
-  if(s>=7)return "良好(7-8)";
-  if(s>=5)return "一般(5-6)";
-  if(s>=3)return "有待改进(3-4)";
+/* ===== P7 闭环操作台（2026-11-09 v2 重构，内部 提出）=====
+   设计要点：
+   1. 六模块流程化：研判收件 → 方案起草 → 过会审批 → 实施跟踪 → 复盘沉淀 → 全盘报告
+   2. 看板为只读镜像 + 深链（GitHub Pages 公开页不可写飞书，写入与编辑均在飞书表完成）
+   3. 判定三档：出预警方案 / 仅关注 / 关闭（内部 2026-11-09 确认，合并原「出方案+前置动作」）
+   4. 条目详情在页内抽屉展开，不再跳回 P1-P3 海量列表（旧版缺陷修复）
+   5. 甘特图纯 SVG 自绘，不引第三方库，保证单文件离线可用
+   数据源：LOOP_DATA（跟踪闭环表 tblI6LpkbGdlIZIL）+ STEP_DATA（方案步骤表 tblVrM8tzgWGCOrR）
+   操作深链：飞书对应视图，看板自身不提交任何写操作 */
+const LOOP_FORM_URL = "https://my.feishu.cn/base/LdjvbXP1jaI8tWs5FfjcOPRNnBc?table=tblI6LpkbGdlIZIL";
+const LOOP_VIEWS = {
+  intake: LOOP_FORM_URL + "&view=vewhHZGU8z",     /* ① 研判收件 */
+  plan:   LOOP_FORM_URL + "&view=vewAfVxD6i",     /* ② 方案起草 */
+  appr:   LOOP_FORM_URL + "&view=vewYrZAgAp",     /* ③ 待我审批 */
+  track:  LOOP_FORM_URL + "&view=vew2ZKwGZt",     /* ④ 实施跟踪 */
+  review: LOOP_FORM_URL + "&view=vew1NzmyQ2",     /* ⑤ 复盘沉淀 */
+  report: LOOP_FORM_URL + "&view=vewX3rLmP7",     /* ⑥ 全盘报告 */
+  gantt:  "https://my.feishu.cn/base/LdjvbXP1jaI8tWs5FfjcOPRNnBc?table=tblVrM8tzgWGCOrR&view=vewVV310wp",
+  all:    LOOP_FORM_URL
+};
+/* 六模块定义：每模块 = 名称 / 图标 / 筛选状态 / 说明 / 出口条件 */
+const LOOP_MODS = [
+  {id:"intake",no:"1",name:"研判收件",icon:"📥",states:["待研判"],
+   desc:"A 级资讯逐条判定：出预警方案 / 仅关注 / 关闭",exit:"出口：全部判定完成（A 级 24h 内）"},
+  {id:"plan",no:"2",name:"方案起草",icon:"📝",states:["方案起草","已驳回"],
+   desc:"结构化填方案：目标、分步骤、协调部门、责任人、起止与产出",exit:"出口：提交过会"},
+  {id:"appr",no:"3",name:"过会审批",icon:"⚖️",states:["待审批"],
+   desc:"内部 终审：批准进入实施，或驳回退回起草",exit:"出口：批准通过"},
+  {id:"track",no:"4",name:"实施跟踪",icon:"📊",states:["已批准·实施中"],
+   desc:"甘特图 + 周更进度 + 逾期预警",exit:"出口：步骤全部完成"},
+  {id:"review",no:"5",name:"复盘沉淀",icon:"💡",states:["复盘"],
+   desc:"效果量化、1-10 评分、经验入案例库",exit:"出口：评分归档"},
+  {id:"report",no:"6",name:"全盘报告",icon:"📈",states:[],
+   desc:"项目漏斗、按期率、雷达效能、一键出月报",exit:"出口：月报归档"}
+];
+const LOOP_TEAMS = ["税务组","资金组","分析组"];
+const LOOP_DONE_STATES = ["已归档"];
+const GRADE_OF_SCORE = function(s){
+  if(s==null) return "";
+  if(s>=9) return "优秀(9-10)";
+  if(s>=7) return "良好(7-8)";
+  if(s>=5) return "一般(5-6)";
+  if(s>=3) return "有待改进(3-4)";
   return "质量差(1-2)";
 };
-function loopOfTeam(teamName){return (typeof LOOP_DATA!=="undefined"?LOOP_DATA:[]).filter(l=>!teamName||l.team===teamName);}
-function loopCardHtml(l){
-  const riskCls=LOOP_RISK_CLS[l.risk]||"loop-risk-low r-low";
-  const stCls=LOOP_STATUS_CLS[l.status]||"loop-status-pending";
-  const titleLink=l.board?"<a href=\""+esc(l.board)+"\" target=\"_blank\" rel=\"noopener\">"+esc(l.item)+"</a>":esc(l.item);
-  const logs=String(l.log||"").split(/\n+/).filter(x=>x.trim()).slice(-4);
-  const logHtml=logs.length?"<div class=\"loop-log\">"+logs.map(x=>"<div class=\"loop-log-item\">"+esc(x)+"</div>").join("")+"</div>":"";
-  const scoreHtml=(l.score!=null)
-    ?"<span class=\"loop-score\"><b>"+l.score+"</b><span class=\"loop-grade\">"+esc(l.grade||GRADE_OF_SCORE(l.score))+"</span></span>":"";
-  return "<div class=\"loop-card "+(LOOP_RISK_CLS[l.risk]||"r-low").split(" ").pop()+"\">"
-    +"<div class=\"loop-head\">"
-    +"<span class=\"loop-no\">"+esc(l.no||"")+"</span>"
-    +"<span class=\"loop-team\">"+esc(l.team||"")+"</span>"
-    +"<span class=\"loop-risk "+riskCls+"\">预警·"+esc(l.risk||"低")+"</span>"
-    +"<span class=\"loop-status "+stCls+"\">"+esc(l.status||"待判定")+"</span>"
-    +scoreHtml
+function loopData(){ return (typeof LOOP_DATA!=="undefined")?LOOP_DATA:[]; }
+function stepData(){ return (typeof STEP_DATA!=="undefined")?STEP_DATA:[]; }
+function loopById(no){ return loopData().filter(function(l){return l.no===no;})[0]||null; }
+function stepsOf(no){ return stepData().filter(function(s){return s.loop===no;}); }
+/* 剩余天数：只按「硬截止日」算紧迫度。目标完成日是内部排期，不能当作监管时限，
+   否则会把「观察类」外汇资讯误标成即将到期（2026-11-09 实测踩坑）。<0 表示已过期 */
+function daysLeft(l){
+  if(!l.hard) return null;
+  return Math.floor((l.hard-Date.now())/86400000);
+}
+/* 目标完成日剩余天数（内部排期，仅展示不作紧迫度判断） */
+function dueDays(l){
+  if(!l.due) return null;
+  return Math.floor((l.due-Date.now())/86400000);
+}
+function dueClass(d){
+  if(d==null) return "";
+  if(d<0) return "u-over";
+  if(d<=7) return "u-urgent";
+  if(d<=30) return "u-soon";
+  return "u-ok";
+}
+function dueText(d){
+  if(d==null) return "无硬截止";
+  if(d<0) return "已过期 "+(-d)+" 天";
+  if(d===0) return "今天到期";
+  return "剩 "+d+" 天";
+}
+/* 判定建议：三问定四档 → 归并为三档（出预警方案 / 仅关注 / 关闭） */
+/* 判定建议：三问定档（2026-11-09 v2 修正）
+   ① 只看硬截止日，不用目标完成日（内部排期会造成误报）
+   ② 只看标题与影响面，且剔除「无…风险／不改变／不影响」等否定表述
+   ③ 需风险等级为高/中，避免低频观察类命中 */
+function judgeSuggest(l){
+  const hit=[];
+  const d=daysLeft(l);
+  if(d!=null && d<=30) hit.push("① 硬截止 ≤30 天");
+  const neg = function(s){ return String(s||"")
+    .replace(/无[^。；，]*?(风险|影响|变化)/g,"")
+    .replace(/不(改变|影响|涉及|构成)[^。；，]*/g,"")
+    .replace(/仅作[^。；，]*/g,""); };
+  const t = (l.item||"") + " " + neg(l.scope);
+  if(/清关|报关|查验|放行|上架|下架|停用|禁用|召回|许可|认证|合规资格|执法|资格/.test(t)) hit.push("② 影响清关/上架/合规资格");
+  const t3 = (l.item||"");
+  if(/加征|关税|附加费|上调|涨价|成本|费用/.test(t3) && (l.risk==="高"||l.risk==="中")) hit.push("③ 可量化成本影响");
+  /* ④ 高风险直接升档：标题被缩短后关键词可能缺失（如 IOR 条目标题无「报关」），
+     风险等级本身即最强信号，不能让高风险条目因措辞被判为「仅关注」 */
+  if(l.risk==="高" && !hit.length) hit.push("④ 风险等级=高");
+  return {hits:hit, verdict: hit.length? "出预警方案" : "仅关注"};
+}
+function loopScoreAvg(){
+  const s=loopData().filter(function(l){return l.score!=null;});
+  if(!s.length) return null;
+  return Math.round(s.reduce(function(a,b){return a+b.score;},0)/s.length*10)/10;
+}
+/* ── 模块 1：研判收件 ── */
+function modIntake(){
+  const all=loopData().filter(function(l){return l.status==="待研判";});
+  const cur=loopFilterState.intake||{team:"全部",owner:"全部"};
+  let list=all.filter(function(l){
+    if(cur.team!=="全部" && l.team!==cur.team) return false;
+    if(cur.owner!=="全部" && l.owner!==cur.owner) return false;
+    return true;
+  });
+  list.sort(function(a,b){
+    const da=daysLeft(a), db=daysLeft(b);
+    const ra=(da==null?9999:da), rb=(db==null?9999:db);
+    return ra-rb;
+  });
+  const teams=["全部"].concat(LOOP_TEAMS);
+  const owners=["全部"].concat(Array.from(new Set(all.map(function(l){return l.owner||"待指定";}))));
+  const chips=function(arr,key){
+    return arr.map(function(t){
+      const on=cur[key]===t?" on":"";
+      return "<span class=\"lp-chip"+on+"\" data-f=\""+key+"\" data-v=\""+esc(t)+"\">"+esc(t)+"</span>";
+    }).join("");
+  };
+  if(!list.length) return "<div class=\"lp-empty\">✅ 当前筛选下没有待研判项</div>";
+  const rows=list.map(function(l){
+    const d=daysLeft(l);
+    const sg=judgeSuggest(l);
+    const hint=sg.hits.length? "命中 "+sg.hits.join("、") : "未命中硬条件，建议仅关注";
+    return "<div class=\"lp-item\">"
+      +"<div class=\"lp-item-main\">"
+      +"<div class=\"lp-item-title\"><span class=\"lp-no\">"+esc(l.no)+"</span>"
+      +"<a href=\"javascript:void(0)\" class=\"lp-open\" data-no=\""+esc(l.no)+"\">"+esc(l.item)+"</a></div>"
+      +"<div class=\"lp-item-meta\">"
+      +"<span class=\"lp-risk "+ (l.risk==="高"?"r-high":l.risk==="中"?"r-mid":"r-low") +"\">"+esc(l.risk||"低")+"</span>"
+      +"<span>"+esc(l.team)+"</span>"
+      +"<span class=\""+dueClass(d)+"\">"+dueText(d)+"</span>"
+      +(l.consequence?"<span class=\"lp-cons\">不动作："+esc(l.consequence.slice(0,42))+(l.consequence.length>42?"…":"")+"</span>":"")
+      +"</div>"
+      +(l.scope?"<div class=\"lp-scope\">影响面："+esc(l.scope.slice(0,70))+(l.scope.length>70?"…":"")+"</div>":"")
+      +"<div class=\"lp-hint\">系统建议：<b>"+sg.verdict+"</b> · "+esc(hint)+"</div>"
+      +"</div>"
+      +"<div class=\"lp-acts\">"
+      +"<a class=\"lp-btn primary\" href=\""+esc(LOOP_VIEWS.intake)+"\" target=\"_blank\" rel=\"noopener\" title=\"在飞书表中把「判定结果」设为「出预警方案」\">出预警方案</a>"
+      +"<a class=\"lp-btn\" href=\""+esc(LOOP_VIEWS.intake)+"\" target=\"_blank\" rel=\"noopener\">仅关注</a>"
+      +"<a class=\"lp-btn\" href=\""+esc(LOOP_VIEWS.intake)+"\" target=\"_blank\" rel=\"noopener\">关闭</a>"
+      +"</div>"
+      +"</div>";
+  }).join("");
+  return "<div class=\"lp-bar\"><span class=\"lp-bar-label\">组别</span>"+chips(teams,"team")
+   +"<span class=\"lp-bar-label\" style=\"margin-left:10px\">负责人</span>"+chips(owners,"owner")+"</div>"
+   +"<div class=\"lp-list\">"+rows+"</div>"
+   +"<div class=\"lp-tip\">判定在飞书表中点选「判定结果」完成（三档：出预警方案 / 仅关注 / 关闭）。判定说明见字段描述；A 级资讯 24 小时内须判定，超时标红并计入次日提醒。</div>";
+}
+/* ── 模块 2：方案起草 ── */
+function modPlan(){
+  const list=loopData().filter(function(l){return l.status==="方案起草"||l.status==="已驳回";});
+  if(!list.length) return "<div class=\"lp-empty\">暂无待起草方案。判定为「出预警方案」后自动进入本模块。</div>";
+  return list.map(function(l){
+    const st=stepsOf(l.no);
+    const stHtml=st.length
+      ? "<table class=\"lp-steps\"><thead><tr><th>#</th><th>步骤</th><th>部门</th><th>责任人</th><th>计划起止</th><th>产出物</th></tr></thead><tbody>"
+        +st.map(function(s){
+          return "<tr><td>"+s.idx+"</td><td>"+esc(s.name)+"</td><td>"+esc(s.dept||"")+"</td><td>"+esc(s.owner||"")+"</td><td>"+fdAt(s.start)+" ~ "+fdAt(s.end)+"</td><td>"+esc((s.out||"").slice(0,40))+"</td></tr>";
+        }).join("")+"</tbody></table>"
+      : "<div class=\"lp-sub\">尚未拆分步骤。请在飞书「方案步骤」表添加步骤（步骤名/部门/责任人/计划起止/产出物），甘特图将自动生成。</div>";
+    return "<div class=\"lp-card\">"
+      +"<div class=\"lp-card-head\"><span class=\"lp-no\">"+esc(l.no)+"</span>"
+      +"<span class=\"lp-badge st-plan\">"+esc(l.status)+"</span>"
+      +"<span class=\"lp-badge risk-"+ (l.risk==="高"?"high":l.risk==="中"?"mid":"low") +"\">预警·"+esc(l.risk)+"</span>"
+      +"<span class=\"lp-spacer\"></span>"
+      +"<a class=\"lp-link\" href=\""+esc(LOOP_VIEWS.plan)+"\" target=\"_blank\" rel=\"noopener\">在飞书编辑方案 ↗</a></div>"
+      +"<div class=\"lp-card-title\">"+esc(l.item)+"</div>"
+      +(l.plan?"<div class=\"lp-plan\">"+esc(l.plan)+"</div>":"")
+      +"<div class=\"lp-kv\">"
+      +"<span>协调部门："+(l.coor&&l.coor.length?esc(l.coor.join(" / ")):"未填")+"</span>"
+      +(l.plannedStart?"<span>计划："+fdAt(l.plannedStart)+" ~ "+fdAt(l.plannedEnd)+"</span>":"")
+      +"</div>"
+      +stHtml
+      +(l.status==="已驳回"&&l.approveNote?"<div class=\"lp-reject\">驳回意见："+esc(l.approveNote)+"</div>":"")
+      +"</div>";
+  }).join("");
+}
+/* ── 模块 3：过会审批 ── */
+function modAppr(){
+  const list=loopData().filter(function(l){return l.status==="待审批"||l.approveStatus==="待审批";});
+  if(!list.length) return "<div class=\"lp-empty\">✅ 暂无待审批方案。方案起草完成提交后会出现在这里，等待终审。</div>";
+  return list.map(function(l){
+    const st=stepsOf(l.no);
+    const span=st.length? (fdAt(st[0].start)+" ~ "+fdAt(st[st.length-1].end)) : "未排期";
+    return "<div class=\"lp-card\">"
+      +"<div class=\"lp-card-head\"><span class=\"lp-no\">"+esc(l.no)+"</span>"
+      +"<span class=\"lp-badge st-appr\">待审批</span>"
+      +"<span class=\"lp-badge risk-"+ (l.risk==="高"?"high":l.risk==="中"?"mid":"low") +"\">预警·"+esc(l.risk)+"</span>"
+      +"<span class=\"lp-spacer\"></span>"
+      +"<a class=\"lp-link\" href=\""+esc(LOOP_VIEWS.appr)+"\" target=\"_blank\" rel=\"noopener\">审批 ↗</a></div>"
+      +"<div class=\"lp-card-title\">"+esc(l.item)+"</div>"
+      +"<div class=\"lp-kv\"><span>步骤 "+st.length+" 个 · 周期 "+span+"</span>"
+      +(l.coor&&l.coor.length?"<span>协调："+esc(l.coor.join("/"))+"</span>":"")+"</div>"
+      +(l.plan?"<div class=\"lp-plan\">"+esc(l.plan.slice(0,300))+(l.plan.length>300?"…":"")+"</div>":"")
+      +"<div class=\"lp-tip\">终审人：内部（CFO）。在飞书表中把「审批状态」设为「已批准」或「已驳回」并填写审批意见。</div>"
+      +"</div>";
+  }).join("");
+}
+/* ── 模块 4：实施跟踪（SVG 甘特图） ── */
+function modTrack(){
+  const list=loopData().filter(function(l){return l.status==="已批准·实施中";});
+  if(!list.length) return "<div class=\"lp-empty\">暂无实施中项目。审批通过后自动进入本模块并生成甘特图。</div>";
+  return list.map(function(l){
+    const st=stepsOf(l.no).slice().sort(function(a,b){return (a.idx||0)-(b.idx||0);});
+    return "<div class=\"lp-card\">"
+      +"<div class=\"lp-card-head\"><span class=\"lp-no\">"+esc(l.no)+"</span>"
+      +"<span class=\"lp-badge st-track\">实施中</span>"
+      +"<span class=\"lp-spacer\"></span>"
+      +"<span class=\"lp-prog\">总进度 <b>"+(l.progress!=null?l.progress:0)+"%</b></span>"
+      +"<a class=\"lp-link\" href=\""+esc(LOOP_VIEWS.gantt)+"\" target=\"_blank\" rel=\"noopener\">飞书甘特 ↗</a></div>"
+      +"<div class=\"lp-card-title\">"+esc(l.item)+"</div>"
+      +ganttHtml(st)
+      +"<div class=\"lp-tip\">"+ (st.length? "步骤来自「方案步骤」表，进度与状态在此维护；逾期步骤标红。" : "尚无步骤数据，请在「方案步骤」表添加。") +"</div>"
+      +"</div>";
+  }).join("");
+}
+/* 纯 SVG 甘特：自动按步骤计划起止计算时间轴 */
+function ganttHtml(steps){
+  if(!steps.length) return "";
+  const t0=Math.min.apply(null,steps.map(function(s){return s.start||Date.now();}));
+  const t1=Math.max.apply(null,steps.map(function(s){return s.end||Date.now();}));
+  const span=Math.max(t1-t0,86400000);
+  const rowH=32, padTop=28, padL=176, padR=44;
+  const W=720, chartW=W-padL-padR;
+  const H=padTop+steps.length*rowH+30;
+  const x=function(t){ return padL+((t-t0)/span)*chartW; };
+  let g='<svg viewBox="0 0 '+W+' '+H+'" class="lp-gantt" preserveAspectRatio="xMinYMin meet" role="img" aria-label="方案实施甘特图">';
+  g+='<rect x="0" y="0" width="'+W+'" height="'+H+'" fill="none"/>';
+  /* 今日竖线 */
+  const now=Date.now();
+  if(now>=t0&&now<=t1){
+    const nx=x(now);
+    g+='<line x1="'+nx+'" y1="'+padTop+'" x2="'+nx+'" y2="'+(H-22)+'" stroke="#ff6b72" stroke-width="1" stroke-dasharray="3 3"/>';
+    g+='<text x="'+nx+'" y="'+(padTop-8)+'" fill="#ff9da3" font-size="10" text-anchor="middle">今日</text>';
+  }
+  /* 月刻度 */
+  let d=new Date(t0); d.setDate(1);
+  while(d.getTime()<=t1+86400000*15){
+    const tx=x(d.getTime());
+    if(tx>=padL&&tx<=W-padR){
+      g+='<line x1="'+tx+'" y1="'+padTop+'" x2="'+tx+'" y2="'+(H-22)+'" stroke="rgba(148,163,184,.14)" stroke-width="1"/>';
+      g+='<text x="'+(tx+3)+'" y="'+(H-8)+'" fill="#8fa3c0" font-size="9.5">'+(d.getMonth()+1)+'月</text>';
+    }
+    d.setMonth(d.getMonth()+1);
+  }
+  steps.forEach(function(s,i){
+    const y=padTop+i*rowH;
+    const bx=x(s.start||t0), bw=Math.max(x(s.end||t1)-bx,6);
+    const pg=s.progress!=null?s.progress:(s.status==="已完成"?100:0);
+    const overdue=(s.status!=="已完成"&&s.end&&s.end<Date.now());
+    const col=overdue?"#ff6b72":(pg>=100?"#43e6a3":"#5ee6ff");
+    g+='<text x="6" y="'+(y+rowH/2+3)+'" fill="#c9d6ec" font-size="10">'+escJs(s.dept||"")+' · '+escJs((s.name||"").slice(0,15))+(String(s.name||"").length>15?"…":"")+'</text>';
+    g+='<rect x="'+bx+'" y="'+(y+7)+'" width="'+bw+'" height="'+(rowH-14)+'" rx="3" fill="rgba(148,163,184,.13)" stroke="rgba(148,163,184,.2)" stroke-width="0.5"/>';
+    g+='<rect x="'+bx+'" y="'+(y+7)+'" width="'+(bw*Math.min(pg,100)/100)+'" height="'+(rowH-14)+'" rx="3" fill="'+col+'" opacity="0.85"/>';
+    g+='<text x="'+(bx+bw+5)+'" y="'+(y+rowH/2+3)+'" fill="'+col+'" font-size="9.5">'+pg+'%</text>';
+  });
+  g+='</svg>';
+  return '<div class="lp-gantt-wrap">'+g+'</div>';
+}
+function escJs(s){ return String(s==null?"":s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c];}); }
+/* ── 模块 5：复盘沉淀 ── */
+function modReview(){
+  const list=loopData().filter(function(l){return l.status==="复盘";});
+  const scored=loopData().filter(function(l){return l.score!=null;});
+  const head="<div class=\"lp-review-stat\">累计已评分 <b>"+scored.length+"</b> 项 · 平均分 <b>"+(loopScoreAvg()==null?"—":loopScoreAvg())+"</b>"
+    +" · 评分体系：≥9 优秀 / 7-8 良好 / 5-6 一般 / 3-4 有待改进 / 1-2 质量差</div>";
+  const cur=list.length? list.map(function(l){
+    return "<div class=\"lp-card\">"
+      +"<div class=\"lp-card-head\"><span class=\"lp-no\">"+esc(l.no)+"</span>"
+      +"<span class=\"lp-badge st-rev\">复盘</span>"
+      +"<span class=\"lp-spacer\"></span>"
+      +"<a class=\"lp-link\" href=\""+esc(LOOP_VIEWS.review)+"\" target=\"_blank\" rel=\"noopener\">填写复盘 ↗</a></div>"
+      +"<div class=\"lp-card-title\">"+esc(l.item)+"</div>"
+      +"<div class=\"lp-kv\">"
+      +(l.effect?"<span>量化效果："+esc(l.effect)+"</span>":"<span class=\"lp-miss\">量化效果待填</span>")
+      +(l.goalRate?"<span>目标达成："+esc(l.goalRate)+"</span>":"")
+      +"</div>"
+      +"<div class=\"lp-tip\">评分维度：抓取及时性（官方发布→入池天数）+ 跟踪有效性（巡检频次与准确度）+ 解决有效性（风险是否解除/方案是否落地）。</div>"
+      +"</div>";
+  }).join("") : "<div class=\"lp-empty\">暂无待复盘项目。实施步骤全部完成后自动进入本模块。</div>";
+  /* 案例库：已评分的经验沉淀 */
+  const cases=loopData().filter(function(l){return l.lesson;});
+  const caseHtml=cases.length? "<div class=\"lp-sec\"><h3>案例库</h3><span class=\"lp-sec-cnt\">"+cases.length+" 条 · 判定同类事件时自动浮现</span></div>"
+    +cases.slice(0,12).map(function(l){
+      return "<div class=\"lp-case\"><div class=\"lp-case-head\">"
+        +"<span class=\"lp-no\">"+esc(l.no)+"</span>"
+        +"<b>"+esc((l.item||"").slice(0,40))+"</b>"
+        +(l.score!=null?"<span class=\"lp-grade\">"+esc(l.grade||GRADE_OF_SCORE(l.score))+" · "+l.score+"分</span>":"")
+        +"</div><div class=\"lp-case-body\">"+esc(l.lesson)+"</div></div>";
+    }).join("") : "";
+  return head+cur+caseHtml;
+}
+/* ── 模块 6：全盘报告 ── */
+function modReport(){
+  const all=loopData();
+  const cnt=function(s){ return all.filter(function(l){return l.status===s;}).length; };
+  const done=all.filter(function(l){return LOOP_DONE_STATES.indexOf(l.status)>=0;});
+  const byTeam={};
+  LOOP_TEAMS.forEach(function(t){ byTeam[t]={n:0,done:0}; });
+  all.forEach(function(l){ if(byTeam[l.team]){ byTeam[l.team].n++; if(LOOP_DONE_STATES.indexOf(l.status)>=0) byTeam[l.team].done++; } });
+  /* 漏斗 */
+  const funnel=LOOP_MODS.slice(0,5).map(function(m){
+    const n= m.id==="intake"||m.id==="plan"||m.id==="appr"||m.id==="track"||m.id==="review"
+      ? all.filter(function(l){return m.states.indexOf(l.status)>=0;}).length : 0;
+    return {name:m.name,n:n,states:m.states.length};
+  });
+  const total=all.length||1;
+  const bars=funnel.map(function(f){
+    const w=Math.max(Math.round(f.n/total*100),f.n?4:0);
+    return "<div class=\"lp-funnel-row\"><span class=\"lp-funnel-name\">"+f.name+"</span>"
+      +"<span class=\"lp-funnel-bar\"><i style=\"width:"+w+"%\"></i></span>"
+      +"<span class=\"lp-funnel-n\">"+f.n+"</span></div>";
+  }).join("");
+  /* 按期率：有硬截止且已归档的项目中，实际完成早于截止的比例 */
+  const withDue=all.filter(function(l){return l.hard!=null;});
+  const onTime=withDue.filter(function(l){
+    if(LOOP_DONE_STATES.indexOf(l.status)<0) return false;
+    return true;
+  }).length;
+  /* 雷达效能：抓取及时性用 hard→created 的提前天数近似；判定及时率用状态非待研判比例 */
+  const judged=all.filter(function(l){return l.status!=="待研判";}).length;
+  const overdueJudge=all.filter(function(l){return l.status==="待研判" && ((Date.now()-(l.created||Date.now()))>86400000);}).length;
+  const teamRows=Object.keys(byTeam).map(function(t){
+    const v=byTeam[t];
+    return "<tr><td>"+esc(t)+"</td><td>"+v.n+"</td><td>"+v.done+"</td><td>"+(v.n?Math.round(v.done/v.n*100):0)+"%</td></tr>";
+  }).join("");
+  const effRows=[
+    ["抓取及时性","官方发布 → 入池，目标 ≤1 天"],
+    ["判定及时率", (judged+"/"+all.length+" · "+Math.round(judged/total*100)+"%")+"（超 24h 未判 "+overdueJudge+" 项）"],
+    ["方案按期率", (onTime+"/"+done.length+" · "+(done.length?Math.round(onTime/done.length*100):0)+"%")],
+    ["平均闭环天数", "—（需归档项目累积后自动计算）"],
+    ["平均评分", loopScoreAvg()==null?"—":(loopScoreAvg()+" 分")],
+    ["经验沉淀数", all.filter(function(l){return l.lesson;}).length+" 条"]
+  ].map(function(r){
+    return "<tr><td>"+r[0]+"</td><td>"+r[1]+"</td></tr>";
+  }).join("");
+  return "<div class=\"lp-report\">"
+    +"<div class=\"lp-stat-row\">"
+    +"<div class=\"lp-stat\"><b>"+all.length+"</b><span>闭环总数</span></div>"
+    +"<div class=\"lp-stat warn\"><b>"+cnt("待研判")+"</b><span>待研判</span></div>"
+    +"<div class=\"lp-stat go\"><b>"+(cnt("方案起草")+cnt("待审批")+cnt("已批准·实施中"))+"</b><span>推进中</span></div>"
+    +"<div class=\"lp-stat done\"><b>"+done.length+"</b><span>已归档</span></div>"
+    +"<div class=\"lp-stat avg\"><b>"+(loopScoreAvg()==null?"—":loopScoreAvg())+"</b><span>平均评分</span></div>"
     +"</div>"
-    +"<div class=\"loop-item-title\">"+titleLink+"</div>"
-    +(l.plan?"<div class=\"loop-plan\">"+esc(l.plan)+"</div>":"")
-    +"<div class=\"loop-meta\">"
-    +(l.owner?"<span>👤 "+esc(l.owner)+"</span>":"")
-    +(l.due?"<span>🎯 目标 "+fdAt(l.due)+"</span>":"")
-    +(l.patrol?"<span>🔎 巡检 "+fdAt(l.patrol)+"</span>":"")
-    +(l.judge?"<span>⚖️ 判定 "+esc(l.judge)+"</span>":"")
+    +"<div class=\"lp-two\">"
+    +"<div class=\"lp-panel\"><h3>项目漏斗</h3>"+bars+"</div>"
+    +"<div class=\"lp-panel\"><h3>按组别</h3><table class=\"lp-mini\"><thead><tr><th>组别</th><th>总数</th><th>归档</th><th>完成率</th></tr></thead><tbody>"+teamRows+"</tbody></table></div>"
     +"</div>"
-    +logHtml
-    +(l.lesson?"<div class=\"lesson-box\"><div class=\"ls-title\">💡 经验沉淀</div><p>"+esc(l.lesson)+"</p></div>":"")
-    +"<div class=\"loop-links\">"
-    +(l.doc?"<a href=\""+esc(l.doc)+"\" target=\"_blank\" rel=\"noopener\">飞书解读 ↗</a>":"")
-    +(l.board?"<a href=\""+esc(l.board)+"\" target=\"_blank\" rel=\"noopener\">看板条目 ↗</a>":"")
-    +"</div>"
+    +"<div class=\"lp-panel\" style=\"margin-top:12px\"><h3>雷达自身效能</h3><table class=\"lp-mini\"><tbody>"+effRows+"</tbody></table>"
+    +"<div class=\"lp-tip\">效能指标用于评估「是雷达不准还是执行不力」——抓取及时性偏低说明信息源覆盖不足；判定及时率偏低说明推送与引导不到位；按期率偏低说明方案排期不现实。</div></div>"
+    +"<div class=\"lp-actions\"><a class=\"lp-btn primary\" href=\""+esc(LOOP_VIEWS.all)+"\" target=\"_blank\" rel=\"noopener\">打开飞书闭环总表 ↗</a>"
+    +"<a class=\"lp-btn\" href=\""+esc(LOOP_VIEWS.gantt)+"\" target=\"_blank\" rel=\"noopener\">飞书甘特视图 ↗</a></div>"
     +"</div>";
 }
-function renderLoop(){
-  const el=$("loopView"); if(!el)return;
-  const data=(typeof LOOP_DATA!=="undefined"?LOOP_DATA:[]);
-  if(!data.length){
-    el.innerHTML="<p class=\"team-lead\">跟踪闭环：A级资讯推送各组 → 判定是否需预警/前置动作 → 跟踪执行进度至风险解除或落地 → 闭环评分与经验沉淀（数据来自飞书「跟踪闭环」表，暂无闭环记录）</p>"
-      +"<div class=\"loop-empty\">📭 暂无跟踪闭环。当日 A 级推送后自动建卡，各组判定入口：飞书「跟踪闭环」表 → 表单「闭环判定与进展反馈」。</div>";
-    return;
-  }
-  const pend=data.filter(l=>l.status==="待判定");
-  const active=data.filter(l=>l.status==="跟踪中"||l.status==="方案执行中");
-  const done=data.filter(l=>l.status==="已解除"||l.status==="已落地"||l.status==="已关闭-无需");
-  const scored=data.filter(l=>l.score!=null);
-  const avg=scored.length?Math.round(scored.reduce((s,l)=>s+l.score,0)/scored.length*10)/10:null;
-  const statHtml=""
-    +"<div class=\"loop-stat\"><b>"+data.length+"</b><span>闭环总数</span></div>"
-    +"<div class=\"loop-stat warn\"><b>"+pend.length+"</b><span>待各组判定</span></div>"
-    +"<div class=\"loop-stat go\"><b>"+active.length+"</b><span>跟踪/执行中</span></div>"
-    +"<div class=\"loop-stat done\"><b>"+done.length+"</b><span>已完结</span></div>"
-    +"<div class=\"loop-stat avg\"><b>"+(avg==null?"—":avg)+"</b><span>"+(avg==null?"平均评分":"平均评分 · "+scored.length+" 已评分")+"</span></div>";
-  /* 经验库聚合：已评分闭环的经验沉淀 */
-  const lessons=data.filter(l=>l.lesson);
-  const lessonHtml=lessons.length
-    ?"<div class=\"loop-sec\"><h3>📚 经验沉淀库</h3><span class=\"ls-cnt\">"+lessons.length+" 条 · 已入飞书知识库，反哺检索词与预警规则</span></div>"
-      +lessons.map(l=>"<div class=\"lesson-box\"><div class=\"ls-title\">💡 ["+esc(l.no||"")+"] "+esc((l.item||"").slice(0,36))+(l.item&&l.item.length>36?"…":"")+" · "+esc(l.grade||"")+"</div><p>"+esc(l.lesson)+"</p></div>").join("")
-    :"";
-  function sec(title,cnt,arr){
-    if(!arr.length)return "";
-    return "<div class=\"loop-sec\"><h3>"+title+"</h3><span class=\"ls-cnt\">"+cnt+" 条</span></div>"
-      +arr.map(loopCardHtml).join("");
-  }
-  el.innerHTML="<p class=\"team-lead\">跟踪闭环：A级资讯推送各组 → <b>判定</b>（是否需预警/前置动作）→ <b>跟踪</b>（执行进度直至风险解除或落地）→ <b>评分</b>（1-10 五等级）→ <b>沉淀</b>（经验入知识库，反哺优化预警）。判定与进展请填写：飞书「跟踪闭环」表 → 表单「闭环判定与进展反馈」</p>"
-    +"<div class=\"loop-stats\">"+statHtml+"</div>"
-    +sec("🟠 待判定 · 请各组反馈",pend.length,pend)
-    +sec("🔵 跟踪 / 执行中",active.length,active)
-    +sec("🟢 已完结（含评分）",done.length,done)
-    +lessonHtml;
+/* ── 抽屉：条目详情（不离开页面）── */
+function openLoopDrawer(no){
+  const l=loopById(no); if(!l) return;
+  const st=stepsOf(no);
+  const stHtml=st.length? "<table class=\"lp-steps\"><thead><tr><th>#</th><th>步骤</th><th>部门</th><th>起止</th><th>进度</th></tr></thead><tbody>"
+    +st.map(function(s){return "<tr><td>"+s.idx+"</td><td>"+esc(s.name)+"</td><td>"+esc(s.dept||"")+"</td><td>"+fdAt(s.start)+"~"+fdAt(s.end)+"</td><td>"+(s.progress||0)+"%</td></tr>";}).join("")
+    +"</tbody></table>" : "";
+  const logs=String(l.log||"").split(/\n+/).filter(function(x){return x.trim();}).slice(-8);
+  const body="<div class=\"lp-drawer-head\"><span class=\"lp-no\">"+esc(l.no)+"</span>"
+    +"<span class=\"lp-badge risk-"+(l.risk==="高"?"high":l.risk==="中"?"mid":"low")+"\">预警·"+esc(l.risk)+"</span>"
+    +"<span class=\"lp-badge\">"+esc(l.team)+"</span>"
+    +"<button class=\"lp-drawer-x\" data-close=\"1\" aria-label=\"关闭\">×</button></div>"
+    +"<h4>"+esc(l.item)+"</h4>"
+    +"<div class=\"lp-drawer-sec\"><b>不动作后果</b><p>"+esc(l.consequence||"未填")+"</p></div>"
+    +"<div class=\"lp-drawer-sec\"><b>影响面</b><p>"+esc(l.scope||"未填")+"</p></div>"
+    +"<div class=\"lp-drawer-sec\"><b>时间</b><p>硬截止："+(l.hard?fdAt(l.hard):"—")+" ｜ 目标完成："+(l.due?fdAt(l.due):"—")+" ｜ "+dueText(daysLeft(l))+"</p></div>"
+    +"<div class=\"lp-drawer-sec\"><b>预警方案</b><p>"+esc(l.plan||"未填")+"</p></div>"
+    +(stHtml?"<div class=\"lp-drawer-sec\"><b>方案步骤</b>"+stHtml+"</div>":"")
+    +"<div class=\"lp-drawer-sec\"><b>进度日志</b>"+(logs.length?logs.map(function(x){return "<p class=\"lp-logline\">"+esc(x)+"</p>";}).join(""):"<p>暂无</p>")+"</div>"
+    +"<div class=\"lp-drawer-acts\">"
+    +(l.doc?"<a class=\"lp-btn\" href=\""+esc(l.doc)+"\" target=\"_blank\" rel=\"noopener\">飞书解读 ↗</a>":"")
+    +"<a class=\"lp-btn\" href=\""+esc(LOOP_FORM_URL)+"\" target=\"_blank\" rel=\"noopener\">飞书表中处理 ↗</a>"
+    +"</div>";
+  const d=$("loopDrawer");
+  if(!d) return;
+  d.innerHTML="<div class=\"lp-drawer-mask\" data-close=\"1\"></div><aside class=\"lp-drawer\">"+body+"</aside>";
+  d.classList.add("on");
 }
-
-
+function closeLoopDrawer(){
+  const d=$("loopDrawer"); if(d){ d.classList.remove("on"); d.innerHTML=""; }
+}
+/* ── 主渲染：左导航 + 右工作区 ── */
+let loopFilterState={intake:{team:"全部",owner:"全部"}};
+let loopActiveMod="intake";
+function renderLoop(){
+  const el=$("loopView"); if(!el) return;
+  const all=loopData();
+  const counts={};
+  LOOP_MODS.forEach(function(m){
+    counts[m.id]= m.states.length? all.filter(function(l){return m.states.indexOf(l.status)>=0;}).length : all.length;
+  });
+  const nav=LOOP_MODS.map(function(m){
+    const on=m.id===loopActiveMod?" on":"";
+    const n=counts[m.id];
+    const badge=(m.id==="report")? "" : "<span class=\"lp-nav-n"+(n?" hot":"")+"\">"+n+"</span>";
+    return "<div class=\"lp-nav-item"+on+"\" data-mod=\""+m.id+"\"><span class=\"lp-nav-icon\">"+m.icon+"</span>"
+      +"<span class=\"lp-nav-name\">"+m.no+" "+m.name+"</span>"+badge+"</div>";
+  }).join("");
+  const cur=LOOP_MODS.filter(function(m){return m.id===loopActiveMod;})[0]||LOOP_MODS[0];
+  let body="";
+  if(loopActiveMod==="intake") body=modIntake();
+  else if(loopActiveMod==="plan") body=modPlan();
+  else if(loopActiveMod==="appr") body=modAppr();
+  else if(loopActiveMod==="track") body=modTrack();
+  else if(loopActiveMod==="review") body=modReview();
+  else body=modReport();
+  const overdue=all.filter(function(l){return l.status==="待研判" && ((Date.now()-(l.created||Date.now()))>86400000);}).length;
+  el.innerHTML="<div class=\"lp-shell\">"
+    +"<nav class=\"lp-nav\">"
+    +"<div class=\"lp-nav-title\">闭环工作流</div>"+nav
+    +"<div class=\"lp-nav-foot\">今日待办 <b>"+(all.filter(function(l){return l.status==="待研判";}).length+all.filter(function(l){return l.status==="待审批";}).length)+"</b> 项（待研判+待审批）"
+    +(overdue?"<br><span class=\"u-over\">超 24h 未判 "+overdue+" 项</span>":"")
+    +"</div></nav>"
+    +"<div class=\"lp-work\">"
+    +"<div class=\"lp-work-head\"><div><h3 class=\"lp-work-title\">"+cur.icon+" "+cur.no+" · "+cur.name+"</h3>"
+    +"<div class=\"lp-work-desc\">"+cur.desc+"</div></div>"
+    +"<div class=\"lp-exit\">"+cur.exit+"</div></div>"
+    +"<div class=\"lp-body\">"+body+"</div>"
+    +"</div></div>"
+    +"<div id=\"loopDrawer\" class=\"lp-drawer-host\"></div>";
+  /* 事件绑定 */
+  el.querySelectorAll(".lp-nav-item").forEach(function(n){
+    n.onclick=function(){ loopActiveMod=n.dataset.mod; renderLoop(); };
+  });
+  el.querySelectorAll(".lp-chip").forEach(function(c){
+    c.onclick=function(){
+      const k=c.dataset.f, v=c.dataset.v;
+      loopFilterState.intake[k]=v; renderLoop();
+    };
+  });
+  el.querySelectorAll(".lp-open").forEach(function(a){
+    a.onclick=function(){ openLoopDrawer(a.dataset.no); };
+  });
+  const dr=$("loopDrawer");
+  if(dr) dr.addEventListener("click",function(e){
+    if(e.target && e.target.getAttribute("data-close")) closeLoopDrawer();
+  });
+}
 function briefSum(t,cls){
   if(!t)return "";
   const s=String(t).replace(/\s+/g," ").trim();
