@@ -290,6 +290,46 @@ details.more .sum-full{margin-top:8px;padding-top:8px;border-top:1px dashed rgba
 .ti-meta{color:#8fa3c0;font-size:clamp(9px,.65vw,10.5px);flex:none;text-align:right}
 .team-more{color:#6f7f9c;font-size:clamp(9.5px,.7vw,11px);padding:4px 6px}
 .team-lead{padding:6px 4px;color:#8fa3c0}
+/* ===== P7 跟踪闭环（2026-11-09 新增）：预警判定→执行跟踪→结项评分→经验沉淀 ===== */
+.loop-stats{display:flex;gap:10px;flex-wrap:wrap;margin:10px 0 14px}
+.loop-stat{flex:1;min-width:120px;border:1px solid rgba(148,163,184,.16);border-radius:11px;padding:10px 14px;background:rgba(18,28,53,.55);text-align:center}
+.loop-stat b{display:block;font-size:clamp(16px,1.4vw,22px);color:#eef3ff}
+.loop-stat span{color:#8fa3c0;font-size:clamp(9.5px,.7vw,11px)}
+.loop-stat.warn b{color:#ffb45c}.loop-stat.go b{color:#5ee6ff}.loop-stat.done b{color:#43e6a3}.loop-stat.avg b{color:#c9a6ff}
+.loop-sec{margin:14px 0 8px;display:flex;align-items:center;gap:8px}
+.loop-sec h3{margin:0;color:#aee9ff;font-size:clamp(12px,.9vw,15px)}
+.loop-sec .ls-cnt{color:#8fa3c0;font-size:clamp(9.5px,.7vw,11px)}
+.loop-card{border:1px solid rgba(148,163,184,.15);border-radius:12px;padding:11px 13px;margin:9px 0;background:rgba(18,28,53,.5)}
+.loop-card.r-high{border-left:3px solid #ff6b72}
+.loop-card.r-mid{border-left:3px solid #ffb45c}
+.loop-card.r-low{border-left:3px solid #5ee6ff}
+.loop-head{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.loop-no{color:#5ee6ff;font-weight:800;font-size:clamp(11px,.8vw,12.5px);font-family:ui-monospace,Consolas,monospace}
+.loop-team,.loop-risk,.loop-status{font-size:clamp(9px,.62vw,10.5px);padding:1px 8px;border-radius:9px;font-weight:800;letter-spacing:.03em}
+.loop-team{background:rgba(94,230,255,.14);color:#aee9ff;border:1px solid rgba(94,230,255,.25)}
+.loop-risk-high{background:rgba(255,107,114,.16);color:#ff9da3;border:1px solid rgba(255,107,114,.3)}
+.loop-risk-mid{background:rgba(255,180,92,.14);color:#ffcf9e;border:1px solid rgba(255,180,92,.28)}
+.loop-risk-low{background:rgba(94,230,255,.12);color:#aee9ff;border:1px solid rgba(94,230,255,.22)}
+.loop-status-pending{background:rgba(255,180,92,.16);color:#ffcf9e}
+.loop-status-active{background:rgba(94,230,255,.14);color:#aee9ff}
+.loop-status-done{background:rgba(67,230,163,.14);color:#7defbd}
+.loop-item-title{margin:7px 0 2px;font-size:clamp(11.5px,.85vw,13.5px);line-height:1.5;color:#eef3ff}
+.loop-item-title a{color:#eef3ff;text-decoration:none}
+.loop-item-title a:hover{color:#aee9ff}
+.loop-plan{color:#b9c6de;font-size:clamp(10px,.75vw,12px);line-height:1.6;margin:6px 0;white-space:pre-wrap}
+.loop-meta{display:flex;gap:14px;flex-wrap:wrap;color:#8fa3c0;font-size:clamp(9.5px,.7vw,11px);margin:4px 0}
+.loop-log{margin:8px 0 0;border-top:1px dashed rgba(148,163,184,.18);padding-top:7px}
+.loop-log-item{color:#9fb2cf;font-size:clamp(10px,.75vw,11.5px);line-height:1.55;margin:3px 0;white-space:pre-wrap}
+.loop-score{display:inline-flex;align-items:center;gap:6px;margin-left:auto}
+.loop-score b{color:#c9a6ff;font-size:clamp(13px,1vw,16px)}
+.loop-grade{font-size:clamp(9px,.62vw,10.5px);padding:1px 8px;border-radius:9px;background:rgba(201,166,255,.14);color:#d9c6ff;border:1px solid rgba(201,166,255,.28);font-weight:800}
+.loop-links{display:flex;gap:12px;margin-top:6px;font-size:clamp(9.5px,.7vw,11px)}
+.loop-links a{color:#5ee6ff;text-decoration:none}
+.loop-links a:hover{color:#aee9ff}
+.loop-empty{border:1px dashed rgba(148,163,184,.3);border-radius:12px;padding:26px;text-align:center;color:#8fa3c0}
+.lesson-box{border:1px solid rgba(201,166,255,.2);background:rgba(48,32,80,.35);border-radius:11px;padding:10px 13px;margin:8px 0}
+.lesson-box .ls-title{color:#d9c6ff;font-weight:800;font-size:clamp(11px,.8vw,13px);margin-bottom:4px}
+.lesson-box p{color:#c9d6ec;font-size:clamp(10px,.75vw,12px);line-height:1.6;margin:3px 0;white-space:pre-wrap}
 </style>
 </head>
 <body>
@@ -326,6 +366,7 @@ details.more .sum-full{margin-top:8px;padding-top:8px;border-top:1px dashed rgba
   <button class="tab-btn" data-tab="forex">💱 P4 · 外汇汇率<span class="tab-new" id="TabNewForex"></span></button>
   <button class="tab-btn" data-tab="p5">⚙️ P5 · 规则与信息源</button>
   <button class="tab-btn" data-tab="team">👥 P6 · 部门视图<span class="tab-new" id="TabNewTeam"></span></button>
+  <button class="tab-btn" data-tab="loop">🔄 P7 · 跟踪闭环<span class="tab-new" id="TabNewLoop"></span></button>
 </div>
 
 <!-- ====== P1: Tax Policy ====== -->
@@ -488,6 +529,11 @@ details.more .sum-full{margin-top:8px;padding-top:8px;border-top:1px dashed rgba
 <!-- ====== P6: 部门视图（税务组/资金组/分析组归集，2026-11-09 新增） ====== -->
 <div class="tab-page" id="tab-team">
 <section id="teamView"></section>
+</div>
+
+<!-- ====== P7: 跟踪闭环（预警判定→执行跟踪→结项评分→经验沉淀，2026-11-09 新增） ====== -->
+<div class="tab-page" id="tab-loop">
+<section id="loopView"></section>
 </div>
 
 <!-- ====== P5: Rules & Sources（默认最后一页） ====== -->
@@ -722,7 +768,7 @@ details.more .sum-full{margin-top:8px;padding-top:8px;border-top:1px dashed rgba
 
 <script>
 /* ===DATA-BEGIN=== */
-const SNAPSHOT = { updatedAt: "2026-11-09 17:19", lastScan: 1794215700000, source: "飞书税务政策表 tblo8d6cv3YPiz9w（339条）" };
+const SNAPSHOT = { updatedAt: "2026-11-09 17:37", lastScan: 1794215700000, source: "飞书税务政策表 tblo8d6cv3YPiz9w（339条）" };
 const TAX_NEWS = [
  {"id": "p11", "lv": "A", "score": 20.4, "cat": "出口退税", "title": "关于出口业务增值税和消费税政策的公告", "no": "财政部 税务总局公告2026年第11号", "organ": "财政部+税务总局", "taxes": ["增值税", "消费税", "出口退税"], "lines": ["全品线", "出口业务"], "countries": ["中国"], "eff": 1767196800000, "site": "fgk法规库", "url": "https://fgk.chinatax.gov.cn/zcfgk/c102416/c5247437/content.html", "doc": "https://my.feishu.cn/docx/XIuMd0Y2foSS72x9IWzc0x9HnNb", "at": 1785676800000, "sum": "跨境电商出口核心法规，影响所有出口业务税负计算；外贸企业免征出口环节增值税并退还进项，生产企业适用免抵退；申报期限次年4月30日前"},
  {"id": "p5", "lv": "A", "score": 20.4, "cat": "出口退税", "title": "关于发布《出口业务增值税和消费税退（免）税管理办法》的公告", "no": "国家税务总局公告2026年第5号", "organ": "税务总局", "taxes": ["增值税", "消费税", "出口退税"], "lines": ["全品线", "出口业务"], "countries": ["中国"], "eff": 1767196800000, "site": "fgk法规库", "url": "https://fgk.chinatax.gov.cn/zcfgk/c100012/c5247423/content.html", "doc": "https://my.feishu.cn/docx/J8kddfA5FoM83xxn6hfcjaMYn0g", "at": 1785676800000, "sum": "归并整合历史出口退税管理规定，形成统一管理办法（5章+9类证明事项）；备案表单精简、申报流程调整，直接影响日常退税操作"},
@@ -1093,6 +1139,12 @@ const SOURCES_CONFIG = [
   {id:"sina_fx",name:"新浪财经外汇",url:"https://finance.sina.com.cn/forex",type:"外汇资讯",keywords:"美元 欧元 英镑 日元 人民币 汇率 在岸 离岸",enabled:true,note:"新浪财经外汇频道，主要货币汇率走势与即时行情"}
 ];
 /* ===SOURCES-END=== */
+
+/* ===LOOP-BEGIN=== */
+const LOOP_DATA = [
+ {"rid": "reczz28XWx4DKdCG", "no": "LOOP-20261109-01", "item": "美国CBP外国登记进口商(IOR)强化要求临时最终规则：2027年1月5日生效（FR Doc. 2026-22735，评分28·A级）", "team": "税务组", "risk": "高", "status": "待判定", "judge": "", "plan": "系统建议：①盘点对美出货清关IOR主体性质清单（自营美国公司/货代代报/双清包税）；②2026-12-15前完成CVCB报关行签约与POA验证；③严禁挂名股东凑51%受益所有权；④关注11-30 EO 180天节点后续规则。请税务组判定是否采纳/补充。", "owner": "待指定", "due": 1797264000000, "log": "[2026-11-09 17:35] 雷达自动创建闭环（来源：11-09 A级推送·评分28），等待税务组判定是否需预警/前置动作。", "patrol": 1794216900000, "score": null, "grade": "", "lesson": "", "created": 1794216900000, "board": "https://elaine-huang123.github.io/tax-radar/board.html", "doc": "https://my.feishu.cn/docx/IqqFdXBqfoNWKpxrj3KcE680nUe"}
+];
+/* ===LOOP-END=== */
 /* ===DATA-END=== */
 
 const $=id=>document.getElementById(id);
@@ -1148,13 +1200,13 @@ function newBadge(it){return isNewItem(it)?'<span class="new-badge" data-k="'+en
 function unreadCount(){let n=0;try{TAX_NEWS.forEach(it=>{if(isNewItem(it))n++;});}catch(e){}return n;}
 /* 页签上的「新」计数：让用户一眼看出新条目落在哪个板块 */
 function updateTabNew(){
-  [["tax","TabNewTax"],["cus","TabNewCus"],["pla","TabNewPla"],["forex","TabNewForex"],["team","TabNewTeam"]].forEach(function(p){
+  [["tax","TabNewTax"],["cus","TabNewCus"],["pla","TabNewPla"],["forex","TabNewForex"],["team","TabNewTeam"],["loop","TabNewLoop"]].forEach(function(p){
     const el=$(p[1]); if(!el)return;
     let n=0;
     try{
-      n=(p[0]==="team")
-        ?TAX_NEWS.filter(function(it){return isNewItem(it)&&teamOf(it).length>0;}).length   /* 部门视图：与任一组相关的未读新增 */
-        :itemsOf(p[0]).filter(isNewItem).length;
+      if(p[0]==="team") n=TAX_NEWS.filter(function(it){return isNewItem(it)&&teamOf(it).length>0;}).length;   /* 部门视图：与任一组相关的未读新增 */
+      else if(p[0]==="loop") n=(typeof LOOP_DATA!=="undefined"?LOOP_DATA:[]).filter(function(l){return l.status==="待判定";}).length;   /* 闭环页：待判定数 */
+      else n=itemsOf(p[0]).filter(isNewItem).length;
     }catch(e){}
     el.textContent=n?String(n):"";
     el.className="tab-new"+(n?" on":"");
@@ -1325,6 +1377,90 @@ function renderTeam(){
   const el=$("teamView"); if(!el)return;
   el.innerHTML="<p class=\"team-lead\">按部门归集视角（税务组 / 资金组 / 分析组）· 同一事件多源多日自动归并为事件线 · 条目可点开原文与飞书解读 · 完整筛选请用 P1-P4 板块页签</p>"
     +"<div class=\"team-grid\">"+TEAM_DEFS.map(d=>teamBlock(d.id)).join("")+"</div>";
+}
+
+/* ===== P7 跟踪闭环（2026-11-09 新增，内部 提出）：预警判定→执行跟踪→结项评分→经验沉淀 =====
+   数据源：LOOP_DATA（sync_dashboard.py 第4参数同步自飞书「跟踪闭环」表 tblI6LpkbGdlIZIL）
+   闭环流转：待判定 →(各组判定)→ 跟踪中/方案执行中 →(巡检)→ 已解除/已落地 →(评分1-10)→ 经验沉淀 */
+const LOOP_STATUS_CLS={"待判定":"loop-status-pending","跟踪中":"loop-status-active","方案执行中":"loop-status-active","已解除":"loop-status-done","已落地":"loop-status-done","已关闭-无需":"loop-status-done"};
+const LOOP_RISK_CLS={"高":"loop-risk-high r-high","中":"loop-risk-mid r-mid","低":"loop-risk-low r-low"};
+const GRADE_OF_SCORE=function(s){
+  if(s==null)return "";
+  if(s>=9)return "优秀(9-10)";
+  if(s>=7)return "良好(7-8)";
+  if(s>=5)return "一般(5-6)";
+  if(s>=3)return "有待改进(3-4)";
+  return "质量差(1-2)";
+};
+function loopOfTeam(teamName){return (typeof LOOP_DATA!=="undefined"?LOOP_DATA:[]).filter(l=>!teamName||l.team===teamName);}
+function loopCardHtml(l){
+  const riskCls=LOOP_RISK_CLS[l.risk]||"loop-risk-low r-low";
+  const stCls=LOOP_STATUS_CLS[l.status]||"loop-status-pending";
+  const titleLink=l.board?"<a href=\""+esc(l.board)+"\" target=\"_blank\" rel=\"noopener\">"+esc(l.item)+"</a>":esc(l.item);
+  const logs=String(l.log||"").split(/\n+/).filter(x=>x.trim()).slice(-4);
+  const logHtml=logs.length?"<div class=\"loop-log\">"+logs.map(x=>"<div class=\"loop-log-item\">"+esc(x)+"</div>").join("")+"</div>":"";
+  const scoreHtml=(l.score!=null)
+    ?"<span class=\"loop-score\"><b>"+l.score+"</b><span class=\"loop-grade\">"+esc(l.grade||GRADE_OF_SCORE(l.score))+"</span></span>":"";
+  return "<div class=\"loop-card "+(LOOP_RISK_CLS[l.risk]||"r-low").split(" ").pop()+"\">"
+    +"<div class=\"loop-head\">"
+    +"<span class=\"loop-no\">"+esc(l.no||"")+"</span>"
+    +"<span class=\"loop-team\">"+esc(l.team||"")+"</span>"
+    +"<span class=\"loop-risk "+riskCls+"\">预警·"+esc(l.risk||"低")+"</span>"
+    +"<span class=\"loop-status "+stCls+"\">"+esc(l.status||"待判定")+"</span>"
+    +scoreHtml
+    +"</div>"
+    +"<div class=\"loop-item-title\">"+titleLink+"</div>"
+    +(l.plan?"<div class=\"loop-plan\">"+esc(l.plan)+"</div>":"")
+    +"<div class=\"loop-meta\">"
+    +(l.owner?"<span>👤 "+esc(l.owner)+"</span>":"")
+    +(l.due?"<span>🎯 目标 "+fdAt(l.due)+"</span>":"")
+    +(l.patrol?"<span>🔎 巡检 "+fdAt(l.patrol)+"</span>":"")
+    +(l.judge?"<span>⚖️ 判定 "+esc(l.judge)+"</span>":"")
+    +"</div>"
+    +logHtml
+    +(l.lesson?"<div class=\"lesson-box\"><div class=\"ls-title\">💡 经验沉淀</div><p>"+esc(l.lesson)+"</p></div>":"")
+    +"<div class=\"loop-links\">"
+    +(l.doc?"<a href=\""+esc(l.doc)+"\" target=\"_blank\" rel=\"noopener\">飞书解读 ↗</a>":"")
+    +(l.board?"<a href=\""+esc(l.board)+"\" target=\"_blank\" rel=\"noopener\">看板条目 ↗</a>":"")
+    +"</div>"
+    +"</div>";
+}
+function renderLoop(){
+  const el=$("loopView"); if(!el)return;
+  const data=(typeof LOOP_DATA!=="undefined"?LOOP_DATA:[]);
+  if(!data.length){
+    el.innerHTML="<p class=\"team-lead\">跟踪闭环：A级资讯推送各组 → 判定是否需预警/前置动作 → 跟踪执行进度至风险解除或落地 → 闭环评分与经验沉淀（数据来自飞书「跟踪闭环」表，暂无闭环记录）</p>"
+      +"<div class=\"loop-empty\">📭 暂无跟踪闭环。当日 A 级推送后自动建卡，各组判定入口：飞书「跟踪闭环」表 → 表单「闭环判定与进展反馈」。</div>";
+    return;
+  }
+  const pend=data.filter(l=>l.status==="待判定");
+  const active=data.filter(l=>l.status==="跟踪中"||l.status==="方案执行中");
+  const done=data.filter(l=>l.status==="已解除"||l.status==="已落地"||l.status==="已关闭-无需");
+  const scored=data.filter(l=>l.score!=null);
+  const avg=scored.length?Math.round(scored.reduce((s,l)=>s+l.score,0)/scored.length*10)/10:null;
+  const statHtml=""
+    +"<div class=\"loop-stat\"><b>"+data.length+"</b><span>闭环总数</span></div>"
+    +"<div class=\"loop-stat warn\"><b>"+pend.length+"</b><span>待各组判定</span></div>"
+    +"<div class=\"loop-stat go\"><b>"+active.length+"</b><span>跟踪/执行中</span></div>"
+    +"<div class=\"loop-stat done\"><b>"+done.length+"</b><span>已完结</span></div>"
+    +"<div class=\"loop-stat avg\"><b>"+(avg==null?"—":avg)+"</b><span>"+(avg==null?"平均评分":"平均评分 · "+scored.length+" 已评分")+"</span></div>";
+  /* 经验库聚合：已评分闭环的经验沉淀 */
+  const lessons=data.filter(l=>l.lesson);
+  const lessonHtml=lessons.length
+    ?"<div class=\"loop-sec\"><h3>📚 经验沉淀库</h3><span class=\"ls-cnt\">"+lessons.length+" 条 · 已入飞书知识库，反哺检索词与预警规则</span></div>"
+      +lessons.map(l=>"<div class=\"lesson-box\"><div class=\"ls-title\">💡 ["+esc(l.no||"")+"] "+esc((l.item||"").slice(0,36))+(l.item&&l.item.length>36?"…":"")+" · "+esc(l.grade||"")+"</div><p>"+esc(l.lesson)+"</p></div>").join("")
+    :"";
+  function sec(title,cnt,arr){
+    if(!arr.length)return "";
+    return "<div class=\"loop-sec\"><h3>"+title+"</h3><span class=\"ls-cnt\">"+cnt+" 条</span></div>"
+      +arr.map(loopCardHtml).join("");
+  }
+  el.innerHTML="<p class=\"team-lead\">跟踪闭环：A级资讯推送各组 → <b>判定</b>（是否需预警/前置动作）→ <b>跟踪</b>（执行进度直至风险解除或落地）→ <b>评分</b>（1-10 五等级）→ <b>沉淀</b>（经验入知识库，反哺优化预警）。判定与进展请填写：飞书「跟踪闭环」表 → 表单「闭环判定与进展反馈」</p>"
+    +"<div class=\"loop-stats\">"+statHtml+"</div>"
+    +sec("🟠 待判定 · 请各组反馈",pend.length,pend)
+    +sec("🔵 跟踪 / 执行中",active.length,active)
+    +sec("🟢 已完结（含评分）",done.length,done)
+    +lessonHtml;
 }
 
 
@@ -1712,6 +1848,7 @@ document.querySelectorAll(".tab-btn").forEach(btn=>{
     if(pg)pg.classList.add("active");
     if(["tax","cus","pla","forex"].indexOf(btn.dataset.tab)>=0)renderBoard(btn.dataset.tab);
     else if(btn.dataset.tab==="team")renderTeam();
+    else if(btn.dataset.tab==="loop")renderLoop();
     refreshHeader();
   };
 });
@@ -1730,6 +1867,7 @@ document.querySelectorAll(".tab-btn").forEach(btn=>{
 })();
 updateUnreadUI();
 renderTeam();
+renderLoop();
 /* 重置已读：清除本机已读记录并重渲染，恢复全部「新」角标 */
 const _resetReadEl=$("statResetRead");
 if(_resetReadEl)_resetReadEl.onclick=()=>{
