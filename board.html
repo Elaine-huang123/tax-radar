@@ -290,6 +290,24 @@ details.more .sum-full{margin-top:8px;padding-top:8px;border-top:1px dashed rgba
 .ti-meta{color:#8fa3c0;font-size:clamp(9px,.65vw,10.5px);flex:none;text-align:right}
 .team-more{color:#6f7f9c;font-size:clamp(9.5px,.7vw,11px);padding:4px 6px}
 .team-lead{padding:6px 4px;color:#8fa3c0}
+/* ===== 研判标识（2026-11-11）：新条目除「新」角标外，加是否流转 P7 的人工研判状态 ===== */
+.jb{display:inline-block;margin-left:5px;padding:1px 7px;border-radius:8px;font-size:clamp(8.5px,.6vw,10px);font-weight:800;line-height:1.5;text-decoration:none;white-space:nowrap;border:1px solid transparent;vertical-align:middle}
+.jb:hover{filter:brightness(1.15)}
+.jb-pending{background:rgba(255,180,92,.16);color:#ffcf9e;border-color:rgba(255,180,92,.34)}
+.jb-active{background:rgba(94,230,255,.15);color:#aee9ff;border-color:rgba(94,230,255,.34)}
+.jb-watch{background:rgba(148,163,184,.14);color:#b9c6de;border-color:rgba(148,163,184,.26)}
+.jb-none{background:rgba(120,130,150,.12);color:#8fa3c0;border-color:rgba(148,163,184,.18)}
+.jb-done{background:rgba(67,230,163,.14);color:#7defbd;border-color:rgba(67,230,163,.28)}
+.jb-gap{background:rgba(255,107,114,.12);color:#ff9da3;border-color:rgba(255,107,114,.28)}
+.team-judge{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:8px 0 2px;padding:7px 10px;border-radius:9px;background:rgba(255,180,92,.06);border:1px solid rgba(255,180,92,.18)}
+.tj-txt{font-size:clamp(9.5px,.68vw,11px);color:#ffcf9e}
+.tj-txt b{color:#ffb45c;font-size:clamp(11px,.8vw,13px)}
+.tj-btn{margin-left:auto;font-size:clamp(9px,.64vw,10.5px);padding:3px 9px;border-radius:8px;background:rgba(94,230,255,.12);border:1px solid rgba(94,230,255,.3);color:#aee9ff;text-decoration:none;white-space:nowrap}
+.tj-btn:hover{background:rgba(94,230,255,.2)}
+.tj-filter{display:flex;gap:5px;flex-wrap:wrap;margin:6px 0 4px}
+.tj-chip{font-size:clamp(9px,.62vw,10.5px);padding:2px 8px;border-radius:9px;border:1px solid rgba(148,163,184,.2);color:#9fb2cf;cursor:pointer}
+.tj-chip:hover{border-color:rgba(94,230,255,.4);color:#aee9ff}
+.tj-chip.on{background:rgba(255,180,92,.16);border-color:rgba(255,180,92,.4);color:#ffcf9e;font-weight:700}
 /* ===== P7 闭环操作台（2026-11-09 v2）：六模块流程化 ===== */
 .lp-shell{display:flex;gap:0;border:1px solid rgba(148,163,184,.16);border-radius:14px;overflow:hidden;background:rgba(14,22,42,.55);min-height:520px}
 .lp-nav{width:186px;flex:none;border-right:1px solid rgba(148,163,184,.14);background:rgba(18,28,53,.6);padding:12px 0 10px;display:flex;flex-direction:column}
@@ -848,7 +866,7 @@ details.more .sum-full{margin-top:8px;padding-top:8px;border-top:1px dashed rgba
 
 <script>
 /* ===DATA-BEGIN=== */
-const SNAPSHOT = { updatedAt: "2026-11-11 10:12", lastScan: 1794362700000, source: "飞书税务政策表 tblo8d6cv3YPiz9w（354条）" };
+const SNAPSHOT = { updatedAt: "2026-11-11 10:24", lastScan: 1794362700000, source: "飞书税务政策表 tblo8d6cv3YPiz9w（354条）" };
 const TAX_NEWS = [
  {"id": "p11", "lv": "A", "score": 20.4, "cat": "出口退税", "title": "关于出口业务增值税和消费税政策的公告", "no": "财政部 税务总局公告2026年第11号", "organ": "财政部+税务总局", "taxes": ["增值税", "消费税", "出口退税"], "lines": ["全品线", "出口业务"], "countries": ["中国"], "eff": 1767196800000, "site": "fgk法规库", "url": "https://fgk.chinatax.gov.cn/zcfgk/c102416/c5247437/content.html", "doc": "https://my.feishu.cn/docx/XIuMd0Y2foSS72x9IWzc0x9HnNb", "at": 1785676800000, "sum": "跨境电商出口核心法规，影响所有出口业务税负计算；外贸企业免征出口环节增值税并退还进项，生产企业适用免抵退；申报期限次年4月30日前"},
  {"id": "p5", "lv": "A", "score": 20.4, "cat": "出口退税", "title": "关于发布《出口业务增值税和消费税退（免）税管理办法》的公告", "no": "国家税务总局公告2026年第5号", "organ": "税务总局", "taxes": ["增值税", "消费税", "出口退税"], "lines": ["全品线", "出口业务"], "countries": ["中国"], "eff": 1767196800000, "site": "fgk法规库", "url": "https://fgk.chinatax.gov.cn/zcfgk/c100012/c5247423/content.html", "doc": "https://my.feishu.cn/docx/J8kddfA5FoM83xxn6hfcjaMYn0g", "at": 1785676800000, "sum": "归并整合历史出口退税管理规定，形成统一管理办法（5章+9类证明事项）；备案表单精简、申报流程调整，直接影响日常退税操作"},
@@ -1252,7 +1270,9 @@ const LOOP_DATA = [
  {"rid": "reczz28YCWgW5TwR", "no": "LOOP-20261111-02", "item": "美国10月CPI环比0.4%超预期、核心0.3%：12月加息概率升至98.6%，美元指数升破102关口（评分18·A级·页面升A）", "team": "资金组", "risk": "中", "status": "待研判", "judge": "", "plan": "①12月8—9日议息前对美元回款分批锁定，避免单点择时；②2027年一季度定价按 6.70/6.72/6.75 三档做毛利敏感性；③复核美元负债与美元计价金融资产的估值敞口，评估对非经常性损益的影响；④对高客单 3C 监控分期渗透率与退货率。", "owner": "待指定", "due": null, "log": "[2026-11-11 10:05] 雷达自动创建闭环（来源：11-11 A级推送·评分18）。", "patrol": null, "score": null, "grade": "", "lesson": "", "created": 1794362700000, "board": "https://elaine-huang123.github.io/tax-radar/board.html", "doc": "", "hard": null, "consequence": "若12月加息落地且幅度达50个基点，美元单边上行，未锁定的美元应收折算收益被回吐，同时美元计价海运与平台费成本抬升，形成双向挤压；美国消费信贷成本上升压制旺季尾声与一季度补货。", "scope": "全品线美元应收与美元计价费用；美国站为主，欧洲站、日本站同步受美元强弱影响", "reason": "", "coor": ["资金组", "运营"], "approveStatus": "未提交", "approver": "", "approveNote": "", "approveAt": null, "progress": 0.0, "plannedStart": 1794326400000, "plannedEnd": 1796832000000, "effect": "", "goalRate": "", "tags": ""},
  {"rid": "reczz28YCWgW6caz", "no": "LOOP-20261111-03", "item": "人民币对美元中间价11月11日报6.7191：调贬24个基点，欧元中间价7.4852（评分17·A级·页面升A）", "team": "资金组", "risk": "低", "status": "待研判", "judge": "", "plan": "①今日出口申报与收汇按 6.7191 口径复核折算，确认系统记账汇率已更新；②欧元、英镑应收按 7.4852、8.9500 重估；③在月度汇兑损益预测中同步更新中间价假设，跟踪 6.70—6.75 区间。", "owner": "待指定", "due": null, "log": "[2026-11-11 10:05] 雷达自动创建闭环（来源：11-11 A级推送·评分17）。", "patrol": null, "score": null, "grade": "", "lesson": "", "created": 1794362700000, "board": "https://elaine-huang123.github.io/tax-radar/board.html", "doc": "", "hard": null, "consequence": "记账汇率未同步将导致汇兑损益确认偏差累积、月度毛利失真；多币种站点若仍按旧汇率折算，收入与成本配比错误。", "scope": "全品线外币应收折算；欧、英、日站点结算币种", "reason": "", "coor": ["资金组"], "approveStatus": "未提交", "approver": "", "approveNote": "", "approveAt": null, "progress": 0.0, "plannedStart": 1794326400000, "plannedEnd": 1794931200000, "effect": "", "goalRate": "", "tags": ""},
  {"rid": "reczz28YCWgW6Cgn", "no": "LOOP-20261111-04", "item": "美元指数11月10日纽约尾盘涨0.56%收102.230：欧元跌至1.1166、日元贬至158.78（评分15·A级·页面升A）", "team": "资金组", "risk": "低", "status": "待研判", "judge": "", "plan": "①按站点拆分币种敞口，欧洲站与日本站优先提高套保比例或调整结算币种；②欧洲站2027年一季度定价按 1.11—1.12 区间重算；③日元接近160时建立日报机制，跟踪日本财务省口头与实质干预信号。", "owner": "待指定", "due": null, "log": "[2026-11-11 10:05] 雷达自动创建闭环（来源：11-11 A级推送·评分15）。", "patrol": null, "score": null, "grade": "", "lesson": "", "created": 1794362700000, "board": "https://elaine-huang123.github.io/tax-radar/board.html", "doc": "", "hard": null, "consequence": "欧元、日元收入折美元下降而本地仓美元成本上升，欧洲站与日本站毛利被双重压缩；日元若在160附近遭干预反转，未对冲的日元敞口将反向受损。", "scope": "欧洲站（欧元、英镑本地仓）、日本站（日元）、拉美站（墨西哥比索）", "reason": "", "coor": ["资金组", "运营"], "approveStatus": "未提交", "approver": "", "approveNote": "", "approveAt": null, "progress": 0.0, "plannedStart": 1794326400000, "plannedEnd": 1795536000000, "effect": "", "goalRate": "", "tags": ""},
- {"rid": "reczz28YCWgW4mUr", "no": "LOOP-20261111-05", "item": "四川影目召回INMO AIR3智能眼镜4701副：左镜腿过热存烫伤风险，与CPSC 9月美国召回同型号（评分14·A级·页面升A）", "team": "分析组", "risk": "中", "status": "待研判", "judge": "", "plan": "①排查在售3C品线是否存在同方案（同芯片/同电池包/同ODM）产品，核对固件功耗策略与温升测试报告；②对带锂电、长时间贴身使用的SKU补充“第三方应用/连续使用”场景过热测试；③复核产品责任险是否覆盖软件与固件缺陷；④建立中美双市场召回信息日检，避免海外已召回型号在国内或第三国继续销售。", "owner": "待指定", "due": null, "log": "[2026-11-11 10:05] 雷达自动创建闭环（来源：11-11 A级推送·评分14）。", "patrol": null, "score": null, "grade": "", "lesson": "", "created": 1794362700000, "board": "https://elaine-huang123.github.io/tax-radar/board.html", "doc": "", "hard": null, "consequence": "若存在同方案产品，可能被平台以同型号/同方案连带核查并触发批量下架；产品责任险若将固件缺陷列为除外，召回成本（替换、物流、退款、渠道损失）将全额自担。", "scope": "3C 与电池品线中含锂电、贴肤长时间使用的产品（耳机、智能眼镜、手表、充电宝等）", "reason": "", "coor": ["分析组", "运营", "法务"], "approveStatus": "未提交", "approver": "", "approveNote": "", "approveAt": null, "progress": 0.0, "plannedStart": 1794326400000, "plannedEnd": 1796832000000, "effect": "", "goalRate": "", "tags": ""}
+ {"rid": "reczz28YCWgW4mUr", "no": "LOOP-20261111-05", "item": "四川影目召回INMO AIR3智能眼镜4701副：左镜腿过热存烫伤风险，与CPSC 9月美国召回同型号（评分14·A级·页面升A）", "team": "分析组", "risk": "中", "status": "待研判", "judge": "", "plan": "①排查在售3C品线是否存在同方案（同芯片/同电池包/同ODM）产品，核对固件功耗策略与温升测试报告；②对带锂电、长时间贴身使用的SKU补充“第三方应用/连续使用”场景过热测试；③复核产品责任险是否覆盖软件与固件缺陷；④建立中美双市场召回信息日检，避免海外已召回型号在国内或第三国继续销售。", "owner": "待指定", "due": null, "log": "[2026-11-11 10:05] 雷达自动创建闭环（来源：11-11 A级推送·评分14）。", "patrol": null, "score": null, "grade": "", "lesson": "", "created": 1794362700000, "board": "https://elaine-huang123.github.io/tax-radar/board.html", "doc": "", "hard": null, "consequence": "若存在同方案产品，可能被平台以同型号/同方案连带核查并触发批量下架；产品责任险若将固件缺陷列为除外，召回成本（替换、物流、退款、渠道损失）将全额自担。", "scope": "3C 与电池品线中含锂电、贴肤长时间使用的产品（耳机、智能眼镜、手表、充电宝等）", "reason": "", "coor": ["分析组", "运营", "法务"], "approveStatus": "未提交", "approver": "", "approveNote": "", "approveAt": null, "progress": 0.0, "plannedStart": 1794326400000, "plannedEnd": 1796832000000, "effect": "", "goalRate": "", "tags": ""},
+ {"rid": "reczz28YCizuT2Ub", "no": "LOOP-20261111-06", "item": "洛杉矶与长滩港安保劳资谈判延至11月4日17时：250人覆盖两港过半货量，罢工授权仍有效", "team": "资金组", "risk": "中", "status": "待研判", "judge": "", "plan": "来源：研判池 PDR-20261104-01 人工转办，请各组建闭环后制定预警方案。", "owner": "待指定", "due": null, "log": "[2026-11-11 10:23] 由研判池 PDR-20261104-01 人工转办自动建闭环（研判人：待指定；理由：美西港口劳资协议 11-20 届满，若罢工将直接影响海运时效与滞港费，需纳入跟踪。）。", "patrol": 1794363791938, "score": null, "grade": "", "lesson": "", "created": 1794363791938, "board": "https://elaine-huang123.github.io/tax-radar/board.html", "doc": "", "hard": null, "consequence": "", "scope": "", "reason": "", "coor": [], "approveStatus": "未提交", "approver": "", "approveNote": "", "approveAt": null, "progress": 0.0, "plannedStart": null, "plannedEnd": null, "effect": "", "goalRate": "", "tags": ""},
+ {"rid": "reczz28YCkKeP0cL", "no": "LOOP-20261111-07", "item": "法国拟2027年1月1日起禁止超快时尚产品媒体广告：监管查验六成包裹不合规、平台累计罚款近10亿欧元（评分10·B级）", "team": "分析组", "risk": "低", "status": "待研判", "judge": "", "plan": "来源：研判池 PDR-20261111-01 人工转办。建议评估：①法国站/欧盟站超快时尚相关类目占比；②广告投放合规预案；③2027-01-01 前产品线调整节奏。", "owner": "待指定", "due": null, "log": "[2026-11-11 10:24] 由研判池 PDR-20261111-01 人工转办自动建闭环（研判人：待指定）。", "patrol": 1794363875099, "score": null, "grade": "", "lesson": "", "created": 1794363875099, "board": "https://elaine-huang123.github.io/tax-radar/board.html", "doc": "", "hard": 1798732800000, "consequence": "若面向法国市场投放超快时尚类产品广告，2027-01-01 起可能面临广告禁令与平台连带罚款；包裹查验不合规率六成意味着清关周期延长。", "scope": "法国站 / 欧盟站；快时尚服饰类品线；广告投放与物流时效", "reason": "", "coor": ["分析组", "运营"], "approveStatus": "未提交", "approver": "", "approveNote": "", "approveAt": null, "progress": 0.0, "plannedStart": null, "plannedEnd": null, "effect": "", "goalRate": "", "tags": ""}
 ];
 /* ===LOOP-END=== */
 
@@ -1265,6 +1285,33 @@ const STEP_DATA = [
  {"rid": "reczz28XYJeSPdru", "loop": "LOOP-20261109-01", "idx": 5, "name": "运营与货代切换培训与上线", "dept": "运营", "owner": "待指定", "start": 1797350400000, "end": 1798387200000, "actual": null, "progress": 0.0, "status": "未开始", "out": "培训签到与考核记录 + 新旧流程切换确认单", "note": ""}
 ];
 /* ===STEP-END=== */
+
+/* ===POOL-BEGIN=== */
+const POOL_DATA = [
+ {"rid": "reczz28YCd71TyWn", "no": "PDR-20261111-01", "key": "1794362700000|法国拟2027年1月1日起禁止超快时尚产品媒体广", "title": "法国拟2027年1月1日起禁止超快时尚产品媒体广告：监管查验六成包裹不合规、平台累计罚款近10亿欧元", "team": "分析组", "lv": "B", "score": 10.0, "at": 1794362700000, "state": "转P7跟踪", "by": "待指定", "judgedAt": 1794363875099, "reason": "法国监管查验六成包裹不合规、平台累计罚款近10亿欧元，2027-01-01 生效；若进入法国市场需提前调整产品线与广告投放，有硬截止日应纳入跟踪。", "loop": "LOOP-20261111-07", "hint": "法国拟2027年1月1日起禁止超快时尚产品媒体广告：监管查验六成包裹不合规、平台累计罚款近10亿欧元"},
+ {"rid": "reczz28YCd71SN4v", "no": "PDR-20261110-01", "key": "1794277500000|TikTok Shop美国站黑五网一临时放宽发货", "title": "TikTok Shop美国站黑五网一临时放宽发货时限：11月11日至12月5日本地订单最多延2个工作日", "team": "分析组", "lv": "B", "score": 12.0, "at": 1794277500000, "state": "未研判", "by": "", "judgedAt": null, "reason": "", "loop": "", "hint": "TikTok Shop美国站黑五网一临时放宽发货时限：11月11日至12月5日本地订单最多延2个工作日"},
+ {"rid": "reczz28YCd71S3Un", "no": "PDR-20261109-01", "key": "1794190800000|沃尔玛11月6日更新退货率规则：新增商品级指标，", "title": "沃尔玛11月6日更新退货率规则：新增商品级指标，2027年1月起卖家责任退货率过高的单品可被警告或限制商品曝光", "team": "分析组", "lv": "B", "score": 11.0, "at": 1794190800000, "state": "未研判", "by": "", "judgedAt": null, "reason": "", "loop": "", "hint": "沃尔玛11月6日更新退货率规则：新增商品级指标，2027年1月起卖家责任退货率过高的单品可被警告或限制商品曝光"},
+ {"rid": "reczz28YCd71SIDO", "no": "PDR-20261107-01", "key": "1794036000000|TikTok Shop收紧欧盟四国与墨西哥五类商", "title": "TikTok Shop收紧欧盟四国与墨西哥五类商品资质：德国包装EPR/WEEE号未填禁发", "team": "分析组", "lv": "B", "score": 12.0, "at": 1794036000000, "state": "未研判", "by": "", "judgedAt": null, "reason": "", "loop": "", "hint": "TikTok Shop收紧欧盟四国与墨西哥五类商品资质：德国包装EPR/WEEE号未填禁发"},
+ {"rid": "reczz28YCd71SfoA", "no": "PDR-20261107-02", "key": "1794036000000|Temu美国站11月8日起对未维护PFAS属性的", "title": "Temu美国站11月8日起对未维护PFAS属性的链接实施上站与发货拦截", "team": "分析组", "lv": "B", "score": 13.0, "at": 1794036000000, "state": "未研判", "by": "", "judgedAt": null, "reason": "", "loop": "", "hint": "Temu美国站11月8日起对未维护PFAS属性的链接实施上站与发货拦截"},
+ {"rid": "reczz28YCd71Riy2", "no": "PDR-20261106-01", "key": "1793931900000|沃尔玛11月5日收紧Walmart+徽章资格：自", "title": "沃尔玛11月5日收紧Walmart+徽章资格：自配送含退货政策豁免的报价不再适用", "team": "分析组", "lv": "B", "score": 11.0, "at": 1793931900000, "state": "未研判", "by": "", "judgedAt": null, "reason": "", "loop": "", "hint": "沃尔玛11月5日收紧Walmart+徽章资格：自配送含退货政策豁免的报价不再适用"},
+ {"rid": "reczz28YCd71QBjH", "no": "PDR-20261106-02", "key": "1793931900000|亚马逊11月4日上线Shop Direct商家工", "title": "亚马逊11月4日上线Shop Direct商家工作台：站外商品免费接入站内搜索与Alexa", "team": "分析组", "lv": "B", "score": 10.0, "at": 1793931900000, "state": "未研判", "by": "", "judgedAt": null, "reason": "", "loop": "", "hint": "亚马逊11月4日上线Shop Direct商家工作台：站外商品免费接入站内搜索与Alexa"},
+ {"rid": "reczz28YCd71RylE", "no": "PDR-20261111-02", "key": "1794362700000|亚马逊美加两站挤压玩具启动DPV专项验证：VOC", "title": "亚马逊美加两站挤压玩具启动DPV专项验证：VOC测试+CPSC认可实验室+CPC，TIC机构直提", "team": "资金组", "lv": "B", "score": 12.0, "at": 1794362700000, "state": "未研判", "by": "", "judgedAt": null, "reason": "", "loop": "", "hint": "亚马逊美加两站挤压玩具启动DPV专项验证：VOC测试+CPSC认可实验室+CPC，TIC机构直提"},
+ {"rid": "reczz28YCd71RRjW", "no": "PDR-20261111-03", "key": "1794362700000|TikTok Shop独立购物App上线新马泰菲", "title": "TikTok Shop独立购物App上线新马泰菲四国：电商入口脱离主站，形成搜索+货架第二流量入口", "team": "资金组", "lv": "B", "score": 10.0, "at": 1794362700000, "state": "未研判", "by": "", "judgedAt": null, "reason": "", "loop": "", "hint": "TikTok Shop独立购物App上线新马泰菲四国：电商入口脱离主站，形成搜索+货架第二流量入口"},
+ {"rid": "reczz28YCd71RDG0", "no": "PDR-20261110-02", "key": "1794277500000|TikTok Shop美国站禁止付费抽奖与投注类", "title": "TikTok Shop美国站禁止付费抽奖与投注类互动：卡牌开箱直播须店铺分不低于2.5并事前申请", "team": "资金组", "lv": "B", "score": 13.0, "at": 1794277500000, "state": "未研判", "by": "", "judgedAt": null, "reason": "", "loop": "", "hint": "TikTok Shop美国站禁止付费抽奖与投注类互动：卡牌开箱直播须店铺分不低于2.5并事前申请"},
+ {"rid": "reczz28YCd71U1KT", "no": "PDR-20261109-02", "key": "1794190800000|TikTok Shop新加坡与马来西亚站11月9", "title": "TikTok Shop新加坡与马来西亚站11月9日开放海运直邮：首批91个大件类目白名单准入，买家端显示包邮", "team": "资金组", "lv": "B", "score": 11.0, "at": 1794190800000, "state": "未研判", "by": "", "judgedAt": null, "reason": "", "loop": "", "hint": "TikTok Shop新加坡与马来西亚站11月9日开放海运直邮：首批91个大件类目白名单准入，买家端显示包邮"},
+ {"rid": "reczz28YCd71R6vu", "no": "PDR-20261109-03", "key": "1794190800000|美客多墨西哥与巴西站对低价件加收固定附加费：墨≤", "title": "美客多墨西哥与巴西站对低价件加收固定附加费：墨≤299比索每件加33比索，巴≤79雷亚尔每件加9.6雷亚尔", "team": "资金组", "lv": "B", "score": 10.0, "at": 1794190800000, "state": "未研判", "by": "", "judgedAt": null, "reason": "", "loop": "", "hint": "美客多墨西哥与巴西站对低价件加收固定附加费：墨≤299比索每件加33比索，巴≤79雷亚尔每件加9.6雷亚尔"},
+ {"rid": "reczz28YCd71T0bp", "no": "PDR-20261108-01", "key": "1794104160000|TikTok Shop更新售后政策：买家个人原因", "title": "TikTok Shop更新售后政策：买家个人原因退货不再退还运费，邮费欺诈执法扩至跨境与本土托管卖家", "team": "资金组", "lv": "B", "score": 13.0, "at": 1794104160000, "state": "未研判", "by": "", "judgedAt": null, "reason": "", "loop": "", "hint": "TikTok Shop更新售后政策：买家个人原因退货不再退还运费，邮费欺诈执法扩至跨境与本土托管卖家"},
+ {"rid": "reczz28YCd71S1Yd", "no": "PDR-20261108-02", "key": "1794104160000|TikTok Shop运费预估与结算管控11月1", "title": "TikTok Shop运费预估与结算管控11月12日收紧：下单后减重不再下调预估运费，按承运商实测计费重结算", "team": "资金组", "lv": "B", "score": 12.0, "at": 1794104160000, "state": "未研判", "by": "", "judgedAt": null, "reason": "", "loop": "", "hint": "TikTok Shop运费预估与结算管控11月12日收紧：下单后减重不再下调预估运费，按承运商实测计费重结算"},
+ {"rid": "reczz28YCd71Slgl", "no": "PDR-20261107-03", "key": "1794036000000|亚马逊公布2027年美国站费用变更：FBA配送费", "title": "亚马逊公布2027年美国站费用变更：FBA配送费每件平均上调0.19美元，多数2027年1月15日生效", "team": "资金组", "lv": "B", "score": 12.0, "at": 1794036000000, "state": "未研判", "by": "", "judgedAt": null, "reason": "", "loop": "", "hint": "亚马逊公布2027年美国站费用变更：FBA配送费每件平均上调0.19美元，多数2027年1月15日生效"},
+ {"rid": "reczz28YCd71QBQc", "no": "PDR-20261107-04", "key": "1794036000000|洛杉矶文森特·托马斯大桥11月7日起封闭16个月", "title": "洛杉矶文森特·托马斯大桥11月7日起封闭16个月：日均4700辆次港口卡车绕行，提还柜时效承压", "team": "资金组", "lv": "B", "score": 13.0, "at": 1794036000000, "state": "未研判", "by": "", "judgedAt": null, "reason": "", "loop": "", "hint": "洛杉矶文森特·托马斯大桥11月7日起封闭16个月：日均4700辆次港口卡车绕行，提还柜时效承压"},
+ {"rid": "reczz28YCd71Qgq2", "no": "PDR-20261107-05", "key": "1794036000000|美客多三季度营收107.5亿美元同比增45%：拒", "title": "美客多三季度营收107.5亿美元同比增45%：拒绝外部AI购物代理接入库存、上调运费转嫁卖家", "team": "资金组", "lv": "B", "score": 10.0, "at": 1794036000000, "state": "未研判", "by": "", "judgedAt": null, "reason": "", "loop": "", "hint": "美客多三季度营收107.5亿美元同比增45%：拒绝外部AI购物代理接入库存、上调运费转嫁卖家"},
+ {"rid": "reczz28YCd71Tsby", "no": "PDR-20261105-01", "key": "1793847000000|TikTok Shop东南亚11月5日起执行退货", "title": "TikTok Shop东南亚11月5日起执行退货争议寄回新规：逾期未寄回将丧失申诉资格", "team": "资金组", "lv": "B", "score": 12.0, "at": 1793847000000, "state": "未研判", "by": "", "judgedAt": null, "reason": "", "loop": "", "hint": "TikTok Shop东南亚11月5日起执行退货争议寄回新规：逾期未寄回将丧失申诉资格"},
+ {"rid": "reczz28YCd71RWp0", "no": "PDR-20261105-02", "key": "1793847000000|亚马逊欧洲站取消买家月度合并账单：改为单笔订单1", "title": "亚马逊欧洲站取消买家月度合并账单：改为单笔订单14天账期，10月底完成切换", "team": "资金组", "lv": "B", "score": 12.0, "at": 1793847000000, "state": "未研判", "by": "", "judgedAt": null, "reason": "", "loop": "", "hint": "亚马逊欧洲站取消买家月度合并账单：改为单笔订单14天账期，10月底完成切换"},
+ {"rid": "reczz28YCd71T3R7", "no": "PDR-20261104-01", "key": "1793761200000|洛杉矶与长滩港安保劳资谈判延至11月4日17时：", "title": "洛杉矶与长滩港安保劳资谈判延至11月4日17时：250人覆盖两港过半货量，罢工授权仍有效", "team": "资金组", "lv": "B", "score": 14.0, "at": 1793761200000, "state": "转P7跟踪", "by": "待指定", "judgedAt": 1794363776274, "reason": "美西港口劳资协议 11-20 届满，若罢工将直接影响海运时效与滞港费，需纳入跟踪。", "loop": "LOOP-20261111-06", "hint": "洛杉矶与长滩港安保劳资谈判延至11月4日17时：250人覆盖两港过半货量，罢工授权仍有效"},
+ {"rid": "reczz28YCd71RyRE", "no": "PDR-20261104-02", "key": "1793761200000|长荣海运与阳明海运重启红海航线：11月12日青岛", "title": "长荣海运与阳明海运重启红海航线：11月12日青岛首航、11月13日宁波出发，亚欧周均运力环比增约10%", "team": "资金组", "lv": "B", "score": 13.0, "at": 1793761200000, "state": "未研判", "by": "", "judgedAt": null, "reason": "", "loop": "", "hint": "长荣海运与阳明海运重启红海航线：11月12日青岛首航、11月13日宁波出发，亚欧周均运力环比增约10%"},
+ {"rid": "reczz28YCd71RjvH", "no": "PDR-20261104-03", "key": "1793761200000|美客多启用墨西哥首座机器人配送中心：投资超6亿美", "title": "美客多启用墨西哥首座机器人配送中心：投资超6亿美元、首期240台机器人，2027年扩至1000台", "team": "资金组", "lv": "B", "score": 11.0, "at": 1793761200000, "state": "未研判", "by": "", "judgedAt": null, "reason": "", "loop": "", "hint": "美客多启用墨西哥首座机器人配送中心：投资超6亿美元、首期240台机器人，2027年扩至1000台"}
+];
+/* ===POOL-END=== */
 /* ===DATA-END=== */
 
 const $=id=>document.getElementById(id);
@@ -1448,20 +1495,102 @@ function teamItemsOf(teamId){
     .sort((a,b)=>("ABC".indexOf(a.lv)-"ABC".indexOf(b.lv))||((b.at||0)-(a.at||0)));
 }
 const TEAM_MAX_ROWS=60;
+/* ===== 研判标识（2026-11-11 新增，内部 提出）：P6 人工筛选「是否流转 P7」 =====
+   设计：A 级条目由雷达自动建闭环（P7 研判收件里判定）；
+        B/C 级新条目进「研判池」，由各组负责人在 P6 看到【待研判】标识后人工筛选，
+        选定「转P7跟踪」→ 次日自动化建闭环并回填编号 → 标识变【已转P7】→ 闭环归档后变【已闭环】。
+   写入仍在飞书表（看板为公开静态页，只读），点标识即深链到对应研判视图。 */
+const POOL_BASE = "https://my.feishu.cn/base/LdjvbXP1jaI8tWs5FfjcOPRNnBc?table=tbln21N2Vd7EHHo0";
+const POOL_VIEWS = {all:"vewemdHQbq", "税务组":"vewj1qXIPg", "资金组":"vewO5S26mb", "分析组":"vewGFWyzcV", done:"vewt2q3xLv"};
+const POOL_STATE_CLS = {"未研判":["jb-pending","待研判"],"转P7跟踪":["jb-active","已转P7"],"仅关注":["jb-watch","仅关注"],"无需":["jb-none","无需"],"已闭环":["jb-done","已闭环"]};
+const POOL_MAP = (function(){
+  const m = {};
+  (typeof POOL_DATA !== "undefined" ? POOL_DATA : []).forEach(function(p){ if(p.key) m[p.key] = p; });
+  return m;
+})();
+function poolKeyOf(it){ return (it.at||0) + "|" + String(it.title||"").slice(0,24); }
+function poolOf(it){ return POOL_MAP[poolKeyOf(it)] || null; }
+function loopOfItem(it){
+  const t = String(it.title||"").slice(0,26);
+  if(!t) return null;
+  const arr = loopData();
+  for(let i=0;i<arr.length;i++){
+    if(String(arr[i].item||"").indexOf(t) >= 0) return arr[i];
+  }
+  return null;
+}
+/* 是否显示研判标识：只对新抓取的信息加标识（内部 2026-11-11 要求），
+   另保留「已在研判池」与「近 14 天有闭环」的条目，便于判断后追踪结果；
+   历史条目（无池记录、无近期闭环）不显示，避免上百条灰标识淹没重点。 */
+function shouldJudge(it){
+  if(isNewItem(it)) return true;
+  if(poolOf(it)) return true;
+  const lp = loopOfItem(it);
+  if(lp && (Date.now() - (it.at||0) < 14*86400000)) return true;
+  return false;
+}
+/* 研判标识：A 级看 P7 闭环状态；B/C 看研判池状态 */
+function judgeBadge(it, lv){
+  if(lv === "A"){
+    const lp = loopOfItem(it);
+    if(lp){
+      const st = lp.status || "待研判";
+      const cls = st === "待研判" ? "jb-pending" : (st === "已归档" ? "jb-done" : "jb-active");
+      return '<a class="jb '+cls+'" href="'+esc(LOOP_VIEWS.all)+'" target="_blank" rel="noopener" title="已自动建闭环 '+esc(lp.no)+' · 当前 '+esc(st)+'（在 P7 操作台判定）">P7 · '+esc(st)+'</a>';
+    }
+    return '<a class="jb jb-gap" href="'+esc(LOOP_VIEWS.all)+'" target="_blank" rel="noopener" title="A 级应自动建闭环但未找到，请检查当日自动化">A级 · 待入闭环</a>';
+  }
+  const p = poolOf(it);
+  if(!p) return "";
+  const m = POOL_STATE_CLS[p.state] || POOL_STATE_CLS["未研判"];
+  const href = POOL_BASE + "&view=" + (POOL_VIEWS[p.team] || POOL_VIEWS.all) + (p.rid ? "&record=" + esc(p.rid) : "");
+  const tip = p.state === "未研判" ? "点击到飞书研判池，选择 转P7跟踪/仅关注/无需" : ("研判人：" + (p.by||"—") + "；理由：" + (p.reason||"—"));
+  return '<a class="jb '+m[0]+'" href="'+esc(href)+'" target="_blank" rel="noopener" title="'+esc(tip)+'">'+m[1]+'</a>';
+}
+/* 本组待研判统计 */
+function poolStatOf(teamName){
+  let pending=0, escalated=0;
+  (typeof POOL_DATA !== "undefined" ? POOL_DATA : []).forEach(function(p){
+    if(p.team !== teamName) return;
+    if(p.state === "未研判") pending++;
+    if(p.state === "转P7跟踪") escalated++;
+  });
+  return {pending:pending, escalated:escalated};
+}
 function teamRowHtml(it){
   const link=it.url?"<a href=\""+esc(it.url)+"\" target=\"_blank\" rel=\"noopener\">"+esc(it.title)+"</a>":"<span>"+esc(it.title)+"</span>";
   const doc=it.doc?"<a href=\""+esc(it.doc)+"\" target=\"_blank\" rel=\"noopener\">解读 ↗</a>":"<span class=\"nolink\">解读待生成</span>";
   return "<div class=\"team-item\">"
     +"<span class=\"lv lv-"+it.lv+"\">"+it.lv+"</span>"
     +"<span class=\"ti-date\">"+fdAt(it.at)+"</span>"
-    +"<span class=\"ti-title\">"+link+newBadge(it)+"</span>"
+    +"<span class=\"ti-title\">"+link+newBadge(it)+(shouldJudge(it)?judgeBadge(it,it.lv):"")+"</span>"
     +"<span class=\"ti-meta\">"+esc(it.cat)+" · "+it.score+"分<br>"+doc+"</span>"
     +"</div>";
 }
+/* 研判工作条：本组待研判数 + 入口 + 只看待研判筛选 */
+let tjOnlyPending = {"税务组":false,"资金组":false,"分析组":false};
+function judgeBar(teamId, teamName){
+  const s = poolStatOf(teamName);
+  const only = tjOnlyPending[teamName];
+  const href = POOL_BASE + "&view=" + (POOL_VIEWS[teamName] || POOL_VIEWS.all);
+  const txt = s.pending
+    ? '本组 <b>'+s.pending+'</b> 条 B 级新条目待研判' + (s.escalated? ' · 已转 P7 '+s.escalated+' 条' : '')
+    : '本组无待研判新条目' + (s.escalated? ' · 已转 P7 '+s.escalated+' 条' : '');
+  const filter = s.pending
+    ? '<div class="tj-filter"><span class="tj-chip'+(only?' on':'')+'" data-tjteam="'+esc(teamName)+'">'+(only?'✓ 只看待研判':'只看待研判')+'</span></div>'
+    : '';
+  return '<div class="team-judge"><span class="tj-txt">'+txt+'</span>'
+    +'<a class="tj-btn" href="'+esc(href)+'" target="_blank" rel="noopener">研判工作台 ↗</a></div>'+filter;
+}
 function teamBlock(teamId){
   const def=TEAM_DEFS.filter(d=>d.id===teamId)[0];
-  const items=teamItemsOf(teamId);
+  const allItems=teamItemsOf(teamId);
   const t0=todayStartMs();
+  /* 「只看待研判」筛选：仅保留研判池状态=未研判 的条目（2026-11-11） */
+  const onlyPendingFlag = tjOnlyPending[def.name];
+  const items = onlyPendingFlag
+    ? allItems.filter(function(it){ const p=poolOf(it); return p && p.state==="未研判"; })
+    : allItems;
   const news=items.filter(it=>(it.at||0)>=t0);
   const nA=items.filter(it=>it.lv==="A").length;
   /* 今日要点：优先当日新增（评分降序，至多4条）；当日无新增则取最近 A 级 */
@@ -1486,17 +1615,26 @@ function teamBlock(teamId){
   });
   plain.forEach(it=>{if(rows<TEAM_MAX_ROWS){html+=teamRowHtml(it);rows++;}});
   if(rows<items.length)html+="<div class=\"team-more\">… 其余 "+(items.length-rows)+" 条按级别/日期截断，完整列表见对应板块页签</div>";
+  if(onlyPendingFlag)html+="<div class=\"team-more\">当前为「只看待研判」筛选视图，共 "+items.length+" 条；再次点击筛选按钮恢复全量</div>";
   return "<article class=\"card team-card\">"
-    +"<h2>"+def.icon+" "+def.name+" <span class=\"team-cnt\">"+items.length+" 条相关 · A级 "+nA+"</span></h2>"
+    +"<h2>"+def.icon+" "+def.name+" <span class=\"team-cnt\">"+(onlyPendingFlag? "待研判 "+items.length+" 条" : items.length+" 条相关 · A级 "+nA)+"</span></h2>"
     +"<p class=\"sub\">"+def.desc+(news.length?" · 今日新增 "+news.length+" 条":" · 今日无新增")+"</p>"
+    +judgeBar(teamId, def.name)
     +"<div class=\"team-points\"><div class=\"tp-head\">今日要点</div><ul>"+ptHtml+"</ul></div>"
     +"<div class=\"team-list\">"+html+"</div>"
     +"</article>";
 }
 function renderTeam(){
   const el=$("teamView"); if(!el)return;
-  el.innerHTML="<p class=\"team-lead\">按部门归集视角（税务组 / 资金组 / 分析组）· 同一事件多源多日自动归并为事件线 · 条目可点开原文与飞书解读 · 完整筛选请用 P1-P4 板块页签</p>"
+  el.innerHTML="<p class=\"team-lead\">按部门归集视角（税务组 / 资金组 / 分析组）· 同一事件多源多日自动归并为事件线 · 条目可点开原文与飞书解读 · <b>B 级新条目需人工研判是否转 P7：点条目上的【待研判】进研判池选择</b> · 完整筛选请用 P1-P4 板块页签</p>"
     +"<div class=\"team-grid\">"+TEAM_DEFS.map(d=>teamBlock(d.id)).join("")+"</div>";
+  el.querySelectorAll(".tj-chip").forEach(function(c){
+    c.onclick=function(){
+      const tn=c.dataset.tjteam;
+      tjOnlyPending[tn]=!tjOnlyPending[tn];
+      renderTeam();
+    };
+  });
 }
 
 /* ===== P7 闭环操作台（2026-11-09 v2 重构，内部 提出）=====
